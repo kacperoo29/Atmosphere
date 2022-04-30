@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
+  </ItemGroup>
+
   <ItemGroup>  
     <ProjectReference Include="../Atmosphere.Core/Atmosphere.Core.csproj" />
   </ItemGroup>
