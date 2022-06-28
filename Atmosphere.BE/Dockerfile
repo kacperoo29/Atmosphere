@@ -3,9 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
 # Copy everything and build
+COPY */*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
+COPY *.sln ./
+RUN dotnet restore --no-cache --force-evaluate -f
 COPY . ./
-RUN dotnet restore
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Debug -o out
 RUN dotnet dev-certs https --trust
 
 # Build runtime image
