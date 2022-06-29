@@ -54,4 +54,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// TODO: Set default values for configuration entries
+
 app.Run();

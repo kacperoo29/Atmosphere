@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>  
-    <ProjectReference Include="../Atmosphere.Core/Atmosphere.Core.csproj" />
+    <ProjectReference Include="../Atmosphere.Application/Atmosphere.Application.csproj" />
   </ItemGroup>
 
 </Project>

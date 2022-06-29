@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class MongoController : ControllerBase
+public class ReadingController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public MongoController(IMediator mediator)
+    public ReadingController(IMediator mediator)
     {
         _mediator = mediator;
     }
