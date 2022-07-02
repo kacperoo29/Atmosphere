@@ -3,7 +3,7 @@ namespace Atmosphere.Core.Models;
 public class ConfigurationEntry : BaseModel
 {
     public string Key { get; private set; }
-    public string Value { get; private set; }
+    public object? Value { get; private set; }
 
     protected ConfigurationEntry()
         : base()
@@ -12,7 +12,7 @@ public class ConfigurationEntry : BaseModel
         this.Value = string.Empty;
     }
 
-    public static ConfigurationEntry Create(string key, string value)
+    public static ConfigurationEntry Create(string key, object? value)
     {
         return new ConfigurationEntry
         {

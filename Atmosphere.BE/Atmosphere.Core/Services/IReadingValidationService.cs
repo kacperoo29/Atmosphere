@@ -10,6 +10,7 @@ public abstract class IReadingValidationService
     public async IAsyncEnumerable<ValidationResult> RunChecks(Reading reading)
     {
         yield return await CheckIfInRange(reading);
+        yield return await CompareToPrevious(reading);
     }
 
     protected abstract Task<ValidationResult> CheckIfInRange(Reading reading);

@@ -16,14 +16,14 @@ public class ConfigurationRepository : IConfigurationRepository
         _collection = collection;
     }
 
-    public async Task<string> Get(string key)
+    public async Task<object?> Get(string key)
     {
         var entry = await _collection.Find(x => x.Key == key).FirstOrDefaultAsync();
 
-        return entry.Value ?? string.Empty;
+        return entry.Value ?? null;
     }
 
-    public async Task Set(string key, string value)
+    public async Task Set(string key, object? value)
     {
         var entry = ConfigurationEntry.Create(key, value);
 

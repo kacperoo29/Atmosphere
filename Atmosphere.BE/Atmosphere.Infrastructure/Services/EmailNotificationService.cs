@@ -15,6 +15,8 @@ public class EmailNotificationService : INotificationService
 {
     private readonly IConfigurationRepository _configurationRepository;
 
+    public const string EMAIL_CONFIG_KEY = "emailConfig";
+
     public EmailNotificationService(IConfigurationRepository configurationRepository)
     {
         _configurationRepository = configurationRepository;
@@ -22,12 +24,15 @@ public class EmailNotificationService : INotificationService
 
     public async Task Notify(Reading reading, List<ValidationResult> validationResults)
     {
-        var emailAddress = await _configurationRepository.Get("emailAddress");
-        var serverEmailAddress = await _configurationRepository.Get("serverEmailAddress");
+        var config = await _configurationRepository.Get(EMAIL_CONFIG_KEY) as EmailConfiguration
+            ?? throw new Exception("Email configuration not found");
+
+        var emailAddress = config.EmailAddress;
+        var serverEmailAddress = config.ServerEmailAddress;
 
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Atmosphere", serverEmailAddress));
-        message.To.Add(new MailboxAddress("Atmosphere", emailAddress));
+        message.From.Add(new MailboxAddress("Atmosphere", config.ServerEmailAddress));
+        message.To.Add(new MailboxAddress("Atmosphere", config.EmailAddress));
         message.Subject = $"Atmosphere reading";
 
         // TODO: Make more sensible email body
@@ -39,10 +44,10 @@ public class EmailNotificationService : INotificationService
         }
         message.Body = bodyBuilder.ToMessageBody();
 
-        var smtpServerAddress = await _configurationRepository.Get("smtpServerAddress");
-        var smtpServerPort = int.Parse(await _configurationRepository.Get("smtpServerPort"));
-        var smtpServerUsername = await _configurationRepository.Get("smtpServerUsername");
-        var smtpServerPassword = await _configurationRepository.Get("smtpServerPassword");
+        var smtpServerAddress = config.SmtpServer;
+        var smtpServerPort = config.SmtpPort;
+        var smtpServerUsername = config.SmtpUsername;
+        var smtpServerPassword = config.SmtpPassword;
 
         using (var client = new SmtpClient())
         {

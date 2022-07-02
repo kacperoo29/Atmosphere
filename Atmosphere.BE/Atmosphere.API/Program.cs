@@ -2,8 +2,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Atmosphere.Application.Readings.Commands;
+using Atmosphere.Application.Services;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
+using Atmosphere.Infrastructure.Consts;
+using Atmosphere.Infrastructure.Services;
 using Atmosphere.Services.Consts;
 using Atmosphere.Services.Repositories;
 
@@ -16,13 +19,13 @@ using MongoDB.Driver;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
-    .AddJsonOptions(opt => 
+    .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => 
+builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Atmosphere API", Version = "v1" });
 });
@@ -31,14 +34,33 @@ builder.Services.AddScoped<IMongoClient>((opt) =>
     new MongoClient(builder.Configuration.GetConnectionString("mongodb"))
 );
 
+builder.Services.AddScoped<IMongoCollection<ConfigurationEntry>>((opt) =>
+    opt.GetRequiredService<IMongoClient>()
+        .GetDatabase(MongoDbConsts.DbName)
+        .GetCollection<ConfigurationEntry>(MongoDbConsts.ConfigurationCollectionName)
+);
+
 builder.Services.AddScoped<IMongoCollection<Reading>>((opt) =>
-    builder.Services.BuildServiceProvider()
-        .GetRequiredService<IMongoClient>()
+    opt.GetRequiredService<IMongoClient>()
         .GetDatabase(MongoDbConsts.DbName)
         .GetCollection<Reading>(MongoDbConsts.ReadingsCollectionName)
 );
 
 builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
+builder.Services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
+builder.Services.AddScoped<INotificationService>((opt) =>
+{
+    using var scope = opt.CreateScope();
+    var config = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
+    var type = config.Get(NotificationTypes.NOTIFICATION_TYPE_KEY).Result ?? NotificationTypes.Email;
+    switch (type)
+    {
+        case NotificationTypes.Email:
+            return scope.ServiceProvider.GetRequiredService<EmailNotificationService>();
+        default:
+            throw new Exception($"Unknown notification type: {type}");
+    }
+});
 
 builder.Services.AddMediatR(typeof(CreateReading).Assembly);
 
@@ -54,6 +76,30 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// TODO: Set default values for configuration entries
+// Set default values for configuration entries
+app.Use(async (context, next) =>
+{
+    using var scope = context.RequestServices.CreateScope();
+    var config = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
+    var type = config.Get(NotificationTypes.NOTIFICATION_TYPE_KEY).Result ?? NotificationTypes.Email;
+    await config.Set(NotificationTypes.NOTIFICATION_TYPE_KEY, type);
+
+    var emailConfig = config.Get(EmailNotificationService.EMAIL_CONFIG_KEY).Result;
+    if (emailConfig == null)
+    {
+        var emailSection = builder.Configuration.GetSection("EmailSettings");
+        await config.Set(EmailNotificationService.EMAIL_CONFIG_KEY, new EmailConfiguration
+        {
+            SmtpServer = emailSection.GetValue<string>("SmtpServer"),
+            SmtpPort = emailSection.GetValue<int>("SmtpPort"),
+            SmtpUsername = emailSection.GetValue<string>("SmtpUsername"),
+            SmtpPassword = emailSection.GetValue<string>("SmtpPassword"),
+            EmailAddress = emailSection.GetValue<string>("EmailAddress"),
+            ServerEmailAddress = emailSection.GetValue<string>("ServerEmailAddress")
+        });
+    }
+
+    await next();
+});
 
 app.Run();

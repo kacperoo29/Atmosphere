@@ -1,11 +1,12 @@
 namespace Atmosphere.Core.Models;
 
 using System;
+using System.Text;
 
 public class Reading : BaseModel
 {
     public Guid DeviceId { get; private set; }
-    public double Value { get; private set; }
+    public decimal Value { get; private set; }
     public DateTime Timestamp { get; private set; }
     public ReadingType Type { get; private set; }
 
@@ -14,7 +15,7 @@ public class Reading : BaseModel
     {
     }
 
-    public static Reading Create(Guid deviceId, double value, DateTime timestamp, ReadingType type)
+    public static Reading Create(Guid deviceId, decimal value, DateTime timestamp, ReadingType type)
     {
         return new Reading
         {

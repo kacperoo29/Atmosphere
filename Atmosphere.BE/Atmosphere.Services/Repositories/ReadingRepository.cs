@@ -27,6 +27,14 @@ public class ReadingRepository : BaseRepository<Reading>, IReadingRepository
             .ToListAsync();
     }
 
+    public async Task<Reading> GetPrevious(Guid deviceId, ReadingType type)
+    {
+        return await _collection.Find(r => r.DeviceId == deviceId && r.Type == type)
+            .SortByDescending(r => r.CreatedAt)
+            .Limit(1)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<IEnumerable<Reading>> GetReadings(Guid deviceId, DateTime start, DateTime end)
     {
         return await _collection.Find(r => r.DeviceId == deviceId && r.CreatedAt >= start && r.CreatedAt <= end)
