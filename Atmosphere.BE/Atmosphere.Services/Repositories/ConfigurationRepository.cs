@@ -1,5 +1,7 @@
 namespace Atmosphere.Services.Repositories;
 
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Atmosphere.Core.Models;
@@ -21,6 +23,11 @@ public class ConfigurationRepository : IConfigurationRepository
         var entry = await _collection.Find(x => x.Key == key).FirstOrDefaultAsync();
 
         return entry.Value ?? null;
+    }
+
+    public async Task<IEnumerable<ConfigurationEntry>> GetEntires(Expression<Func<ConfigurationEntry, bool>>? predicate = null)
+    {
+        return await _collection.Find(predicate ?? (x => true)).ToListAsync();
     }
 
     public async Task Set(string key, object? value)
