@@ -1,4 +1,4 @@
-namespace Atmosphere.Infrastructure.Services;
+namespace Atmosphere.Services.Notifications;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

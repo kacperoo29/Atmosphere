@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../Atmosphere.Application/Atmosphere.Application.csproj" />
-    <ProjectReference Include="../Atmosphere.Infrastructure/Atmosphere.Infrastructure.csproj" />
     <ProjectReference Include="../Atmosphere.Services/Atmosphere.Services.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-namespace Atmosphere.Infrastructure.Consts;
+namespace Atmosphere.Services.Consts;
 
 public static class NotificationTypes
 {

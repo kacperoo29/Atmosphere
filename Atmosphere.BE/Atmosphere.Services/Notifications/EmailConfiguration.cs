@@ -1,4 +1,4 @@
-namespace Atmosphere.Infrastructure.Services;
+namespace Atmosphere.Services.Notifications;
 
 public class EmailConfiguration
 {

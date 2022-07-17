@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -5,13 +6,14 @@ using Atmosphere.Application.Readings.Commands;
 using Atmosphere.Application.Services;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
-using Atmosphere.Infrastructure.Consts;
-using Atmosphere.Infrastructure.Services;
 using Atmosphere.Services.Consts;
+using Atmosphere.Services.Notifications;
 using Atmosphere.Services.Repositories;
 
 using MediatR;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using MongoDB.Driver;
@@ -46,6 +48,28 @@ builder.Services.AddScoped<IMongoCollection<Reading>>((opt) =>
         .GetCollection<Reading>(MongoDbConsts.ReadingsCollectionName)
 );
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, (opt) =>
+    {
+        var config = builder.Configuration.GetSection("JWT");
+        opt.RequireHttpsMetadata = false;        
+
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = config.GetValue<string>("Issuer"),
+
+            ValidateAudience = true,
+            ValidAudience = config.GetValue<string>("Audience"),
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(0),
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("SecretKey"))),
+        };
+    });
+
 builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
 builder.Services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
 builder.Services.AddScoped<INotificationService>((opt) =>
@@ -77,9 +101,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Set default values for configuration entries
-app.Use(async (context, next) =>
+app.Lifetime.ApplicationStarted.Register(async () =>
 {
-    using var scope = context.RequestServices.CreateScope();
+    using var scope = app.Services.CreateScope();
     var config = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
     var type = config.Get(NotificationTypes.NOTIFICATION_TYPE_KEY).Result ?? NotificationTypes.Email;
     await config.Set(NotificationTypes.NOTIFICATION_TYPE_KEY, type);
@@ -98,8 +122,6 @@ app.Use(async (context, next) =>
             ServerEmailAddress = emailSection.GetValue<string>("ServerEmailAddress")
         });
     }
-
-    await next();
 });
 
 app.Run();
