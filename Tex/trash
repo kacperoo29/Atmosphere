@@ -1,0 +1,91 @@
+
+
+\section{Kolekcja danych}
+Jednym z najważniejszych komponentów systemu badającego parametry środowiska jest
+kolekcja danych, czyli proces zbierania danych za pomocą urządzeń pomiarowych, a
+następnie przechowywanie ich w formie, która umożliwi późniejsze ich przetworzenie.
+Istnieje wiele metod pozwalających na rozwiązanie tego problemu, które różnią się
+między innymi poziomami skalowalności czy też kosztem implementacji zarówno
+sprzętowej jak i programowej.
+
+\subsection{Metody komunikacji}
+Najpopularniejszym sposobem komunikacji między urządzeniami informatycznymi jest
+wykorzystanie protokołu komunikacyjnego IP (ang. Internet Protocol).
+Protokół internetowy jak sama nazwa wskazuje wykorzystywany jest powszechnie
+w sieciach lokalnych jak i w Internecie. Dzięki jego powszechności obsługiwany
+jest on przez wiele urządzeń różnej klasy oraz na jego oparciu zostało stworzone
+wiele sposobów komunikacji. W większości przypadków stosowany jest protokół TCP,
+który zapewnia niezawodność strumienia danych. Dodatkowo do zapewnienia bezpieczeństwa
+używany jest protokół kryptograficzny TLS (ang. Transport Layer Security).
+TLS zapewnia prywatność, integralność oraz autentyczność danych poprzez użycie certyfikatów.
+
+W warstwie aplikacyjnej stosowany jest protokół HTTP lub WebSocket w
+przypadku architektury klient-serwer (ang. client-server), w sieciach
+P2P (ang. peer-to-peer) natomiast stosuje się najczęściej protokól BitTorrent.
+Architektura klient-serwer cechuje się centralnością oferowanej usługi,
+poprzez wykorzystanie głównego systemu, który opisany jest mianem serwera.
+Jest on pojedyńczym lub zbiorem urządzeń, których zdaniem jest przechowywanie
+stanu aplikacji oraz odpowiedź na zapytania klientów. Wykorzystanie takiej
+architektury jest idealne w aplikacji tego typu, gdyż zapewnia centralny dostęp
+do zebranych danych oraz pozwala na rozbudowaną logikę biznesową aplikacji.
+Dzięki temu użytkownik może zarządzać konfiguracją aplikacji nie musząc
+zmieniać ustawień pozostałych urządzeń. Przechowyanie danych w jednym miejscu
+umożliwia również natychmiastowy do nich dostęp, co nie jest możliwe w sieciach P2P
+bez stałej synchronizacji między urządzeniami.
+
+Na przestrzeni lat z użyciem tych technologi powstało wiele metod ich wykorzystania
+z czego jedną z najpopularniejszych jest REST. REST (ang. Representational state interface)
+jest stylem architekturalnym opisującym interfejs komunikacji używającej protokół HTTP.
+Wykorzystanie takiej architektury i stosowanie jej zasad zapewnia niefunkcyjne właściwości
+aplikacji tj. prostota, modyfikowalność, przenośność, niezawodność, skalowalność i wydajność.
+Do głównych założeń tej metodyki należą:
+\begin{itemize}
+    \item Architektura klient-server, czyli stosowanie zasady rozdziału odpowiedzialności.
+          Stosowanie tej metody gwarantuje przenośność interfejsu użytkownika, gdyż nie musi
+          być świadomy implementacji części serwerowej. Zapewnia również możliwość oddzielnego
+          tworzenia obu komponentów, ponieważ specyficzne implementacje obu warst są od siebie
+          niezależne.
+    \item Bezstanowość zapewnia zwiększoną wydajność poprzez wyeliminowanie obciążenia serwera
+          spowodowanego przechowywaniem na nich danych dotyczących sesji użytkownika. W takim
+          przypadku to klient jest odpowiedzialny za jej utrzymanie.
+    \item Wykorzystanie pamięci podręcznej odbywa się z wykorzystaniem pamięci klienta lub
+          używając CDN (ang. Content Delivery Network). Dzięki niej eliminujemy część 
+          nieistnotnych interakcji klienta z serwerem co dalej zwiększa wydajność systemu.
+    \item Wielowarstwowość oznacza, że klient nie powinien być świadom tego czy jest połączony
+          z głównym serwerem, czy też przez proxy lub równoważnik obciążenia. Umożliwia to na 
+          uzysaknie większej skalowalności systemu, gdyż aby uzyskać większą wydajność systemu
+          wystarczy wykorzystać dodatkowy sprzęt jako równoważnik obciążenia.
+    \item Dostarczanie kodu przez serwer umożliwia modyfikacje zachowań klienta poprzez dostarczanie
+          skryptów, np. JavaScript w przypadku zmian w systemie.
+    \item Ujednolicony interfejs opisany jest przez wymagania:
+    \begin{itemize}
+        \item HATEOAS (ang. hypermedia as the engine of application state) oznacza, że tak jak
+              w klasycznych aplikacjach WWW odpowiedzi serwera powinny zawierać odnośniki do 
+              innych aktualnie dostępnych zasobów. Umożliwia to dynamiczne odkrywanie zasobów
+              serwera bez potrzeby wprowadzania ich jako stałe.
+        \item Każdy zasób serwera jest identyfikowany przez zapytanie, np. z wykorzystaniem URI
+              (Ujednolicony Identyfikator Zasobów).
+        \item Każda odpowiedź powinna zawierać informację jak powinna zostać przetworzona, np.
+              poprzez podanie typu jej danych.
+        \item Każdy zasób może być edytowany poprzez jego reprezentację. Klient posiadająć jego
+              reprezentację powinien mieć wystarczającą ilość informacji do jego modyfikacji.
+    \end{itemize}
+\end{itemize}
+API RESTowe wykorzystuje podstawowe metody HTTP do uzyskania dostępu do danych. Każda z nich
+wykonuje daną komendę:
+\begin{itemize}
+    \item GET - pobierz reprezentację zasobu.
+    \item POST - przetwórz zasób podany w zapytaniu.
+    \item PUT - stwórz lub zmień stan podanego zasobu.
+    \item PATCH - częściowo zmień stan zasobu.
+    \item DELETE - usuń zasób.
+    \item OPTIONS - pobierz dozwolone metody zasobu.
+\end{itemize}
+
+\subsection{Przechowywanie danych}
+
+\newpage
+
+\section{Projekt aplikacji}
+
+\newpage

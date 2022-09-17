@@ -1,6 +1,8 @@
 namespace Atmosphere.Core.Models;
 
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using System.Text;
 
 public class Reading : BaseModel
@@ -24,5 +26,31 @@ public class Reading : BaseModel
             Timestamp = timestamp,
             Type = type
         };
+    }
+
+    public IEnumerable<Expression<Func<Reading, ValidationResult?>>> ValidationRules()
+    {
+        switch (this.Type)
+        {
+            case ReadingType.Temperature:
+                yield return (r) => r.Value < -100 || r.Value > 100 ?
+                    new ValidationResult("Temperature must be between -100 and 100") :
+                    ValidationResult.Success;
+
+                break;
+            case ReadingType.Humidity:
+                yield return (r) => r.Value < 0 || r.Value > 100 ?
+                    new ValidationResult("Humidity must be between 0 and 100") :
+                    ValidationResult.Success;
+                break;
+            case ReadingType.Pressure:
+                yield return (r) => r.Value < 0 || r.Value > 100 ?
+                    new ValidationResult("Pressure must be between 0 and 100") :
+                    ValidationResult.Success;
+                break;
+            default:
+                yield return (r) => new ValidationResult("Unknown reading type");
+                break;
+        }
     }
 }

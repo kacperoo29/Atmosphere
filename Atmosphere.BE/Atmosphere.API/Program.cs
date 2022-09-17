@@ -48,6 +48,12 @@ builder.Services.AddScoped<IMongoCollection<Reading>>((opt) =>
         .GetCollection<Reading>(MongoDbConsts.ReadingsCollectionName)
 );
 
+builder.Services.AddScoped<IMongoCollection<IUser>>((opt) =>
+    opt.GetRequiredService<IMongoClient>()
+        .GetDatabase(MongoDbConsts.DbName)
+        .GetCollection<IUser>(MongoDbConsts.UsersCollectionName)
+);
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, (opt) =>
     {

@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 
 public enum ReadingType
 {
+    [EnumMember(Value = "unknown")]
+    Unknown = -1,
+    
     [EnumMember(Value = "temperature")]
     Temperature = 0,
 

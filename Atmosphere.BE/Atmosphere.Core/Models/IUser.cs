@@ -6,4 +6,6 @@ public interface IUser
 {
     Guid Id { get; }
     List<Claim> GetClaims();
+    string GetIdentifier();
+    string GetKey();
 }

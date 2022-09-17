@@ -454,3 +454,6 @@ $RECYCLE.BIN/
 #!.vscode/extensions.json
 package-lock.json
 yarn-lock.json
+
+
+Tex/build

@@ -1,0 +1,146 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{pdfpages}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\usepackage{lipsum}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{tocloft}
+\usepackage{indentfirst}
+\usepackage[hidelinks]{hyperref}
+
+\setmainfont{Times New Roman}
+
+\renewcommand{\cftsecleader}{\cftdotfill{.}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{.}}
+\renewcommand{\cftsecfont}{\normalfont}
+
+\author{Kacper Bajeński}
+\date{2022}
+
+\begin{document}
+\tableofcontents
+\newpage
+
+\setstretch{1.5}
+\section{Wstęp}
+Badanie parametrów środowiska jest często wykonywaną czynnością w wielu
+różnych dziedzinach nauki oraz w ostatnich latach znajduje swoją niszę
+również w zastosowaniach komercyjnych, m.in. w systemach typu inteligentny
+dom (ang. Smart Home) czy też automatyzacji urzadzeń. Mimo szerokiego
+zakresu zastosowań większość wymogów, które taka aplikacja bądź zbiór
+aplikacji ma spełniać jest możliwa do zrealizowania poprzez wykorzystanie
+odpowiedniej architektury oraz poziomów abstrakcji. Dzięki temu możliwe
+jest uzyskanie systemu, który może zostać wykorzystany w wielu zastosowaniach
+oraz jego rozbudowa bądź zmiana poszczególnych składników jest znacznie ułatwiona.
+
+Ważnym jest zaobserwowanie jakie wymagania można postawić przed takim systemem i
+dobranie do tych problemów odpowiednich rozwiązań biorąc pod uwagę wydajność oraz
+rozszerzalność systemu lub umożliwenie użytkownikowi na jego ulepszenie, aby dane wymogi
+zostały spełnione.
+
+W najbardziej podstawowym zastosowaniu aplikacja powinna spełniać jej główne założenia:
+\begin{itemize}
+      \item pomiar parametrów środowiska
+      \item transmisja danych
+      \item powiadomienia o przekroczeniu zadanego zakresu wartości
+      \item przeglądanie aktualnych danych
+      \item przeglądanie danych historycznych
+\end{itemize}
+
+Celem pracy jest wykonanie projektu takiej architektury oraz jej prototypu bazującym
+na specyficznym sprzęcie jakim jest mikrokomputer Raspberry Pi. Wybierając technologie do jego
+wykonania głównym czynnikiem, na który należy zwrócić uwagę jest przenośność, czyli
+możliwość wykorzystania na różnym sprzęcie z jak najmniejszą ilością zmian, lub najlepiej
+bez nich. Kolejnym ważnym aspektem do przemyślenia będzie wykorzystana technologia
+komunikacji między urządzeniami w celu objęcia jak największej ilości platform.
+
+\section{Wymagania}
+Ten rozdział przedstawia zbiór wymagań funkcjonalnych oraz niefunkcjonalnych, które
+stworzony system powinien spełniać.
+
+
+
+\subsection{Wymagania funkcjonalne}
+\subsubsection*{Pomiar parametrów}
+Urządzenia pomiarowe powinny regularnie odczytywać parametry środowiska i
+przesyłać je do centralnego serwera, który zajmie się ich przetworzeniem.
+
+\subsubsection*{Pomiar na zapytanie}
+Na otrzymane rządanie od serwera urządzenie pomiarowe powinno być w stanie
+odczytać parametry środowiska, a następnie wysłać odpowiedź z ich szczegółami.
+
+\subsubsection*{Wysyłanie powiadomień}
+Serwer po otrzymaniu parametrów z urządzenia pomiarowego powinien je przetworzyć,
+a następnie w przypadku przekroczenia zadanych ram wartości dla danego pomiaru
+powiadomić o tym wydarzeniu użytkownka.
+
+\subsubsection*{Odczyt aktualnych parametrów}
+Użytkownik powinien mieć możliwość, w dowolnym momencie pracy systemu,
+na odczyt aktualnych pomiarów z dowolnego urządzenia pomiarowego.
+
+\subsubsection*{Odczyt historycznych parametrów}
+Użytkownik powinien mieć dostęp do listy historycznych pomiarów.
+
+
+
+\subsection{Wymagania niefunkcjonalne}
+\subsubsection*{Rozszerzalność}
+System powinien w łatwy i przejrzysty sposób pozwolić na dodawanie nowej funkcjonalności
+bez potrzeby modyfikowania istniejącego już kodu. Pozwoli to na powstanie stałej, przetestowanej
+bazy funkcjonalności, które będą mogły być wykorzystane w tworzeniu nowych wymagań.
+
+\subsubsection*{Wykorzystanie darmowych rozwiązań}
+Dzięki wykorzystaniu darmowych rozwiązań o odpowiedniej licencji, np. MIT czy GPL możliwe
+będzie wykonanie aplikacji bez niepotrzebnych dodatkowych kosztów oraz reprodukcja pod
+podobną licencją.
+
+\subsubsection*{Przenośność}
+Ostatecznie system powinien być jak najbardziej przenośny i działać bez dodatkowych zmian
+na jak największej liczbie platform.
+
+\subsubsection*{Wdrażanie}
+System powinien zawierać sposób na ułatwione wdrażanie (ang. deployment) oprogramowania
+na nowych platformach bądź podczas uaktualnień. Sam ten proces powinien być przeprowadzany
+jak najmniejszym nakładem pracy.
+
+
+\section{Wykorzystane technologie}
+\subsection{Protokół HTTP i REST}
+Do komunikacji został wykorzystany protokół HTTP oraz związany z nim styl architekturalny
+REST.
+
+HTTP (ang. Hypertext Transfer Protocol) jest powszechnie stosowanym protkołem służącym
+do przesyłania dokumentów hipertekstowych z wykorzystaniem TCP/IP zwanym też protokołem
+internetowym (ang. Internet Protocol). Dzięki jego powszechności jest kompatibilty z szeroką
+gammą urządzeń i oprogramowań co w wielu przypadkach obniża koszt wykonania systemu. Jest
+on stosowany w sieciach lokalnych jak i w sieci Internet do komunikacji między urządzeniami.
+W związku z tym w wielu sytuacjach istnieje już infrastruktura umożliwiająca jego wykorzystanie.
+
+\subsection{Specyfikacja API OpenAPI}
+Specyfikacja API OpenAPI wykorzystywana jest do definicji zasobów i możliwości
+danej usługi bez poznawania jej implementacji. Stosując się do niej możliwe jest
+tworzenie oprogramowania RESTowego niezależnego od platformy i technologii wykorzystanej
+do implementacji.
+
+Odpowiednio przygotowana dokumentacja powinna zawierać wszystkie elementy usługi tj.
+punkty końcowe (ang. endpoint) aplikacji oraz ich ścieżki wraz z parametrami, które
+przyjmuje oraz typ odpowiedzi.
+
+\subsection{.NET Core}
+\subsection{Rust}
+\subsection{Yew}
+\subsection{MongoDB}
+\subsection{Docker}
+
+\section{Implementacja systemu}
+\subsection{Opis API}
+\subsection{Aplikacja serwerowa}
+\subsection{Baza danych}
+\subsection{Aplikacja użytkownika}
+
+\section{Bibliografia}
+
+\end{document}
