@@ -2,10 +2,9 @@ namespace Atmosphere.Core.Models;
 
 using System.Security.Claims;
 
-public interface IUser
+public abstract class User : BaseModel
 {
-    Guid Id { get; }
-    List<Claim> GetClaims();
-    string GetIdentifier();
-    string GetKey();
+    public abstract List<Claim> GetClaims();
+    public abstract string GetIdentifier();
+    public abstract string GetKey();
 }

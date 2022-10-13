@@ -4,7 +4,7 @@ using System;
 using System.Security.Claims;
 using Atmosphere.Core.Consts;
 
-public class Device : BaseModel, IUser
+public class Device : User
 {
     public string Identifier { get; private set; }
     public string Key { get; private set; }
@@ -28,7 +28,7 @@ public class Device : BaseModel, IUser
         };
     }
 
-    public List<Claim> GetClaims()
+    public override List<Claim> GetClaims()
     {
         return new List<Claim>
         {
@@ -38,12 +38,12 @@ public class Device : BaseModel, IUser
         };
     }
 
-    public string GetIdentifier()
+    public override string GetIdentifier()
     {
         return Identifier;
     }
 
-    public string GetKey()
+    public override string GetKey()
     {
         return Key;
     }

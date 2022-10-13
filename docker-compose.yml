@@ -22,14 +22,7 @@ services:
       - mongodb:/data/db
       - mongoconfig:/data/configdb
   webapp:
-    build: ./Atmosphere.WebApp
-    ports:
-      - 3000:3000
-    depends_on:
-      - api
-    volumes:
-      - ./Atmosphere.WebApp/:/app/
-      - exclude:/app/atmosphere/node_modules
+    build: ./WebApp
 
 volumes:
   mongodb:

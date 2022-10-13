@@ -22,7 +22,7 @@ public class JwtTokenProvider : ITokenService
         _configuration = configuration;
     }
 
-    public async Task<string> GenerateToken(IUser user)
+    public async Task<string> GenerateToken(User user)
     {
         var claims = user.GetClaims();
         var config = _configuration.GetSection("JWT");

@@ -48,10 +48,10 @@ builder.Services.AddScoped<IMongoCollection<Reading>>((opt) =>
         .GetCollection<Reading>(MongoDbConsts.ReadingsCollectionName)
 );
 
-builder.Services.AddScoped<IMongoCollection<IUser>>((opt) =>
+builder.Services.AddScoped<IMongoCollection<User>>((opt) =>
     opt.GetRequiredService<IMongoClient>()
         .GetDatabase(MongoDbConsts.DbName)
-        .GetCollection<IUser>(MongoDbConsts.UsersCollectionName)
+        .GetCollection<User>(MongoDbConsts.UsersCollectionName)
 );
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -106,7 +106,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Set default values for configuration entries
 app.Lifetime.ApplicationStarted.Register(async () =>
 {
     using var scope = app.Services.CreateScope();

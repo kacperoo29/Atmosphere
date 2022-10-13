@@ -4,6 +4,6 @@ using Atmosphere.Core.Models;
 
 public interface IUserRepository
 {
-    Task<IUser> GetUserAsync(Guid id);
-    Task<IUser> GetByCredentialsAsync(string identifier, string key);
+    Task<User> GetUserAsync(Guid id);
+    Task<User> GetByCredentialsAsync(string identifier, string key);
 }

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
-
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
