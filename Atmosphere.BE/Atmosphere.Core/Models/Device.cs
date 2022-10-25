@@ -1,50 +1,37 @@
 namespace Atmosphere.Core.Models;
 
-using System;
 using System.Security.Claims;
-using Atmosphere.Core.Consts;
+using System.Text;
+using Atmoshpere.Core.Enums;
 
-public class Device : User
+public class Device : BaseUser
 {
-    public string Identifier { get; private set; }
-    public string Key { get; private set; }
-    public string Name { get; private set; }
-
     protected Device()
         : base()
     {
         Identifier = string.Empty;
-        Name = string.Empty;
-        Key = string.Empty;
+        Password = new byte[0];
+        IsActive = false;
+        Role = UserRole.Device;
     }
 
-    public static Device Create(string identifier, string key, string name)
+    public static Device Create(string identifier, string password)
     {
+        var saltedPassword = PasswordUtil.GenerateSaltedHash(Encoding.UTF8.GetBytes(password));
+
         return new Device
         {
             Identifier = identifier,
-            Key = key,
-            Name = name
+            Password = saltedPassword,
+            IsActive = false,
+            Role = UserRole.Device
         };
     }
 
     public override List<Claim> GetClaims()
     {
-        return new List<Claim>
-        {
-            new Claim(AtmosphereClaimTypes.UserId, Id.ToString()),
-            new Claim(ClaimTypes.SerialNumber, Identifier),
-            new Claim(ClaimTypes.Name, Name)
-        };
-    }
+        var claims = base.GetClaims();
 
-    public override string GetIdentifier()
-    {
-        return Identifier;
-    }
-
-    public override string GetKey()
-    {
-        return Key;
+        return claims;
     }
 }

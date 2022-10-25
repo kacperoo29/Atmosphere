@@ -21,8 +21,8 @@ services:
     volumes:
       - mongodb:/data/db
       - mongoconfig:/data/configdb
-  webapp:
-    build: ./WebApp
+  # webapp:
+  #   build: ./WebApp
 
 volumes:
   mongodb:

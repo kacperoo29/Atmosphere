@@ -11,26 +11,25 @@ using MongoDB.Driver;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IMongoCollection<User> _users;
+    private readonly IMongoCollection<BaseUser> _users;
 
-    public UserRepository(IMongoCollection<User> users)
+    public UserRepository(IMongoCollection<BaseUser> users)
     {
         _users = users;
     }
 
-    public async Task<User> GetByCredentialsAsync(string identifier, string key)
+    public async Task<BaseUser> AddAsync(BaseUser user)
     {
-        var user = (await _users.FindAsync(u => u.GetIdentifier() == identifier)).FirstOrDefault();
-        if (user?.GetKey() != key)
-        {
-            throw new Exception("Invalid credentials");
-        }
-
-        return user;
+        return await _users.InsertOneAsync(user).ContinueWith(_ => user);
     }
 
-    public async Task<User> GetUserAsync(Guid id)
+    public async Task<List<BaseUser>> FindAsync(Expression<Func<BaseUser, bool>> filter)
     {
-        return await (await _users.FindAsync(u => u.Id == id)).FirstOrDefaultAsync();
+        return await (await _users.FindAsync(filter)).ToListAsync();
+    }
+
+    public async Task<BaseUser> GetUserAsync(Guid id)
+    {
+        return await _users.Find(u => u.Id == id).FirstOrDefaultAsync();
     }
 }

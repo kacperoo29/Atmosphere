@@ -1,3 +1,4 @@
+using Atmosphere.Core.Enums;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
 using MongoDB.Driver;

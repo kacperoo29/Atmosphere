@@ -1,4 +1,4 @@
-namespace Atmosphere.Core.Models;
+namespace Atmosphere.Core.Enums;
 
 using System.Runtime.Serialization;
 

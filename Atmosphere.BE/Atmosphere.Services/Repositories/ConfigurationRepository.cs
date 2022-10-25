@@ -22,7 +22,7 @@ public class ConfigurationRepository : IConfigurationRepository
     {
         var entry = await _collection.Find(x => x.Key == key).FirstOrDefaultAsync();
 
-        return entry.Value ?? null;
+        return entry?.Value;
     }
 
     public async Task<IEnumerable<ConfigurationEntry>> GetEntires(Expression<Func<ConfigurationEntry, bool>>? predicate = null)

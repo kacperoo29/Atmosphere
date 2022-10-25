@@ -1,10 +1,13 @@
 namespace Atmosphere.API.Controllers;
 
+using Atmosphere.Application;
 using Atmosphere.Application.Readings.Commands;
 using Atmosphere.Application.Readings.Queries;
+using Atmosphere.Core.Models;
 
 using MediatR;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]/[action]")]
@@ -18,6 +21,7 @@ public class ReadingController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateReading([FromBody] CreateReading request)
     {
@@ -38,7 +42,7 @@ public class ReadingController : ControllerBase
     {
         try
         {
-            var readings = await _mediator.Send(new GetAllReadings {DeviceId = deviceId});
+            var readings = await _mediator.Send(new GetAllReadings { DeviceId = deviceId });
 
             return Ok(readings);
         }

@@ -1,5 +1,6 @@
 namespace Atmosphere.API.Controllers;
 
+using Atmosphere.Application.Auth;
 using Atmosphere.Application.Auth.Commands;
 
 using MediatR;
@@ -24,6 +25,19 @@ public class AuthController : ControllerBase
             var token = await _mediator.Send(request);
 
             return Ok(token);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeviceSelfRegister([FromBody] RegisterDevice request)
+    {
+        try
+        {
+            return Ok(await _mediator.Send(request));
         }
         catch (Exception e)
         {

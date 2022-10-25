@@ -1,3 +1,4 @@
+using Atmosphere.Core.Enums;
 using Atmosphere.Core.Models;
 
 namespace Atmosphere.Core.Repositories;

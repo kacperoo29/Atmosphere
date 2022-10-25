@@ -1,11 +1,17 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using Atmoshpere.Application.Services;
+using Atmoshpere.Services.Auth;
+using Atmosphere.Application;
+using Atmosphere.Application.Config;
+using Atmosphere.Application.Configuration;
 using Atmosphere.Application.Readings.Commands;
 using Atmosphere.Application.Services;
+using Atmosphere.Core.Enums;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
+using Atmosphere.Services.Auth;
 using Atmosphere.Services.Consts;
 using Atmosphere.Services.Notifications;
 using Atmosphere.Services.Repositories;
@@ -13,9 +19,10 @@ using Atmosphere.Services.Repositories;
 using MediatR;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +37,29 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Atmosphere API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+{
+    {
+        new OpenApiSecurityScheme
+        {
+            Name = "Bearer",
+            In = ParameterLocation.Header,
+            Reference = new OpenApiReference
+            {
+                Id = "Bearer",
+                Type = ReferenceType.SecurityScheme
+            }
+        },
+        new List<string>()
+    }
+});
 });
 
 builder.Services.AddScoped<IMongoClient>((opt) =>
@@ -48,10 +78,16 @@ builder.Services.AddScoped<IMongoCollection<Reading>>((opt) =>
         .GetCollection<Reading>(MongoDbConsts.ReadingsCollectionName)
 );
 
-builder.Services.AddScoped<IMongoCollection<User>>((opt) =>
+builder.Services.AddScoped<IMongoCollection<BaseUser>>((opt) =>
     opt.GetRequiredService<IMongoClient>()
         .GetDatabase(MongoDbConsts.DbName)
-        .GetCollection<User>(MongoDbConsts.UsersCollectionName)
+        .GetCollection<BaseUser>(MongoDbConsts.UsersCollectionName)
+);
+
+builder.Services.AddScoped<IMongoCollection<Device>>((opt) =>
+    opt.GetRequiredService<IMongoClient>()
+        .GetDatabase(MongoDbConsts.DbName)
+        .GetCollection<Device>(MongoDbConsts.UsersCollectionName)
 );
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -76,23 +112,55 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization(opt =>
+{
+    opt.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
 builder.Services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IConfigService, ConfigService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<INotificationService>((opt) =>
 {
     using var scope = opt.CreateScope();
-    var config = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
-    var type = config.Get(NotificationTypes.NOTIFICATION_TYPE_KEY).Result ?? NotificationTypes.Email;
-    switch (type)
-    {
-        case NotificationTypes.Email:
-            return scope.ServiceProvider.GetRequiredService<EmailNotificationService>();
-        default:
-            throw new Exception($"Unknown notification type: {type}");
+    var config = scope.ServiceProvider.GetRequiredService<IConfigService>();
+    var types = config.GetNotificationTypes().GetAwaiter().GetResult();
+
+    INotificationService notificationService = new NotificationService();
+    foreach (var type in types) {
+        switch (type) {
+            case NotificationType.Email:
+                notificationService = new EmailNotificationServiceDecorator(notificationService, config);
+                break;
+            default:
+                throw new Exception($"Invalid notification type {type}");
+        }
     }
+
+    return notificationService;
 });
 
-builder.Services.AddMediatR(typeof(CreateReading).Assembly);
+builder.Services.AddScoped<ITokenService, JwtTokenProvider>();
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
+
+BsonClassMap.RegisterClassMap<EmailConfiguration>();
+BsonClassMap.RegisterClassMap<BaseUser>(cm => 
+{
+    cm.AutoMap();
+    cm.SetIsRootClass(true);
+    cm.AddKnownType(typeof(Device));
+});
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -102,31 +170,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Lifetime.ApplicationStarted.Register(async () =>
-{
-    using var scope = app.Services.CreateScope();
-    var config = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
-    var type = config.Get(NotificationTypes.NOTIFICATION_TYPE_KEY).Result ?? NotificationTypes.Email;
-    await config.Set(NotificationTypes.NOTIFICATION_TYPE_KEY, type);
-
-    var emailConfig = config.Get(EmailNotificationService.EMAIL_CONFIG_KEY).Result;
-    if (emailConfig == null)
-    {
-        var emailSection = builder.Configuration.GetSection("EmailSettings");
-        await config.Set(EmailNotificationService.EMAIL_CONFIG_KEY, new EmailConfiguration
-        {
-            SmtpServer = emailSection.GetValue<string>("SmtpServer"),
-            SmtpPort = emailSection.GetValue<int>("SmtpPort"),
-            SmtpUsername = emailSection.GetValue<string>("SmtpUsername"),
-            SmtpPassword = emailSection.GetValue<string>("SmtpPassword"),
-            EmailAddress = emailSection.GetValue<string>("EmailAddress"),
-            ServerEmailAddress = emailSection.GetValue<string>("ServerEmailAddress")
-        });
-    }
-});
 
 app.Run();

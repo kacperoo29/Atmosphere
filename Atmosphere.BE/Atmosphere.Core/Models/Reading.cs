@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Text;
+using Atmosphere.Core.Enums;
 
 public class Reading : BaseModel
 {

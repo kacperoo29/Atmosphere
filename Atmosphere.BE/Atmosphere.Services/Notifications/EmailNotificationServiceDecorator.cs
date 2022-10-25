@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 using Atmosphere.Application.Services;
 using Atmosphere.Core.Models;
-using Atmosphere.Core.Repositories;
 
 using MailKit.Net.Smtp;
 using MimeKit;
 
-public class EmailNotificationService : INotificationService
+public class EmailNotificationServiceDecorator : INotificationService
 {
-    private readonly IConfigurationRepository _configurationRepository;
+    private readonly IConfigService _configService;
+    private readonly INotificationService _wrapee;
 
-    public const string EMAIL_CONFIG_KEY = "emailConfig";
-
-    public EmailNotificationService(IConfigurationRepository configurationRepository)
+    public EmailNotificationServiceDecorator(INotificationService wrapee, IConfigService configService)
     {
-        _configurationRepository = configurationRepository;
+        _configService = configService;
+        _wrapee = wrapee;
     }
 
     public async Task Notify(Reading reading, List<ValidationResult> validationResults)
     {
-        var config = await _configurationRepository.Get(EMAIL_CONFIG_KEY) as EmailConfiguration
-            ?? throw new Exception("Email configuration not found");
+        await this._wrapee.Notify(reading, validationResults);
+
+        var config = await this._configService.GetEmailConfiguration();
 
         var emailAddress = config.EmailAddress;
         var serverEmailAddress = config.ServerEmailAddress;
