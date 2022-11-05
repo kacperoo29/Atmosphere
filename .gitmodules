@@ -1,0 +1,3 @@
+[submodule "Atmosphere.RPI/3rdparty/onewire"]
+	path = Atmosphere.RPI/3rdparty/onewire
+	url = https://github.com/adamboardman/pico-onewire.git

@@ -1,0 +1,6 @@
+{
+    "cmake.configureArgs": [
+        "-DWIFI_SSID=Test",
+        "-DWIFI_PASSWORD=Test"
+    ]
+}
