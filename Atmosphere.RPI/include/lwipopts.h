@@ -1,10 +1,19 @@
 #ifndef _LWIPOPTS_H
 #define _LWIPOPTS_H
 
-#define NO_SYS 1
-
+#define NO_SYS 0
+#if !NO_SYS
+#define TCPIP_THREAD_STACKSIZE 1024
+#define DEFAULT_THREAD_STACKSIZE 1024
+#define DEFAULT_RAW_RECVMBOX_SIZE 8
+#define TCPIP_MBOX_SIZE 8
+#define LWIP_TIMEVAL_PRIVATE 0
+#define LWIP_TCPIP_CORE_LOCKING_INPUT 1
+#define LWIP_SOCKET 1
+#else
 #define LWIP_SOCKET 0
 #define LWIP_NETCONN 0
+#endif
 
 #define MEM_ALIGNMENT 4
 #define MEM_SIZE 4000
@@ -44,5 +53,9 @@
 #else
 #define MEM_LIBC_MALLOC 0
 #endif
+
+#define LWIP_DEBUG 1
+#define MQTT_DEBUG 0x40U
+#define MQTT_OUTPUT_RINGBUF_SIZE 256
 
 #endif

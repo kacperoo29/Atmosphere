@@ -2,5 +2,7 @@
     "cmake.configureArgs": [
         "-DWIFI_SSID=Test",
         "-DWIFI_PASSWORD=Test"
-    ]
+    ],
+    "makefile.makeDirectory": "${workspaceFolder}/build",
+    "makefile.makefilePath": "${workspaceFolder}/build/Makefile",
 }

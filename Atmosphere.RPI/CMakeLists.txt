@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 set(PICO_BOARD pico_w)
-add_compile_options(-Wall)
+add_compile_options(-Wall -Wextra)
 
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
@@ -33,21 +33,29 @@ if (PICO_CYW43_SUPPORTED)
                 include/temp_reader.h
                 src/temp_reader.cpp
 
+                include/mqtt.h
+                src/mqtt.cpp
+
                 src/main.cpp
             )
 
             target_include_directories(atmosphere_rpi PRIVATE
                 ${CMAKE_CURRENT_LIST_DIR}/include
+                ${HTTP_INCLUDE_PUBLIC_DIRS}
             )
 
             add_subdirectory(3rdparty/onewire)
 
-            target_link_libraries(atmosphere_rpi
+            set(FREERTOS_CONFIG_FILE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include CACHE STRING "")
+            set(FREERTOS_PORT GCC_RP2040 CACHE STRING "")
+            add_subdirectory(3rdparty/FreeRTOS-Kernel)
+
+            target_sources(atmosphere_rpi PRIVATE ${PICO_SDK_PATH}/lib/lwip/src/apps/mqtt/mqtt.c)
+            target_link_libraries(atmosphere_rpi                
                 pico_stdlib
-                pico_lwip_http
-                pico_cyw43_arch_none
-                pico_cyw43_arch_lwip_threadsafe_background
+                pico_cyw43_arch_lwip_sys_freertos
                 pico_one_wire
+                freertos_kernel
             )
 
             pico_add_extra_outputs(atmosphere_rpi)
