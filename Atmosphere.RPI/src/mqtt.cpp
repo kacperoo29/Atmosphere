@@ -1,5 +1,7 @@
 #include "mqtt.h"
 
+#include <cstring>
+
 static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len,
                                   u8_t flags) {
   const struct mqtt_connect_client_info_t *client_info =
@@ -70,4 +72,14 @@ MQTT::MQTT(const char *addr, const char *client_id)
 
   mqtt_client_connect(_client, &mqtt_ip, MQTT_PORT, mqtt_connection_cb,
                       LWIP_CONST_CAST(void *, _client_info), _client_info);
+}
+
+void MQTT::subscribe(const char *topic) {
+  mqtt_sub_unsub(_client, topic, 0, mqtt_request_cb,
+                 LWIP_CONST_CAST(void *, _client_info), 1);
+}
+
+void MQTT::publish(const char *topic, const char *msg) {
+  mqtt_publish(_client, topic, msg, std::strlen(msg), 0, 0, mqtt_request_cb,
+               LWIP_CONST_CAST(void *, _client_info));
 }

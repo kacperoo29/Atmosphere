@@ -6,6 +6,8 @@
 class MQTT {
     public:
       MQTT(const char* addr, const char* client_id);
+      void subscribe(const char* topic);
+      void publish(const char* topic, const char* msg);
 
     private:
       mqtt_client_t *_client;
