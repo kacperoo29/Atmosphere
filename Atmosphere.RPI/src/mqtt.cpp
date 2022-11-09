@@ -1,6 +1,7 @@
 #include "mqtt.h"
 
 #include <cstring>
+#include <string>
 
 static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len,
                                   u8_t flags) {
@@ -46,9 +47,13 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg,
   }
 }
 
-MQTT::MQTT(const char *addr, const char *client_id)
-    : _client(mqtt_client_new()) {
-  *_client_info = {
+MQTT::MQTT(const char *addr, const char *client_id) {
+  _client = mqtt_client_new();
+  if (_client == nullptr) {
+    throw "MQTT client new returned NULL";
+  }
+
+  _clientInfo = {
     client_id,
     NULL, /* user */
     NULL, /* pass */
@@ -65,21 +70,25 @@ MQTT::MQTT(const char *addr, const char *client_id)
 
   ip_addr_t mqtt_ip;
   ip4_addr_set_u32(&mqtt_ip, ipaddr_addr(addr));
-
   mqtt_set_inpub_callback(_client, mqtt_incoming_publish_cb,
                           mqtt_incoming_data_cb,
-                          LWIP_CONST_CAST(void *, _client_info));
+                          LWIP_CONST_CAST(void *, &_clientInfo));
 
-  mqtt_client_connect(_client, &mqtt_ip, MQTT_PORT, mqtt_connection_cb,
-                      LWIP_CONST_CAST(void *, _client_info), _client_info);
+  err_t status =
+      mqtt_client_connect(_client, &mqtt_ip, MQTT_PORT, mqtt_connection_cb,
+                          LWIP_CONST_CAST(void *, &_clientInfo), &_clientInfo);
+
+  if (status != 0) {
+    throw "MQTT client connect error " + std::to_string(status);
+  }
 }
 
-void MQTT::subscribe(const char *topic) {
-  mqtt_sub_unsub(_client, topic, 0, mqtt_request_cb,
-                 LWIP_CONST_CAST(void *, _client_info), 1);
+err_t MQTT::subscribe(const char *topic) {
+  return mqtt_sub_unsub(_client, topic, 0, mqtt_request_cb,
+                        LWIP_CONST_CAST(void *, &_clientInfo), 1);
 }
 
-void MQTT::publish(const char *topic, const char *msg) {
-  mqtt_publish(_client, topic, msg, std::strlen(msg), 0, 0, mqtt_request_cb,
-               LWIP_CONST_CAST(void *, _client_info));
+err_t MQTT::publish(const char *topic, const char *msg) {
+  return mqtt_publish(_client, topic, msg, std::strlen(msg), 0, 0,
+                      mqtt_request_cb, LWIP_CONST_CAST(void *, &_clientInfo));
 }

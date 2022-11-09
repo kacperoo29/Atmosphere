@@ -7,12 +7,13 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 set(PICO_BOARD pico_w)
-add_compile_options(-Wall -Wextra)
+add_compile_options(-Wall -Wextra -fexceptions)
 
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
+set(PICO_CXX_ENABLE_EXCEPTIONS 1)
 pico_sdk_init()
 
 if (PICO_CYW43_SUPPORTED)
@@ -29,7 +30,41 @@ if (PICO_CYW43_SUPPORTED)
         elseif ("${WIFI_PASSWORD}" STREQUAL "")
             message(SEND_ERROR "WIFI password not defined.")
         else()
+            set(FREERTOS_ADDONS_SRC
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/ccondition_variable.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cevent_groups.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cmem_pool.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cmutex.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cqueue.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cread_write_lock.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/csemaphore.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/ctasklet.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cthread.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/ctickhook.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/ctimer.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cworkqueue.cpp
+
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/condition_variable.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/event_groups.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/mem_pool.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/mutex.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/queue.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/read_write_lock.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/semaphore.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/tasklet.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/thread.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/tickhook.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/timer.hpp
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include/workqueue.hpp
+            )
+
             add_executable(atmosphere_rpi
+                include/tasks/connect_task.h
+                src/tasks/connect_task.cpp
+
+                include/tasks/mqtt_task.h
+                src/tasks/mqtt_task.cpp
+
                 include/temp_reader.h
                 src/temp_reader.cpp
 
@@ -37,11 +72,13 @@ if (PICO_CYW43_SUPPORTED)
                 src/mqtt.cpp
 
                 src/main.cpp
+
+                ${FREERTOS_ADDONS_SRC}
             )
 
             target_include_directories(atmosphere_rpi PRIVATE
                 ${CMAKE_CURRENT_LIST_DIR}/include
-                ${HTTP_INCLUDE_PUBLIC_DIRS}
+                ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/include
             )
 
             add_subdirectory(3rdparty/onewire)
