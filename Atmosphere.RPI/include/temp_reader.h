@@ -3,17 +3,19 @@
 
 #include "one_wire.h"
 #include <string>
-#include <vector>
+#include <deque>
 
 struct TempResult {
   std::string deviceAddress;
   float value;
+
+  std::string toJson();
 };
 
 class TempReader {
 public:
   TempReader(uint port);
-  std::vector<TempResult> pollResults();
+  std::deque<TempResult> pollResults();
 
 private:
   One_wire _ow;

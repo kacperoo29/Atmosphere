@@ -16,12 +16,11 @@ endif()
 set(PICO_CXX_ENABLE_EXCEPTIONS 1)
 pico_sdk_init()
 
+include(${CMAKE_CURRENT_LIST_DIR}/settings.cmake)
 if (PICO_CYW43_SUPPORTED)
     if (NOT TARGET pico_cyw43_arch)
         message("Only Pico W supported at the moment")
     else()
-        set(WIFI_SSID "${WIFI_SSID}" CACHE INTERNAL "WiFi SSID")
-        set(WIFI_PASSWORD "${WIFI_PASSWORD}" CACHE INTERNAL "WiFi password")
         add_compile_definitions(WIFI_SSID=\"${WIFI_SSID}\")
         add_compile_definitions(WIFI_PASSWORD=\"${WIFI_PASSWORD}\")
 
@@ -30,6 +29,8 @@ if (PICO_CYW43_SUPPORTED)
         elseif ("${WIFI_PASSWORD}" STREQUAL "")
             message(SEND_ERROR "WIFI password not defined.")
         else()
+            message("Wifi SSID: ${WIFI_SSID}")
+            message("Wifi password: ${WIFI_PASSWORD}")
             set(FREERTOS_ADDONS_SRC
                 ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/ccondition_variable.cpp
                 ${CMAKE_CURRENT_LIST_DIR}/3rdparty/freertos-addons/c++/Source/cevent_groups.cpp
@@ -62,8 +63,8 @@ if (PICO_CYW43_SUPPORTED)
                 include/tasks/connect_task.h
                 src/tasks/connect_task.cpp
 
-                include/tasks/mqtt_task.h
-                src/tasks/mqtt_task.cpp
+                include/tasks/sensor_task.h
+                src/tasks/sensor_task.cpp
 
                 include/temp_reader.h
                 src/temp_reader.cpp
