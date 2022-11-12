@@ -2,7 +2,8 @@
 
 std::string TempResult::toJson() {
   std::string json = "{\"deviceAddress\":\"" + deviceAddress +
-                     "\",\"value\":" + std::to_string(value) + "}";
+                     "\",\"value\":" + std::to_string(value) + 
+                     "\",\"type\": \"temperature\"}";
 
   return json;
 }

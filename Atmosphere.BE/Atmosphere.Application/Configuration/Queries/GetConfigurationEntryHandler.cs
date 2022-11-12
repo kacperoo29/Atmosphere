@@ -1,5 +1,4 @@
 using Atmosphere.Core.Repositories;
-
 using MediatR;
 
 namespace Atmosphere.Application.Configuration.Queries;
@@ -17,7 +16,7 @@ public class GetConfigurationEntryHandler : IRequestHandler<GetConfigurationEntr
     {
         if (request.Key == null)
             return null;
-        
+
         return await _configurationRepository.Get(request.Key);
     }
 }

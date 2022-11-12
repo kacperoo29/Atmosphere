@@ -1,5 +1,4 @@
 using System.Security.Claims;
-
 using Atmosphere.Core.Models;
 using Microsoft.IdentityModel.Tokens;
 

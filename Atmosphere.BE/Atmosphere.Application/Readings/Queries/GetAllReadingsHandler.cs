@@ -1,11 +1,8 @@
-namespace Atmosphere.Application.Readings.Queries;
-
-using System.Collections.Generic;
-
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
-
 using MediatR;
+
+namespace Atmosphere.Application.Readings.Queries;
 
 public class GetAllReadingsHandler : IRequestHandler<GetAllReadings, IEnumerable<Reading>>
 {

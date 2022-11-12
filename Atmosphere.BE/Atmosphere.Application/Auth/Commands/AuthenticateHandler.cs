@@ -1,11 +1,8 @@
-namespace Atmosphere.Application.Auth.Commands;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Atmoshpere.Application.Services;
 using Atmosphere.Application.Services;
-using Atmosphere.Core.Repositories;
 using MediatR;
+
+namespace Atmosphere.Application.Auth.Commands;
 
 public class AuthenticateHandler : IRequestHandler<Authenticate, string>
 {

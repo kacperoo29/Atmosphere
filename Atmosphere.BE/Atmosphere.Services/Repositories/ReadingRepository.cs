@@ -43,9 +43,11 @@ public class ReadingRepository : BaseRepository<Reading>, IReadingRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Reading>> GetReadingsByType(Guid deviceId, DateTime start, DateTime end, ReadingType type)
+    public async Task<IEnumerable<Reading>> GetReadingsByType(Guid deviceId, DateTime start, DateTime end,
+        ReadingType type)
     {
-        return await _collection.Find(r => r.DeviceId == deviceId && r.CreatedAt >= start && r.CreatedAt <= end && r.Type == type)
+        return await _collection.Find(r =>
+                r.DeviceId == deviceId && r.CreatedAt >= start && r.CreatedAt <= end && r.Type == type)
             .SortByDescending(r => r.CreatedAt)
             .ToListAsync();
     }

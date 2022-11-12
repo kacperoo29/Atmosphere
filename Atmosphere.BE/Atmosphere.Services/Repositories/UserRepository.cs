@@ -1,13 +1,9 @@
-namespace Atmosphere.Services.Repositories;
-
-using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
-
 using MongoDB.Driver;
+
+namespace Atmosphere.Services.Repositories;
 
 public class UserRepository : IUserRepository
 {

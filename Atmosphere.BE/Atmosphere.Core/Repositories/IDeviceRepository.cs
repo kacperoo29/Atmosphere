@@ -4,5 +4,4 @@ namespace Atmosphere.Core.Repositories;
 
 public interface IDeviceRepository : IBaseRepository<Device>
 {
-    
 }

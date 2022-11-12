@@ -16,17 +16,18 @@ public class ConfigService : IConfigService
 
     public ConfigService(IConfigurationRepository configRepo, IConfiguration configuration)
     {
-        this._configRepo = configRepo;
-        this._configuration = configuration;
+        _configRepo = configRepo;
+        _configuration = configuration;
     }
 
     public async Task<List<NotificationType>> GetNotificationTypes()
     {
-        var types = await this._configRepo.Get(NOTIFICATION_TYPES_KEY);
+        var types = await _configRepo.Get(NOTIFICATION_TYPES_KEY);
         var typeList = types as List<NotificationType>;
-        if (typeList is null) {
+        if (typeList is null)
+        {
             typeList = new List<NotificationType>();
-            await this._configRepo.Set(NOTIFICATION_TYPES_KEY, typeList);
+            await _configRepo.Set(NOTIFICATION_TYPES_KEY, typeList);
 
             return typeList;
         }
@@ -36,9 +37,10 @@ public class ConfigService : IConfigService
 
     public async Task<EmailConfiguration> GetEmailConfiguration()
     {
-        var emailConfig = await this._configRepo.Get(EMAIL_CONFIG_KEY) as EmailConfiguration;
-        if (emailConfig is null) {
-            var emailSection = this._configuration.GetSection("EmailSettings");
+        var emailConfig = await _configRepo.Get(EMAIL_CONFIG_KEY) as EmailConfiguration;
+        if (emailConfig is null)
+        {
+            var emailSection = _configuration.GetSection("EmailSettings");
             emailConfig = new EmailConfiguration
             {
                 SmtpServer = emailSection.GetValue<string>("SmtpServer"),
@@ -48,8 +50,8 @@ public class ConfigService : IConfigService
                 EmailAddress = emailSection.GetValue<string>("EmailAddress"),
                 ServerEmailAddress = emailSection.GetValue<string>("ServerEmailAddress")
             };
-            
-            await this._configRepo.Set(EMAIL_CONFIG_KEY, emailConfig);
+
+            await _configRepo.Set(EMAIL_CONFIG_KEY, emailConfig);
 
             return emailConfig;
         }

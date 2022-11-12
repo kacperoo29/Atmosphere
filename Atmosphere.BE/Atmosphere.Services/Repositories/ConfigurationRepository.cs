@@ -1,13 +1,9 @@
-namespace Atmosphere.Services.Repositories;
-
-using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
-
 using MongoDB.Driver;
+
+namespace Atmosphere.Services.Repositories;
 
 public class ConfigurationRepository : IConfigurationRepository
 {
@@ -25,7 +21,8 @@ public class ConfigurationRepository : IConfigurationRepository
         return entry?.Value;
     }
 
-    public async Task<IEnumerable<ConfigurationEntry>> GetEntires(Expression<Func<ConfigurationEntry, bool>>? predicate = null)
+    public async Task<IEnumerable<ConfigurationEntry>> GetEntires(
+        Expression<Func<ConfigurationEntry, bool>>? predicate = null)
     {
         return await _collection.Find(predicate ?? (x => true)).ToListAsync();
     }

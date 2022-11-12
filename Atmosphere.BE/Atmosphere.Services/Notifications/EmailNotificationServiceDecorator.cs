@@ -1,14 +1,10 @@
-namespace Atmosphere.Services.Notifications;
-
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-
 using Atmosphere.Application.Services;
 using Atmosphere.Core.Models;
-
 using MailKit.Net.Smtp;
 using MimeKit;
+
+namespace Atmosphere.Services.Notifications;
 
 public class EmailNotificationServiceDecorator : INotificationService
 {
@@ -23,9 +19,9 @@ public class EmailNotificationServiceDecorator : INotificationService
 
     public async Task Notify(Reading reading, List<ValidationResult> validationResults)
     {
-        await this._wrapee.Notify(reading, validationResults);
+        await _wrapee.Notify(reading, validationResults);
 
-        var config = await this._configService.GetEmailConfiguration();
+        var config = await _configService.GetEmailConfiguration();
 
         var emailAddress = config.EmailAddress;
         var serverEmailAddress = config.ServerEmailAddress;
@@ -33,15 +29,12 @@ public class EmailNotificationServiceDecorator : INotificationService
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Atmosphere", config.ServerEmailAddress));
         message.To.Add(new MailboxAddress("Atmosphere", config.EmailAddress));
-        message.Subject = $"Atmosphere reading";
+        message.Subject = "Atmosphere reading";
 
         // TODO: Make more sensible email body
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $"<p>{reading.Value}</p>";
-        foreach (var result in validationResults)
-        {
-            bodyBuilder.HtmlBody += $"<p>{result.ErrorMessage}</p>";
-        }
+        foreach (var result in validationResults) bodyBuilder.HtmlBody += $"<p>{result.ErrorMessage}</p>";
         message.Body = bodyBuilder.ToMessageBody();
 
         var smtpServerAddress = config.SmtpServer;

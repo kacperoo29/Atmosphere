@@ -1,6 +1,6 @@
-namespace Atmosphere.Application.Auth.Commands;
-
 using MediatR;
+
+namespace Atmosphere.Application.Auth.Commands;
 
 public class Authenticate : IRequest<string>
 {

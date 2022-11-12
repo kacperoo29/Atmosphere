@@ -1,8 +1,8 @@
-namespace Atmosphere.Core.Models;
-
 using System.Security.Claims;
 using Atmoshpere.Core.Enums;
 using Atmosphere.Core.Consts;
+
+namespace Atmosphere.Core.Models;
 
 public abstract class BaseUser : BaseModel
 {
@@ -11,13 +11,13 @@ public abstract class BaseUser : BaseModel
     public bool IsActive { get; protected set; }
     public UserRole Role { get; protected set; }
 
-    public virtual List<Claim> GetClaims() 
+    public virtual List<Claim> GetClaims()
     {
         return new List<Claim>
         {
-            new Claim(AtmosphereClaimTypes.UserId, this.Id.ToString()),
-            new Claim(ClaimTypes.Name, this.Identifier),
-            new Claim(ClaimTypes.Role, this.Role.ToString())
+            new(AtmosphereClaimTypes.UserId, Id.ToString()),
+            new(ClaimTypes.Name, Identifier),
+            new(ClaimTypes.Role, Role.ToString())
         };
     }
 }

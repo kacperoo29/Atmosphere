@@ -6,7 +6,7 @@ namespace Atmosphere.Services.Repositories;
 
 public class DeviceRepository : BaseRepository<Device>, IDeviceRepository
 {
-    public DeviceRepository(IMongoCollection<Device> collection) 
+    public DeviceRepository(IMongoCollection<Device> collection)
         : base(collection)
     {
     }

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Atmosphere.Core;
 
-public static class PasswordUtil 
+public static class PasswordUtil
 {
     public static byte[] GenerateSaltedHash(byte[] text)
     {
@@ -18,8 +18,8 @@ public static class PasswordUtil
 
     public static bool VerifyPassword(string password, byte[] hash)
     {
-        byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-        byte[] passwordHash = GenerateSaltedHash(passwordBytes);
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var passwordHash = GenerateSaltedHash(passwordBytes);
 
         return passwordHash.SequenceEqual(hash);
     }

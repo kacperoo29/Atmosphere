@@ -1,14 +1,10 @@
-namespace Atmosphere.API.Controllers;
-
-using Atmosphere.Application;
 using Atmosphere.Application.Readings.Commands;
 using Atmosphere.Application.Readings.Queries;
-using Atmosphere.Core.Models;
-
 using MediatR;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Atmosphere.API.Controllers;
 
 [Route("api/[controller]/[action]")]
 [ApiController]

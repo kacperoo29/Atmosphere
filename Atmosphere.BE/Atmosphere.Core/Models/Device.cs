@@ -1,13 +1,12 @@
-namespace Atmosphere.Core.Models;
-
 using System.Security.Claims;
 using System.Text;
 using Atmoshpere.Core.Enums;
 
+namespace Atmosphere.Core.Models;
+
 public class Device : BaseUser
 {
     protected Device()
-        : base()
     {
         Identifier = string.Empty;
         Password = new byte[0];

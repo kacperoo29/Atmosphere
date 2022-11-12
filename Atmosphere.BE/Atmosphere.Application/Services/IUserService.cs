@@ -8,4 +8,4 @@ public interface IUserService
     Task<BaseUser> GetByTokenAsync(string token);
     Task<BaseUser?> GetCurrent();
     Task<BaseUser> CreateUser(BaseUser user);
-} 
+}

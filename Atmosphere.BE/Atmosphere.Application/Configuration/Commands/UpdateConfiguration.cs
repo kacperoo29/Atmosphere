@@ -1,4 +1,3 @@
-using Atmosphere.Core.Models;
 using MediatR;
 
 namespace Atmosphere.Application.Configuration.Commands;

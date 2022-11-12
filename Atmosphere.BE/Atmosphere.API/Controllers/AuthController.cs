@@ -1,10 +1,9 @@
-namespace Atmosphere.API.Controllers;
-
 using Atmosphere.Application.Auth;
 using Atmosphere.Application.Auth.Commands;
-
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Atmosphere.API.Controllers;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
@@ -33,7 +32,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> DeviceSelfRegister([FromBody] RegisterDevice request)
+    public async Task<IActionResult> RegisterDevice([FromBody] RegisterDevice request)
     {
         try
         {
