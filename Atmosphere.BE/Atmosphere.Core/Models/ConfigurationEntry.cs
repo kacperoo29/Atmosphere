@@ -1,6 +1,6 @@
 namespace Atmosphere.Core.Models;
 
-public class ConfigurationEntry : BaseModel
+public class ConfigurationEntry
 {
     protected ConfigurationEntry()
     {

@@ -1,36 +1,34 @@
-using System.Security.Claims;
 using System.Text;
 using Atmosphere.Core.Enums;
 
 namespace Atmosphere.Core.Models;
 
-public class Device : BaseUser
+public class User : BaseUser
 {
-    protected Device()
+    protected User()
     {
         Username = string.Empty;
         Password = new byte[0];
         IsActive = false;
-        Role = UserRole.Device;
+        Role = UserRole.User;
     }
 
-    public static Device Create(string identifier, string password)
+    public static User Create(string username, string password)
     {
         var saltedPassword = PasswordUtil.GenerateSaltedHash(Encoding.UTF8.GetBytes(password));
 
-        return new Device
+        return new User
         {
-            Username = identifier,
+            Username = username,
             Password = saltedPassword,
             IsActive = false,
-            Role = UserRole.Device
+            Role = UserRole.User
         };
     }
 
-    public override List<Claim> GetClaims()
+    public void MakeAdmin()
     {
-        var claims = base.GetClaims();
-
-        return claims;
+        Role = UserRole.Admin;
+        Update();
     }
 }

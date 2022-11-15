@@ -9,12 +9,22 @@ public abstract class BaseModel
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public Guid Id { get; }
-    public DateTime CreatedAt { get; }
-    public DateTime UpdatedAt { get; private set; }
+    public Guid Id { get; protected set; }
+    public DateTime CreatedAt { get; protected set; }
+    public DateTime UpdatedAt { get; protected set; }
 
     protected void Update()
     {
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not BaseModel other)
+        {
+            return false;
+        }
+
+        return Id == other.Id;
     }
 }

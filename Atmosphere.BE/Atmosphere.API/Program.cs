@@ -1,9 +1,7 @@
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Atmoshpere.API.Controllers;
-using Atmoshpere.Application.Services;
-using Atmoshpere.Services.Auth;
 using Atmosphere.Application.Config;
 using Atmosphere.Application.Configuration;
 using Atmosphere.Application.Readings.Commands;
@@ -21,8 +19,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
-using MQTTnet.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -132,6 +130,16 @@ builder.Services.AddAuthorization(opt =>
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
         .Build();
+    
+    opt.AddPolicy(
+        nameof(UserRole.Admin),
+        policy => policy.RequireClaim(ClaimTypes.Role, nameof(UserRole.Admin))
+    );
+
+    opt.AddPolicy(
+        nameof(UserRole.Device),
+        policy => policy.RequireClaim(ClaimTypes.Role, nameof(UserRole.Device))
+    );
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -171,30 +179,25 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
 
-builder.Services.AddScoped<MqttController>();
-
-builder.Services
-    .AddHostedMqttServer(opt =>
-    {
-        opt.WithoutDefaultEndpoint();
-        opt.WithConnectionBacklog(100);
-    })
-    .AddMqttConnectionHandler()
-    .AddConnections();
-
-builder.WebHost.UseKestrel(o =>
+BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {
-    // TODO: Add TLS support
-    o.ListenAnyIP(1883, l => l.UseMqtt());
-    o.ListenAnyIP(5000);
+    cm.AutoMap();
+    cm.SetIgnoreExtraElements(true);
 });
-
 BsonClassMap.RegisterClassMap<EmailConfiguration>();
 BsonClassMap.RegisterClassMap<BaseUser>(cm =>
 {
     cm.AutoMap();
     cm.SetIsRootClass(true);
     cm.AddKnownType(typeof(Device));
+    cm.AddKnownType(typeof(User));
+});
+
+BsonClassMap.RegisterClassMap<BaseModel>(cm =>
+{
+    cm.AutoMap();
+    cm.SetIsRootClass(true);
+    cm.MapIdMember(c => c.Id).SetIdGenerator(GuidGenerator.Instance);
 });
 
 var app = builder.Build();
@@ -204,30 +207,24 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 
-app.UseRouting();
+    // Add admin account if not exists
+    using var scope = app.Services.CreateScope();
+    var userRepo = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+    var user = userRepo.FindAsync(u => u.Username == "admin").GetAwaiter().GetResult();
+    if (user?.Count() == 0)
+    {
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var admin = User.Create("admin", "secretPassword");
+        admin.Activate();
+        admin.MakeAdmin();
+        userService.CreateUserAsync(admin).GetAwaiter().GetResult();
+    }
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapConnectionHandler<MqttConnectionHandler>(
-        "/mqtt",
-        httpConnectionDispatcherOptions =>
-            httpConnectionDispatcherOptions.WebSockets.SubProtocolSelector = protocolList =>
-                protocolList.FirstOrDefault() ?? string.Empty
-    );
-});
-
-app.UseMqttServer(server => {
-    using var scope = app.Services.CreateScope();
-    var mqttController = scope.ServiceProvider.GetRequiredService<MqttController>();
-    server.ValidatingConnectionAsync += mqttController.ValidateConnection;
-    server.InterceptingPublishAsync += mqttController.InterceptPublish;
-});
 
 app.Run();

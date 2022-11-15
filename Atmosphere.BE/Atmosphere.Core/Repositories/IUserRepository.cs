@@ -3,7 +3,7 @@ using Atmosphere.Core.Models;
 
 namespace Atmosphere.Core.Repositories;
 
-public interface IUserRepository
+public interface IUserRepository : IBaseRepository<BaseUser>
 {
     Task<BaseUser> GetUserAsync(Guid id);
     Task<BaseUser> AddAsync(BaseUser user);

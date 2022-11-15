@@ -4,12 +4,15 @@ services:
     build: ./Atmosphere.BE
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5000
+      - ASPNETCORE_URLS=http://+:5000;https://+:5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/localhost.pfx
     ports:
       - 5000:5000
       - 5001:5001
     depends_on: 
       - mongo_db
+    volumes:
+      - ${HOME}/.aspnet/https:/root/.aspnet/https:ro
   mongo_db:
     image: mongo:5.0.8
     ports:

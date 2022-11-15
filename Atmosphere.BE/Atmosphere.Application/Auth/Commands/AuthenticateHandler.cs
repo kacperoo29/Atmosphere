@@ -1,4 +1,4 @@
-using Atmoshpere.Application.Services;
+using Atmosphere.Application.Services;
 using Atmosphere.Application.Services;
 using MediatR;
 

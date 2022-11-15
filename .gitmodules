@@ -1,9 +1,0 @@
-[submodule "Atmosphere.RPI/3rdparty/onewire"]
-	path = Atmosphere.RPI/3rdparty/onewire
-	url = https://github.com/adamboardman/pico-onewire.git
-[submodule "Atmosphere.RPI/3rdparty/FreeRTOS-Kernel"]
-	path = Atmosphere.RPI/3rdparty/FreeRTOS-Kernel
-	url = git@github.com:FreeRTOS/FreeRTOS-Kernel.git
-[submodule "Atmosphere.RPI/3rdparty/freertos-addons"]
-	path = Atmosphere.RPI/3rdparty/freertos-addons
-	url = git@github.com:michaelbecker/freertos-addons.git

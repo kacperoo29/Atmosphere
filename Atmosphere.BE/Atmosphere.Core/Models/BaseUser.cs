@@ -1,12 +1,12 @@
 using System.Security.Claims;
-using Atmoshpere.Core.Enums;
+using Atmosphere.Core.Enums;
 using Atmosphere.Core.Consts;
 
 namespace Atmosphere.Core.Models;
 
 public abstract class BaseUser : BaseModel
 {
-    public string Identifier { get; protected set; }
+    public string Username { get; protected set; }
     public byte[] Password { get; protected set; }
     public bool IsActive { get; protected set; }
     public UserRole Role { get; protected set; }
@@ -16,8 +16,14 @@ public abstract class BaseUser : BaseModel
         return new List<Claim>
         {
             new(AtmosphereClaimTypes.UserId, Id.ToString()),
-            new(ClaimTypes.Name, Identifier),
+            new(ClaimTypes.Name, Username),
             new(ClaimTypes.Role, Role.ToString())
         };
+    }
+
+    public void Activate()
+    {
+        IsActive = true;
+        Update();
     }
 }

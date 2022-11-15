@@ -1,4 +1,3 @@
-using Atmoshpere.Application.Services;
 using Atmosphere.Application.Services;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
@@ -25,17 +24,20 @@ public class CreateReadingHandler : IRequestHandler<CreateReading, Reading>
 
     public async Task<Reading> Handle(CreateReading request, CancellationToken cancellationToken)
     {
-        var device = await _userService.GetCurrent() as Device;
+        var device = await _userService.GetCurrentAsync() as Device;
         if (device == null)
+        {
             throw new UnauthorizedAccessException();
+        }
 
         var reading = Reading.Create(
             device.Id,
             request.DeviceAddress,
             request.Value,
-            DateTime.Now,
+            request.Timestamp,
             request.Type
         );
+
         await _readingRepository.AddAsync(reading);
 
         return reading;

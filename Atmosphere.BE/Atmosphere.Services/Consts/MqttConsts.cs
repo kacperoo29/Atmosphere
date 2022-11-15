@@ -1,4 +1,4 @@
-namespace Atmoshpere.Services.Consts;
+namespace Atmosphere.Services.Consts;
 
 public static class MqttConsts
 {

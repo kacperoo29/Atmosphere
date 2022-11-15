@@ -1,5 +1,6 @@
 using Atmosphere.Application.Readings.Commands;
 using Atmosphere.Application.Readings.Queries;
+using Atmosphere.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,19 +18,23 @@ public class ReadingController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize]
     [HttpPost]
+    [Authorize(nameof(UserRole.Device))]
     public async Task<IActionResult> CreateReading([FromBody] CreateReading request)
     {
         try
         {
             var reading = await _mediator.Send(request);
 
-            return Ok(reading);
+            return this.Ok(reading);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            return this.Unauthorized(e.Message);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
@@ -40,11 +45,11 @@ public class ReadingController : ControllerBase
         {
             var readings = await _mediator.Send(new GetAllReadings { DeviceId = deviceId });
 
-            return Ok(readings);
+            return this.Ok(readings);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 }

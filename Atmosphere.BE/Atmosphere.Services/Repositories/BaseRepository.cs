@@ -29,7 +29,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
         await _collection.DeleteOneAsync(x => x.Id == entity.Id, cancellationToken);
     }
 
-    public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
     }

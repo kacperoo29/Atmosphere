@@ -1,10 +1,13 @@
 using Atmosphere.Application.Configuration.Commands;
 using Atmosphere.Application.Configuration.Queries;
+using Atmosphere.Core.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atmosphere.API.Controllers;
 
+[Authorize(nameof(UserRole.Admin))]
 [Route("api/[controller]/[action]")]
 [ApiController]
 public class ConfigurationController : ControllerBase

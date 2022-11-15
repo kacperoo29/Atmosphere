@@ -1,4 +1,4 @@
-using Atmoshpere.Application.Services;
+using Atmosphere.Application.Services;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
 using MediatR;
@@ -20,6 +20,6 @@ public class RegisterDeviceHandler : IRequestHandler<RegisterDevice, Device>
     {
         var device = Device.Create(request.Identifier, request.Password);
 
-        return await _userService.CreateUser(device) as Device;
+        return await _userService.CreateUserAsync(device) as Device;
     }
 }

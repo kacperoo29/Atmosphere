@@ -1,4 +1,4 @@
-namespace Atmoshpere.Application.Exceptions;
+namespace Atmosphere.Application.Exceptions;
 
 public class AuthException : Exception
 {

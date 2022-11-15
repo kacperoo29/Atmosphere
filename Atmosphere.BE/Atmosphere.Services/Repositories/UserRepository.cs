@@ -5,11 +5,12 @@ using MongoDB.Driver;
 
 namespace Atmosphere.Services.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : BaseRepository<BaseUser>, IUserRepository
 {
     private readonly IMongoCollection<BaseUser> _users;
 
     public UserRepository(IMongoCollection<BaseUser> users)
+        : base(users)
     {
         _users = users;
     }

@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Atmoshpere.Core.Enums;
+namespace Atmosphere.Core.Enums;
 
 public enum UserRole
 {

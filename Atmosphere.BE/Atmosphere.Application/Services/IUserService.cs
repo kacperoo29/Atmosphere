@@ -1,11 +1,11 @@
 using Atmosphere.Core.Models;
 
-namespace Atmoshpere.Application.Services;
+namespace Atmosphere.Application.Services;
 
 public interface IUserService
 {
     Task<BaseUser> GetByCredentialsAsync(string identifier, string key);
     Task<BaseUser> GetByTokenAsync(string token);
-    Task<BaseUser?> GetCurrent();
-    Task<BaseUser> CreateUser(BaseUser user);
+    Task<BaseUser?> GetCurrentAsync();
+    Task<BaseUser> CreateUserAsync(BaseUser user);
 }

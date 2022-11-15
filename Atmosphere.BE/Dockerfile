@@ -9,7 +9,6 @@ COPY *.sln ./
 RUN dotnet restore --no-cache --force-evaluate -f
 COPY . ./
 RUN dotnet publish -c Debug -o out
-RUN dotnet dev-certs https --trust
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
