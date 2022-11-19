@@ -178,6 +178,7 @@ builder.Services.AddScoped<ITokenService, JwtTokenProvider>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
+builder.Services.AddAutoMapper(typeof(CreateReadingHandler).Assembly);
 
 BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {
@@ -188,7 +189,6 @@ BsonClassMap.RegisterClassMap<EmailConfiguration>();
 BsonClassMap.RegisterClassMap<BaseUser>(cm =>
 {
     cm.AutoMap();
-    cm.SetIsRootClass(true);
     cm.AddKnownType(typeof(Device));
     cm.AddKnownType(typeof(User));
 });
@@ -196,7 +196,6 @@ BsonClassMap.RegisterClassMap<BaseUser>(cm =>
 BsonClassMap.RegisterClassMap<BaseModel>(cm =>
 {
     cm.AutoMap();
-    cm.SetIsRootClass(true);
     cm.MapIdMember(c => c.Id).SetIdGenerator(GuidGenerator.Instance);
 });
 

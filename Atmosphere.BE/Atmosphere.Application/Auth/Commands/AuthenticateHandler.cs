@@ -17,7 +17,7 @@ public class AuthenticateHandler : IRequestHandler<Authenticate, string>
 
     public async Task<string> Handle(Authenticate request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetByCredentialsAsync(request.Identifier, request.Key);
+        var user = await _userService.GetByCredentialsAsync(request.Username, request.Password);
 
         return await _tokenService.GenerateToken(user);
     }

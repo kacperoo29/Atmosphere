@@ -6,24 +6,28 @@ namespace Atmosphere.Core.Models;
 
 public class Device : BaseUser
 {
+    public string Identifier { get; protected set; }
+
     protected Device()
     {
         Username = string.Empty;
         Password = new byte[0];
         IsActive = false;
         Role = UserRole.Device;
+        Identifier = string.Empty;
     }
 
-    public static Device Create(string identifier, string password)
+    public static Device Create(string username, string identifier, string password)
     {
         var saltedPassword = PasswordUtil.GenerateSaltedHash(Encoding.UTF8.GetBytes(password));
 
         return new Device
         {
-            Username = identifier,
+            Username = username,
             Password = saltedPassword,
             IsActive = false,
-            Role = UserRole.Device
+            Role = UserRole.Device,
+            Identifier = identifier
         };
     }
 

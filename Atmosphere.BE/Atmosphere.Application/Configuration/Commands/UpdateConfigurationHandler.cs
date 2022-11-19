@@ -12,10 +12,12 @@ public class UpdateConfigurationHandler : IRequestHandler<UpdateConfiguration, o
         _configurationRepository = configurationRepository;
     }
 
-    public async Task<object?> Handle(UpdateConfiguration request, CancellationToken cancellationToken)
+    public async Task<object?> Handle(
+        UpdateConfiguration request,
+        CancellationToken cancellationToken
+    )
     {
-        await _configurationRepository.Set(request.Key ?? throw new ArgumentNullException($"{nameof(request.Key)}"),
-            request.Value);
+        await _configurationRepository.Set(request.Key, request.Value);
 
         return await _configurationRepository.Get(request.Key);
     }

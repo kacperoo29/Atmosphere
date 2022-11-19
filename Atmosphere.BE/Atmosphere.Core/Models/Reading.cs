@@ -6,12 +6,17 @@ namespace Atmosphere.Core.Models;
 
 public class Reading : BaseModel
 {
-    private Reading()
+    protected Reading()
+        : base()
     {
+        SensorIdentifier = string.Empty;
+        Type = ReadingType.Unknown;
+        Value = 0;
+        Timestamp = DateTime.UtcNow;
     }
 
     public Guid DeviceId { get; private set; }
-    public string DeviceAddress { get; private set; }
+    public string SensorIdentifier { get; private set; }
     public decimal Value { get; private set; }
     public DateTime Timestamp { get; private set; }
     public ReadingType Type { get; private set; }
@@ -21,7 +26,7 @@ public class Reading : BaseModel
         return new Reading
         {
             DeviceId = deviceId,
-            DeviceAddress = deviceAddress,
+            SensorIdentifier = deviceAddress,
             Value = value,
             Timestamp = timestamp,
             Type = type

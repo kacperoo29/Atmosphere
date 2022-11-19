@@ -1,9 +1,11 @@
+using System.Net;
 using Atmosphere.Application.Configuration.Commands;
 using Atmosphere.Application.Configuration.Queries;
 using Atmosphere.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Atmosphere.API.Controllers;
 
@@ -20,7 +22,10 @@ public class ConfigurationController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateConfiguration([FromBody] UpdateConfiguration request)
+    [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> UpdateConfiguration([FromBody, BindRequired] UpdateConfiguration request)
     {
         try
         {
@@ -35,7 +40,10 @@ public class ConfigurationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetConfigurationEntry([FromQuery] string key)
+    [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetConfigurationEntry([FromQuery, BindRequired] string key)
     {
         try
         {
@@ -50,7 +58,10 @@ public class ConfigurationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetConfigurationEntries([FromQuery] string[] keys)
+    [ProducesResponseType(typeof(List<object>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetConfigurationEntries([FromQuery, BindRequired] string[] keys)
     {
         try
         {
@@ -65,6 +76,9 @@ public class ConfigurationController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<object>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
     public async Task<IActionResult> GetAllConfigurations()
     {
         try

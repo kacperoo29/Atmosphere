@@ -4,6 +4,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Atmosphere.Core.Enums;
+using System.Net;
+using Atmosphere.Application.DTO;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Atmosphere.API.Controllers;
 
@@ -19,22 +22,24 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Authenticate([FromBody] Authenticate request)
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> Authenticate([FromBody, BindRequired] Authenticate request)
     {
         try
         {
             var token = await _mediator.Send(request);
 
-            return Ok(token);
+            return this.Ok(token);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterDevice([FromBody] RegisterDevice request)
+    [ProducesResponseType(typeof(DeviceDto), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> RegisterDevice([FromBody, BindRequired] RegisterDevice request)
     {
         try
         {
@@ -48,7 +53,10 @@ public class AuthController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(nameof(UserRole.Admin))]
-    public async Task<IActionResult> ActivateUser(Guid id)
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> ActivateUser([BindRequired] Guid id)
     {
         try
         {

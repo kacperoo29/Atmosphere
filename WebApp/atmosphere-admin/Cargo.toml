@@ -1,13 +1,38 @@
 [package]
-name = "atmosphere-admin"
-version = "0.1.0"
+authors = ["Kacper Bajeński <erednay29@gmail.com>"]
+categories = ["wasm"]
+description = "Admin site for Atmosphere ecosystem."
 edition = "2021"
+license = "Apache-2.0/MIT"
+name = "atmosphere-admin"
+readme = "./README.md"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
-log = "0.4.6"
-wasm-logger = "0.2.0"
+[lib]
+crate-type = ["cdylib", "rlib"]
 
+[dependencies]
+anyhow = "1.0.66"
+atmosphere-api = { path = "../api" }
+gloo-storage = "0.2.2"
+lazy_static = "1.4.0"
+log = "0.4.17"
+serde = "1.0.145"
+patternfly-yew = "0.2.2"
+reqwest = { version = "0.11.12", features = ["json"] }
+thiserror = "1.0.37"
 yew = "0.19.3"
 yew-router = "0.16.0"
+yew-hooks = "0.1.56"
+wasm-bindgen = "0.2.83"
+wasm-logger = "0.2.0"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.14"
+gloo-utils = "0.1.0"
+
+[dev-dependencies.web-sys]
+version = "0.3.60"
+features = ["Document", "Element", "HtmlCollection"]
