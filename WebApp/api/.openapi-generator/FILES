@@ -1,9 +1,9 @@
 .gitignore
 .travis.yml
-Cargo.toml
 README.md
 docs/AuthApi.md
 docs/Authenticate.md
+docs/BaseUserDto.md
 docs/ConfigurationApi.md
 docs/CreateReading.md
 docs/DeviceDto.md
@@ -13,6 +13,7 @@ docs/ReadingDto.md
 docs/ReadingType.md
 docs/RegisterDevice.md
 docs/UpdateConfiguration.md
+docs/UserRole.md
 git_push.sh
 src/apis/auth_api.rs
 src/apis/configuration.rs
@@ -21,6 +22,7 @@ src/apis/mod.rs
 src/apis/reading_api.rs
 src/lib.rs
 src/models/authenticate.rs
+src/models/base_user_dto.rs
 src/models/create_reading.rs
 src/models/device_dto.rs
 src/models/mod.rs
@@ -29,3 +31,4 @@ src/models/reading_dto.rs
 src/models/reading_type.rs
 src/models/register_device.rs
 src/models/update_configuration.rs
+src/models/user_role.rs

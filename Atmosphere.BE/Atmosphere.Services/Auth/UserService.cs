@@ -37,11 +37,13 @@ public class UserService : IUserService
 
     public async Task<BaseUser> GetByCredentialsAsync(string identifier, string key)
     {
-        var user = (await _userRepo.FindAsync(u => u.Username == identifier)).Single();
+        var user = (await _userRepo.FindAsync(u => u.Username == identifier)).SingleOrDefault();
         if (user != null && PasswordUtil.VerifyPassword(key, user.Password))
+        {
             return user;
+        }
 
-        throw new Exception("Invalid credentials");
+        throw new UnauthorizedAccessException("Invalid credentials");
     }
 
     public async Task<BaseUser> GetByTokenAsync(string token)

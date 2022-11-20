@@ -166,6 +166,55 @@
         }
       }
     },
+    "/api/Auth/GetCurrentUser": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseUserDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseUserDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseUserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Configuration/UpdateConfiguration": {
       "put": {
         "tags": [
@@ -625,6 +674,31 @@
         },
         "additionalProperties": false
       },
+      "BaseUserDto": {
+        "required": [
+          "id",
+          "isActive",
+          "role",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateReading": {
         "required": [
           "sensorIdentifier",
@@ -774,6 +848,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "UserRole": {
+        "enum": [
+          "user",
+          "admin",
+          "device"
+        ],
+        "type": "string"
       }
     },
     "securitySchemes": {

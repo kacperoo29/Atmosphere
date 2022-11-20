@@ -4,33 +4,36 @@ use std::ops::Deref;
 use yew::{use_context, UseStateHandle};
 use yew_router::prelude::{use_history, AnyHistory, History};
 
-use crate::error::Error;
 use crate::models::user::UserInfo;
 use crate::routes::AppRoute;
 use crate::services::user::set_token;
 
 #[derive(Clone, PartialEq)]
 pub struct UseUserContextHandle {
-    inner: UseStateHandle<UserInfo>,
+    inner: UseStateHandle<Option<UserInfo>>,
     history: AnyHistory,
 }
 
 impl UseUserContextHandle {
-    pub fn login(&mut self, user: UserInfo){
+    pub fn login(&self, user: UserInfo){
         set_token(Some(user.token.clone()));
-        self.inner.set(user);
+        self.inner.set(Some(user));
         self.history.push(AppRoute::Home);
     }
 
-    pub fn logout(&mut self) {
+    pub fn logout(&self) {
         set_token(None);
-        self.inner.set(UserInfo::default());
+        self.inner.set(None);
         self.history.push(AppRoute::SignIn);
+    }
+
+    pub fn is_logged_in(&self) -> bool {
+        self.inner.is_some()
     }
 }
 
 impl Deref for UseUserContextHandle {
-    type Target = UseStateHandle<UserInfo>;
+    type Target = UseStateHandle<Option<UserInfo>>;
 
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -46,7 +49,7 @@ impl Debug for UseUserContextHandle {
 }
 
 pub fn use_user_context() -> UseUserContextHandle {
-    let inner = use_context::<UseStateHandle<UserInfo>>().unwrap();
+    let inner = use_context::<UseStateHandle<Option<UserInfo>>>().unwrap();
     let history = use_history().unwrap();
 
     UseUserContextHandle { inner, history }

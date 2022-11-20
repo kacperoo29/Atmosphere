@@ -1,48 +1,29 @@
 use yew::prelude::*;
-use yew_hooks::prelude::*;
+use yew_router::prelude::*;
+
+use crate::hooks::use_user_context::use_user_context;
+
+use super::AppRoute;
 
 /// Home page
 #[function_component(Home)]
 pub fn home() -> Html {
-    let counter = use_counter(0);
+    let user = use_user_context();
 
-    let onincrease = {
-        let counter = counter.clone();
-        Callback::from(move |_| counter.increase())
-    };
-    let ondecrease = {
-        let counter = counter.clone();
-        Callback::from(move |_| counter.decrease())
-    };
+    if !user.is_logged_in() {
+        return html! {
+            <div>
+                <p>{"You must login to use this site."}</p>
+                <Link<AppRoute> to={AppRoute::SignIn}>
+                    <button class="btn btn-primary">{"Sign In"}</button>
+                </Link<AppRoute>>
+            </div>
+        };
+    }
 
     html! {
-        <div class="app">
-            <header class="app-header">
-                <a
-                    class="app-logo"
-                    href="https://yew.rs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                </a>
-                <p>
-                    { "Edit " } <code>{ "src/routes/home.rs" }</code> { " and save to reload." }
-                </p>
-                <a
-                    id="learn_yew"
-                    class="app-link"
-                    href="https://yew.rs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    { "Learn Yew" }
-                </a>
-                <p>
-                    <button onclick={ondecrease}>{ "Decrease" }</button>
-                    { *counter }
-                    <button onclick={onincrease}>{ "Increase" }</button>
-                </p>
-            </header>
+        <div>
+            
         </div>
     }
 }

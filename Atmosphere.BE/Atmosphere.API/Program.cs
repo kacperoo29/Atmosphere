@@ -33,6 +33,8 @@ builder.Services
         );
     });
 
+builder.Services.AddCors();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -220,6 +222,13 @@ if (app.Environment.IsDevelopment())
         userService.CreateUserAsync(admin).GetAwaiter().GetResult();
     }
 }
+
+app.UseCors(
+    opt => opt
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+);
 
 app.UseAuthentication();
 app.UseAuthorization();

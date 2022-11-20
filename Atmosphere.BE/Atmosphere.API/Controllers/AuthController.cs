@@ -7,6 +7,7 @@ using Atmosphere.Core.Enums;
 using System.Net;
 using Atmosphere.Application.DTO;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Atmosphere.Application.Auth.Queries;
 
 namespace Atmosphere.API.Controllers;
 
@@ -30,6 +31,10 @@ public class AuthController : ControllerBase
             var token = await _mediator.Send(request);
 
             return this.Ok(token);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            return this.Unauthorized(e.Message);
         }
         catch (Exception e)
         {
@@ -61,6 +66,22 @@ public class AuthController : ControllerBase
         try
         {
             return this.Ok(await _mediator.Send(new ActivateUser { Id = id }));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(BaseUserDto), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        try
+        {
+            return this.Ok(await _mediator.Send(new GetCurrentUser()));
         }
         catch (Exception e)
         {

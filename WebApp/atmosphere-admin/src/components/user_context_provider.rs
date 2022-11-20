@@ -3,7 +3,7 @@ use yew_hooks::{use_async, use_mount};
 
 use crate::{
     models::user::UserInfo,
-    services::user,
+    services::user::{self, get_token, set_token},
 };
 
 #[derive(Properties, Clone, PartialEq)]
@@ -13,13 +13,13 @@ pub struct Props {
 
 #[function_component(UserContextProvider)]
 pub fn user_context_provider(props: &Props) -> Html {
-    let user_ctx = use_state(|| UserInfo::default());
+    let user_ctx = use_state(|| None);
     let current_user = use_async(async move { user::current().await });
 
     {
         let current_user = current_user.clone();
         use_mount(move || {
-            if current_user.data.is_some() {
+            if get_token().is_some() {
                 current_user.run();
             }
         });
@@ -30,7 +30,16 @@ pub fn user_context_provider(props: &Props) -> Html {
         use_effect_with_deps(
             move |current_user| {
                 if let Some(user) = &current_user.data {
-                    user_ctx.set(user.clone())
+                    user_ctx.set(Some(user.clone()))
+                }
+
+                if let Some(err) = &current_user.error {
+                    match err {
+                        crate::error::Error::Unauthorized(_) => {
+                            set_token(None);
+                        }
+                        _ => {}
+                    }
                 }
 
                 || ()
@@ -40,6 +49,6 @@ pub fn user_context_provider(props: &Props) -> Html {
     }
 
     html! {
-        <ContextProvider<UseStateHandle<UserInfo>> context={user_ctx} children={props.children.clone()} />
+        <ContextProvider<UseStateHandle<Option<UserInfo>>> context={user_ctx} children={props.children.clone()} />
     }
 }

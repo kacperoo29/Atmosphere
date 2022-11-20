@@ -1,17 +1,21 @@
-use std::sync::{Arc, RwLock};
+use std::sync::RwLock;
 
 use atmosphere_api::{
     apis::{
-        self,
-        auth_api::{api_auth_authenticate_post, ApiAuthAuthenticatePostError},
-        configuration::Configuration,
+        auth_api::{api_auth_authenticate_post, api_auth_get_current_user_get},
+        configuration::ApiKey,
     },
     models::Authenticate,
 };
 use gloo_storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
 
-use crate::{error::Error, models::user::UserInfo};
+use crate::{
+    error::{translate_api_error, Error},
+    models::user::{LoginInfo, UserInfo},
+};
+
+use super::{get_config, get_mut_config};
 
 const TOKEN_KEY: &str = "atmosphere.admin.token";
 
@@ -42,27 +46,43 @@ pub fn get_token() -> Option<String> {
     token_lock.clone()
 }
 
-// TODO: Get current user here instead of token.
 pub async fn current() -> Result<UserInfo, Error> {
-    let mut config = Configuration::new();
-    config.base_path = "http://localhost:5000".to_string();
+    let config = get_config().clone();
+    let Some(token) = get_token() else {
+        return Err(Error::Unauthorized("User not logged in.".to_string()));
+    };
+
+    match api_auth_get_current_user_get(&config).await {
+        Ok(response) => Ok(UserInfo {
+            username: response.username,
+            token: token,
+        }),
+        Err(err) => Err(translate_api_error(err)),
+    }
+}
+
+pub async fn authenticate(login_info: LoginInfo) -> Result<UserInfo, Error> {
+    let config = get_config().clone();
     let model = Authenticate {
-        username: "admin".to_string(),
-        password: "secretPassword".to_string(),
+        username: login_info.username,
+        password: login_info.password,
     };
 
     match api_auth_authenticate_post(&config, model).await {
-        Ok(token) => Ok(UserInfo {
-            email: "admin".to_string(),
-            token: token,
-        }),
-        Err(err) => match err {
-            apis::Error::ResponseError(err) => {
-                match err.status.as_u16() {
-                    _ => Err(Error::Unknown(err.content))
-                }
-            },
-            err=> Err(Error::Unknown(err.to_string()))
-        },
-    }
+        Ok(token) => {
+            let mut config = get_mut_config();
+            set_token(Some(token.clone()));
+            config.api_key = Some(ApiKey {
+                prefix: Some("Bearer".to_string()),
+                key: token.clone(),
+            });
+
+            Ok(token)
+        }
+        Err(err) => {
+            Err(translate_api_error(err))
+        }
+    }?;
+
+    current().await
 }

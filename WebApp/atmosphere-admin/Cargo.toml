@@ -20,7 +20,6 @@ gloo-storage = "0.2.2"
 lazy_static = "1.4.0"
 log = "0.4.17"
 serde = "1.0.145"
-patternfly-yew = "0.2.2"
 reqwest = { version = "0.11.12", features = ["json"] }
 thiserror = "1.0.37"
 yew = "0.19.3"
@@ -33,6 +32,6 @@ wasm-logger = "0.2.0"
 wasm-bindgen-test = "0.3.14"
 gloo-utils = "0.1.0"
 
-[dev-dependencies.web-sys]
+[dependencies.web-sys]
 version = "0.3.60"
-features = ["Document", "Element", "HtmlCollection"]
+features = ["Document", "Element", "HtmlCollection", "HtmlInputElement"]

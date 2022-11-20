@@ -27,6 +27,7 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AuthApi* | [**api_auth_activate_user_id_put**](docs/AuthApi.md#api_auth_activate_user_id_put) | **PUT** /api/Auth/ActivateUser/{id} | 
 *AuthApi* | [**api_auth_authenticate_post**](docs/AuthApi.md#api_auth_authenticate_post) | **POST** /api/Auth/Authenticate | 
+*AuthApi* | [**api_auth_get_current_user_get**](docs/AuthApi.md#api_auth_get_current_user_get) | **GET** /api/Auth/GetCurrentUser | 
 *AuthApi* | [**api_auth_register_device_post**](docs/AuthApi.md#api_auth_register_device_post) | **POST** /api/Auth/RegisterDevice | 
 *ConfigurationApi* | [**api_configuration_get_all_configurations_get**](docs/ConfigurationApi.md#api_configuration_get_all_configurations_get) | **GET** /api/Configuration/GetAllConfigurations | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entries_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entries_get) | **GET** /api/Configuration/GetConfigurationEntries | 
@@ -39,6 +40,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [Authenticate](docs/Authenticate.md)
+ - [BaseUserDto](docs/BaseUserDto.md)
  - [CreateReading](docs/CreateReading.md)
  - [DeviceDto](docs/DeviceDto.md)
  - [ProblemDetails](docs/ProblemDetails.md)
@@ -46,6 +48,7 @@ Class | Method | HTTP request | Description
  - [ReadingType](docs/ReadingType.md)
  - [RegisterDevice](docs/RegisterDevice.md)
  - [UpdateConfiguration](docs/UpdateConfiguration.md)
+ - [UserRole](docs/UserRole.md)
 
 
 To get access to the crate's generated documentation, use:
