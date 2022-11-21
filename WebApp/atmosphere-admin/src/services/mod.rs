@@ -1,4 +1,7 @@
+pub mod config;
 pub mod user;
+pub mod reading;
+
 use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use atmosphere_api::apis::configuration::{Configuration, ApiKey};

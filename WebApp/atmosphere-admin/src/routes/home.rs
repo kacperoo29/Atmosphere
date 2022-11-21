@@ -2,6 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::hooks::use_user_context::use_user_context;
+use crate::components::reading::reading_list::ReadingList;
 
 use super::AppRoute;
 
@@ -23,7 +24,7 @@ pub fn home() -> Html {
 
     html! {
         <div>
-            
+            <ReadingList />
         </div>
     }
 }

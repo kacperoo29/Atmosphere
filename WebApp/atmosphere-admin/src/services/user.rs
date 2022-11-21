@@ -11,7 +11,7 @@ use gloo_storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
 
 use crate::{
-    error::{translate_api_error, Error},
+    error::Error,
     models::user::{LoginInfo, UserInfo},
 };
 
@@ -57,7 +57,7 @@ pub async fn current() -> Result<UserInfo, Error> {
             username: response.username,
             token: token,
         }),
-        Err(err) => Err(translate_api_error(err)),
+        Err(err) => Err(err.into()),
     }
 }
 
@@ -80,7 +80,7 @@ pub async fn authenticate(login_info: LoginInfo) -> Result<UserInfo, Error> {
             Ok(token)
         }
         Err(err) => {
-            Err(translate_api_error(err))
+            Err(err.into())
         }
     }?;
 

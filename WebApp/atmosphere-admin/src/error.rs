@@ -8,12 +8,14 @@ pub enum Error {
     Unknown(String),
 }
 
-pub fn translate_api_error<T>(err: apis::Error<T>) -> Error {
-    match err {
-        apis::Error::ResponseError(err) => match err.status.as_u16() {
-            401 => Error::Unauthorized(err.content),
-            _ => Error::Unknown(err.content),
+impl<T> Into<Error> for apis::Error<T> {
+    fn into(self) -> Error {
+        match self {
+            apis::Error::ResponseError(err) => match err.status.as_u16() {
+                401 => Error::Unauthorized(err.content),
+                _ => Error::Unknown(err.content),
+            }
+            _ => Error::Unknown(self.to_string()),
         }
-        _ => Error::Unknown(err.to_string()),
     }
 }
