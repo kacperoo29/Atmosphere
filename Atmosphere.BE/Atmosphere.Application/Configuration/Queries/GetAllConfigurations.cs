@@ -3,6 +3,6 @@ using MediatR;
 
 namespace Atmosphere.Application.Configuration.Queries;
 
-public class GetAllConfigurations : IRequest<IEnumerable<ConfigurationEntry>>
+public class GetAllConfigurations : IRequest<Dictionary<string, object?>>
 {
 }

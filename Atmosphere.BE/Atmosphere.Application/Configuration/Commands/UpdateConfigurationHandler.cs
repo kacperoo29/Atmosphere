@@ -17,8 +17,8 @@ public class UpdateConfigurationHandler : IRequestHandler<UpdateConfiguration, o
         CancellationToken cancellationToken
     )
     {
-        await _configurationRepository.Set(request.Key, request.Value);
+        await _configurationRepository.SetAsync(request.Key, request.Value);
 
-        return await _configurationRepository.Get(request.Key);
+        return await _configurationRepository.GetAsync<object?>(request.Key);
     }
 }

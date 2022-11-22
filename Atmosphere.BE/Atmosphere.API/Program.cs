@@ -157,7 +157,7 @@ builder.Services.AddScoped(opt =>
 {
     using var scope = opt.CreateScope();
     var config = scope.ServiceProvider.GetRequiredService<IConfigService>();
-    var types = config.GetNotificationTypes().GetAwaiter().GetResult();
+    var types = config.GetNotificationTypesAsync().GetAwaiter().GetResult();
 
     INotificationService notificationService = new NotificationService();
     foreach (var type in types)

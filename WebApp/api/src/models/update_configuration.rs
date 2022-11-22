@@ -15,15 +15,15 @@
 pub struct UpdateConfiguration {
     #[serde(rename = "key")]
     pub key: String,
-    #[serde(rename = "value", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
-    pub value: Option<Option<serde_json::Value>>,
+    #[serde(rename = "value", deserialize_with = "Option::deserialize")]
+    pub value: Option<serde_json::Value>,
 }
 
 impl UpdateConfiguration {
-    pub fn new(key: String) -> UpdateConfiguration {
+    pub fn new(key: String, value: Option<serde_json::Value>) -> UpdateConfiguration {
         UpdateConfiguration {
             key,
-            value: None,
+            value,
         }
     }
 }

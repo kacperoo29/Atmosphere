@@ -1,8 +1,15 @@
+using System.ComponentModel.DataAnnotations;
 using MediatR;
 
 namespace Atmosphere.Application.Configuration.Queries;
 
 public class GetConfigurationEntry : IRequest<object?>
 {
-    public string? Key { get; init; }
+    [Required]
+    public string Key { get; init; }
+
+    public GetConfigurationEntry()
+    {
+        Key = string.Empty;
+    }
 }

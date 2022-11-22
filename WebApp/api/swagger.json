@@ -395,20 +395,20 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "type": "object",
+                  "additionalProperties": { }
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "type": "object",
+                  "additionalProperties": { }
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "type": "object",
+                  "additionalProperties": { }
                 }
               }
             }
@@ -467,20 +467,161 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "type": "object",
+                  "additionalProperties": { }
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "type": "object",
+                  "additionalProperties": { }
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "type": "object",
+                  "additionalProperties": { }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Configuration/UpdateNotificationSettings": {
+      "put": {
+        "tags": [
+          "Configuration"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotificationSettings"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotificationSettings"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotificationSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Configuration/GetNotificationSettings": {
+      "get": {
+        "tags": [
+          "Configuration"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettingsDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettingsDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettingsDto"
                 }
               }
             }
@@ -742,6 +883,32 @@
         },
         "additionalProperties": false
       },
+      "NotificationSettingsDto": {
+        "required": [
+          "emailEnabled",
+          "emailTo",
+          "temperatureThresholdMax",
+          "temperatureThresholdMin"
+        ],
+        "type": "object",
+        "properties": {
+          "emailEnabled": {
+            "type": "boolean"
+          },
+          "emailTo": {
+            "type": "string"
+          },
+          "temperatureThresholdMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "temperatureThresholdMax": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -836,15 +1003,40 @@
       },
       "UpdateConfiguration": {
         "required": [
-          "key"
+          "key",
+          "value"
         ],
         "type": "object",
         "properties": {
           "key": {
             "type": "string"
           },
-          "value": {
-            "nullable": true
+          "value": { }
+        },
+        "additionalProperties": false
+      },
+      "UpdateNotificationSettings": {
+        "required": [
+          "emailEnabled",
+          "emailTo",
+          "temperatureThresholdMax",
+          "temperatureThresholdMin"
+        ],
+        "type": "object",
+        "properties": {
+          "emailEnabled": {
+            "type": "boolean"
+          },
+          "emailTo": {
+            "type": "string"
+          },
+          "temperatureThresholdMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "temperatureThresholdMax": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

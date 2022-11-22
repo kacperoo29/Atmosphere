@@ -32,7 +32,9 @@ Class | Method | HTTP request | Description
 *ConfigurationApi* | [**api_configuration_get_all_configurations_get**](docs/ConfigurationApi.md#api_configuration_get_all_configurations_get) | **GET** /api/Configuration/GetAllConfigurations | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entries_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entries_get) | **GET** /api/Configuration/GetConfigurationEntries | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entry_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entry_get) | **GET** /api/Configuration/GetConfigurationEntry | 
+*ConfigurationApi* | [**api_configuration_get_notification_settings_get**](docs/ConfigurationApi.md#api_configuration_get_notification_settings_get) | **GET** /api/Configuration/GetNotificationSettings | 
 *ConfigurationApi* | [**api_configuration_update_configuration_put**](docs/ConfigurationApi.md#api_configuration_update_configuration_put) | **PUT** /api/Configuration/UpdateConfiguration | 
+*ConfigurationApi* | [**api_configuration_update_notification_settings_put**](docs/ConfigurationApi.md#api_configuration_update_notification_settings_put) | **PUT** /api/Configuration/UpdateNotificationSettings | 
 *ReadingApi* | [**api_reading_create_reading_post**](docs/ReadingApi.md#api_reading_create_reading_post) | **POST** /api/Reading/CreateReading | 
 *ReadingApi* | [**api_reading_get_all_readings_get**](docs/ReadingApi.md#api_reading_get_all_readings_get) | **GET** /api/Reading/GetAllReadings | 
 
@@ -43,11 +45,13 @@ Class | Method | HTTP request | Description
  - [BaseUserDto](docs/BaseUserDto.md)
  - [CreateReading](docs/CreateReading.md)
  - [DeviceDto](docs/DeviceDto.md)
+ - [NotificationSettingsDto](docs/NotificationSettingsDto.md)
  - [ProblemDetails](docs/ProblemDetails.md)
  - [ReadingDto](docs/ReadingDto.md)
  - [ReadingType](docs/ReadingType.md)
  - [RegisterDevice](docs/RegisterDevice.md)
  - [UpdateConfiguration](docs/UpdateConfiguration.md)
+ - [UpdateNotificationSettings](docs/UpdateNotificationSettings.md)
  - [UserRole](docs/UserRole.md)
 
 

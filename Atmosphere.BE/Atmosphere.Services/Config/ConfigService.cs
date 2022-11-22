@@ -1,6 +1,7 @@
 using Atmosphere.Application.Configuration;
 using Atmosphere.Application.Services;
 using Atmosphere.Core.Enums;
+using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
 using Microsoft.Extensions.Configuration;
 
@@ -9,6 +10,7 @@ namespace Atmosphere.Application.Config;
 public class ConfigService : IConfigService
 {
     private const string NOTIFICATION_TYPES_KEY = "notificationTypes";
+    private const string NOTIFICATIONS_SETTINGS_KEY = "notificationsSettings";
     public const string EMAIL_CONFIG_KEY = "emailConfig";
 
     private readonly IConfigurationRepository _configRepo;
@@ -20,24 +22,23 @@ public class ConfigService : IConfigService
         _configuration = configuration;
     }
 
-    public async Task<List<NotificationType>> GetNotificationTypes()
+    public async Task<List<NotificationType>> GetNotificationTypesAsync()
     {
-        var types = await _configRepo.Get(NOTIFICATION_TYPES_KEY);
-        var typeList = types as List<NotificationType>;
-        if (typeList is null)
+        var types = await _configRepo.GetAsync<List<NotificationType>>(NOTIFICATION_TYPES_KEY);
+        if (types is null)
         {
-            typeList = new List<NotificationType>();
-            await _configRepo.Set(NOTIFICATION_TYPES_KEY, typeList);
+            types = new List<NotificationType>();
+            await _configRepo.SetAsync(NOTIFICATION_TYPES_KEY, types);
 
-            return typeList;
+            return types;
         }
 
-        return typeList;
+        return types;
     }
 
-    public async Task<EmailConfiguration> GetEmailConfiguration()
+    public async Task<EmailConfiguration> GetEmailConfigurationAsync()
     {
-        var emailConfig = await _configRepo.Get(EMAIL_CONFIG_KEY) as EmailConfiguration;
+        var emailConfig = await _configRepo.GetAsync<EmailConfiguration>(EMAIL_CONFIG_KEY);
         if (emailConfig is null)
         {
             var emailSection = _configuration.GetSection("EmailSettings");
@@ -51,11 +52,28 @@ public class ConfigService : IConfigService
                 ServerEmailAddress = emailSection.GetValue<string>("ServerEmailAddress")
             };
 
-            await _configRepo.Set(EMAIL_CONFIG_KEY, emailConfig);
+            await _configRepo.SetAsync(EMAIL_CONFIG_KEY, emailConfig);
 
             return emailConfig;
         }
 
         return emailConfig;
+    }
+
+    public async Task<NotificationSettings> GetNotificationSettingsAsync(CancellationToken cancellationToken = default)
+    {
+        var settings = await _configRepo.GetAsync<NotificationSettings>(NOTIFICATIONS_SETTINGS_KEY, cancellationToken);
+        if (settings is null)
+        {
+            settings = new NotificationSettings();
+            await _configRepo.SetAsync(NOTIFICATIONS_SETTINGS_KEY, settings, cancellationToken);
+        }
+
+        return settings;
+    }
+
+    public async Task UpdateNotificationSettingsAsync(NotificationSettings settings, CancellationToken cancellationToken = default)
+    {
+        await _configRepo.SetAsync(NOTIFICATIONS_SETTINGS_KEY, settings, cancellationToken);
     }
 }

@@ -28,7 +28,8 @@ impl UseUserContextHandle {
     }
 
     pub fn is_logged_in(&self) -> bool {
-        self.inner.is_some()
+        // TODO: Wait for user to be feteched
+        (*self.inner).is_some()
     }
 }
 

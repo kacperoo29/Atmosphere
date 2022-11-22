@@ -21,7 +21,7 @@ public class EmailNotificationServiceDecorator : INotificationService
     {
         await _wrapee.Notify(reading, validationResults);
 
-        var config = await _configService.GetEmailConfiguration();
+        var config = await _configService.GetEmailConfigurationAsync();
 
         var emailAddress = config.EmailAddress;
         var serverEmailAddress = config.ServerEmailAddress;

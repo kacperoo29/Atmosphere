@@ -36,6 +36,7 @@ pub fn user_context_provider(props: &Props) -> Html {
                 if let Some(err) = &current_user.error {
                     match err {
                         crate::error::Error::Unauthorized(_) => {
+                            user_ctx.set(None);
                             set_token(None);
                         }
                         _ => {}

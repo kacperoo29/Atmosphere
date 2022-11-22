@@ -11,14 +11,12 @@ pub fn app() -> Html {
     html! {
         <UserContextProvider>
             <BrowserRouter>
-                <div class="container-fluid">
-                    <div class="row flex-nowrap">
-                        <Nav />
-                        <div class="col py-3">
-                            <Switch<AppRoute> render={Switch::render(switch)} />
-                        </div>
+                <main class="d-flex flex-nowrap">
+                    <Nav />
+                    <div class="d-flex flex-column overflow-auto flex-grow-1 p-3">
+                        <Switch<AppRoute> render={Switch::render(switch)} />
                     </div>
-                </div>
+                </main>
             </BrowserRouter>
         </UserContextProvider>
     }

@@ -5,7 +5,10 @@ namespace Atmosphere.Core.Repositories;
 
 public interface IConfigurationRepository
 {
-    Task<object?> Get(string key);
-    Task Set(string key, object? value);
-    Task<IEnumerable<ConfigurationEntry>> GetEntires(Expression<Func<ConfigurationEntry, bool>>? predicate = null);
+    Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default);
+    Task SetAsync(string key, object? value, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ConfigurationEntry>> GetEntiresAsync(
+        Expression<Func<ConfigurationEntry, bool>>? predicate = null,
+        CancellationToken cancellationToken = default
+    );
 }

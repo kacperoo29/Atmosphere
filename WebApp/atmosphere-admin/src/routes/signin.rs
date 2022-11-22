@@ -1,5 +1,6 @@
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
+use yew_router::prelude::*;
 use yew_hooks::use_async;
 
 use crate::{
@@ -7,9 +8,15 @@ use crate::{
     services::user::authenticate,
 };
 
+use super::AppRoute;
+
 #[function_component(SignIn)]
 pub fn signin() -> Html {
     let user = use_user_context();
+    if user.is_logged_in() {
+        return html! { <Redirect<AppRoute> to={AppRoute::Home} /> };
+    }
+
     let login_info = use_state(LoginInfo::default);
     let user_login = {
         let login_info = login_info.clone();

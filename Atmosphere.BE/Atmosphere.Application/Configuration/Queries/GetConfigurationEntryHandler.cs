@@ -17,6 +17,6 @@ public class GetConfigurationEntryHandler : IRequestHandler<GetConfigurationEntr
         if (request.Key == null)
             return null;
 
-        return await _configurationRepository.Get(request.Key);
+        return await _configurationRepository.GetAsync<object?>(request.Key);
     }
 }

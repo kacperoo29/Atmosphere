@@ -1,6 +1,7 @@
 using System.Net;
 using Atmosphere.Application.Configuration.Commands;
 using Atmosphere.Application.Configuration.Queries;
+using Atmosphere.Application.DTO;
 using Atmosphere.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +26,9 @@ public class ConfigurationController : ControllerBase
     [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> UpdateConfiguration([FromBody, BindRequired] UpdateConfiguration request)
+    public async Task<IActionResult> UpdateConfiguration(
+        [FromBody, BindRequired] UpdateConfiguration request
+    )
     {
         try
         {
@@ -35,7 +38,7 @@ public class ConfigurationController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
@@ -53,15 +56,17 @@ public class ConfigurationController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<object>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(Dictionary<string, object?>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> GetConfigurationEntries([FromQuery, BindRequired] string[] keys)
+    public async Task<IActionResult> GetConfigurationEntries(
+        [FromQuery, BindRequired] string[] keys
+    )
     {
         try
         {
@@ -71,12 +76,12 @@ public class ConfigurationController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<object>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(Dictionary<string, object?>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
     public async Task<IActionResult> GetAllConfigurations()
@@ -89,7 +94,46 @@ public class ConfigurationController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
+
+    [HttpPut]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> UpdateNotificationSettings(
+        [FromBody, BindRequired] UpdateNotificationSettings request
+    )
+    {
+        try
+        {
+            await _mediator.Send(request);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(NotificationSettingsDto), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetNotificationSettings()
+    {
+        try
+        {
+            var notificationSettings = await _mediator.Send(new GetNotificationSettings());
+
+            return Ok(notificationSettings);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
 }
