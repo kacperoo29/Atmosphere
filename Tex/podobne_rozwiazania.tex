@@ -1,0 +1,129 @@
+\chapter{Analiza istniejących rozwiązań}
+Ze względu na powszechność problemu przedstawionego w tej pracy na przestrzeni lat powstało wiele 
+systemów umożliwiających rozwiązanie go w mniejszym lub większym stopniu. 
+Ich eksploracja może ułatwić wytworzenie podobnego systemu poprzez zauważenie mocnych i słabych
+stron danego rozwiązania. Na ich podstawie możliwa jest adopcja oraz usprawnienie danych składowych
+systemu w przypadku zalet oraz poprawa lub zastąpienie innym rozwiązaniem w przypadku wad.
+
+
+W tym rozdziale zostaną poddane analizie niektóre z tych systemów w celu określenia ich 
+wad i zalet oraz wyszczególnienia brakującej, bądź też niepełnej funkcjonalności.
+
+\section{Kryteria analizy porównawczej}
+Analiza porównawcza odbędzie się na podstawie następujących kryteriów:
+\begin{itemize}
+  \item typ parametrów, które dany system pozwala obserwować;
+  \item zakres pomiarów;
+  \item częstotliwość pomiarów;
+  \item sposób komunikacji;
+  \item sposób przechowywania danych;
+  \item koszt wdrożenia;
+  \item możliwość rozbudowy.
+\end{itemize}
+Zastosowanie tych parametrów powinno umożliwić szczegółowy przegląd dostępnych aktualnie
+rozwiązań oraz wskazanie punktów, które mogą zostać w znaczny sposób usprawnione.
+
+\section{System Verkada SV11}
+Verkada SV11 jest wielofunkcyjnym urządzeniem \cite{verkada:sv11} pozwalającym na odczyt wielu
+parametrów środowiska. System ten jest w stanie odczytać poniższe wartości:
+\begin{itemize}
+  \item temperaturę pomieszczenia w zakresie $-5 - 50 ^\circ C$,
+  \item wilgotność powietrza w zakresie $0-80\%$,
+  \item aerozole atmosferyczne o średnicy mniejszej niż $2,5\mu m$ (PM2,5) w zakresie $0-1000\mu g/m^3$,
+  \item poziom głośności w zakresie $20 - 120dB$,
+  \item wskaźnik jakości powietrza (ang. \emph{Air Quality Index}) zgodnie ze standardem USEPA (ang. \emph{United States Environmental Protection Agency}),
+  \item ruch za pomocą detektora podczerwieni.
+\end{itemize}
+Pomiary wykonywane są w czasie zbliżonym do czasu rzeczywistego wykorzystując sieć Internet
+poprzez połączenie typu Ethernet z zasilaniem w technologii PoE (ang \emph{Power over Ethernet}). 
+Technologia wykorzystywana w sensorach firmy Verkada wymaga stałego połączenia z chmurą, 
+dzięki czemu użytkownik nie musi dbać o przechowywanie czy przetwarzanie danych, ale
+wiąże się to z dodatkowymi opłatami abonamentowymi i limitowaną funkcjonalnością w zależności
+od poziomu subskrypcji. System pozwala na przeglądanie danych aktualnych oraz historycznych, a
+przy dodatkowej opłacie udostępnia tryb alertów pozwalający na notyfikowanie użytkowników o
+niespodziewanych zdarzeniach, takich jak przekroczenie wartości danych parametrów.
+Koszt systemu jest najwyższy z przedstawionych w tej analizie i dodatkowo bazuje on na
+modelu subskrypcyjnym co sprawia, że może być on poza zasięgiem dla większości osób i jest
+głównie przeznaczony dla dużych firm.
+Pod warunkiem wykorzystania jedynie urządzeń tej firmy system może być rozbudowany o 
+dodatkowe sensory, kamery, alarmy czy też urządzenia kontroli dostępu. Urządzenia oraz
+oprogramowanie innych producentów nie może z nimi współpracować.
+
+\section{System SensorPush}
+System SensorPush umożliwia na monitorowanie podstawowych parametrów takich jak temperatura,
+wilgotność i ciśnienie powietrza. Produkt jest w stanie odczytywać z dużą dokładnością pomiary temperatury
+w zakresie $0 - 60 ^\circ C$, wilgotność powietrza w zakresie $0-80\%$ i ciśnienie powietrza w zakresie 
+$300 - 1250mb$. Urządzenie pracuje całkowicie używając zasilanie bateriami CR2477 co zwiększa
+jego przenośność, gdyż nie potrzebne jest zewnętrzne źródło energii elektrycznej. 
+W wersji bez dodatkowej bramy WiFi produkt wykorzystuje połączenie z użyciem technologii
+Bluetooth w celu przesyłania odczytów do aplikacji sterującej. 
+Najmniejszy możliwy interwał odczytów wynosi 1 minutę.
+System pozwala na połączenie wielu sensorów tego producenta z jego
+oprogramowaniem i monitorowanie aktualnych oraz historycznych odczytów. Główną limitacją
+jest połączenie Bluetooth i jego zasięg przez co nie zawsze jest możliwe uzyskanie dobrego
+zasięgu obsługi. Producent oferuje dodatkową bramę WiFi, z którą możliwe jest sparowanie
+sensorów oraz następnie przesyłanie przez nią danych i zapis w chmurze. Ta usługa płatna
+jest tylko przy zakupie urządzenia następnie producent zapewnia do niej dostęp bez dodatkowych opłat.
+Dzięki temu rozwiązaniu możliwy jest dostęp do danych wszędzie z dostępem do sieci Internet.
+Dodatkowo aplikacja wyposażona jest w system alertów, które użytkownik może otrzymywać przy odpowiedniej
+konfiguracji, np. przy przekroczeniu danej wartości temperatury. Te notyfikacje prezentowane są
+jako powiadomienia wykorzystując urządzenie, na którym zainstalowana jest aplikacja.
+
+\section{System TempStick}
+TempStick jest prostym urządzeniem pozwalającym na monitorowanie temperatury oraz wilgotności powietrza.
+Urządzenie pozwala na odczyt temperatury w zakresie $5 - 60 ^\circ C$ i wilgotności w zakresie $0-100\%$.
+Zasilany jest z użyciem baterii AA i nie wymaga dodatkowego źródła energii.
+Przesyłanie danych odbywa się z użyciem sieci WiFi po wcześniejszym sparowaniu urządzenia z aplikacją
+producenta. Odczyty z sensorów przesyłane są bezpośrednio do serwisu chmurowego, skąd mogą być następnie
+pobrane w celu sprawdzenia aktualnych i historycznych wartości. Producent zapewnia do nich dostęp bez
+dodatkowych opłat. System pozwala na połączenie wielu sensorów tego wytwórcy do jednego konta
+użytkownika co umożliwia jednoczesny odczyt ich danych. Minimalny interwał czasu pojedynczego
+odczytu wynosi 5 minut. System umożliwia również konfigurację notyfikacji przy przekroczonych 
+wartościach oraz alertów o utraconym połączeniu czy wyczerpującej się baterii. Zakładając istnienie 
+wcześniejsze infrastruktury WiFi koszt wprowadzenia jest niski.
+
+\section{Podsumowanie}
+Przedstawione urządzenia cechują się podobnym zakresem możliwych pomiarów. Można z tego wnioskować, że
+większość sensorów dostępnych aktualnie na rynku będzie zachowywać się podobnie. Nie jest więc to
+zagadnienie, które można w łatwy sposób usprawnić.
+
+
+Zupełnie inaczej jest w przypadku typu pomiarów jakie możemy wykonywać. Podstawowymi parametrami są
+temperatura i wilgotność powietrza, które można odczytać za pomocą większości rozwiązań tego typu.
+Systemy z możliwością uchwycenia dodatkowych czynników środowiska zazwyczaj są znacznie droższe, a
+urządzenia nie mogą być w przyszłości rozbudowane o dodatkowe sensory. Jest to punkt, który jest możliwy
+do poprawy z użyciem systemu Raspberry Pi i wytworzeniu adekwatnie uniwersalnego oprogramowania, które umożliwiałoby
+użytkownikowi na definiowanie własnych parametrów oraz dodawanie nowych sensorów.
+
+
+Częstotliwość pomiarów również jest punktem, który mógłby ulec polepszeniu. Oprócz najdroższej opcji
+przedstawionej w tej pracy żadna z nich nie jest w stanie działać w czasie zbliżonym do rzeczywistego
+i pomiary wykonywane są w odstępach liczonych w minutach. Może być to niewystarczające w wielu przypadkach
+użycia takiego systemu, a z użyciem odpowiedniej platformy interwał na poziomie kilku sekund nie powinien być
+trudny do osiągnięcia.
+
+
+Każda z przedstawionych solucji wykorzystuje różne sposoby połączenia urządzeń z siecią. Ze wszystkich
+najlepszym wydaje się być ten z systemu SensorPush. W dzisiejszych czasach sieci WiFi są bardzo powszechne
+i nie powinno to w większości przypadków generować dodatkowych kosztów. W porównaniu z wykorzystaniem 
+technologii Bluetooth sieci bezprzewodowe WiFi cechują się znacznie większą niezawodnością oraz
+większym zasięgiem działania. Natomiast sieć Ethernet mimo, że jest najbardziej niezawodna z nich
+niesie za sobą dodatkowe problemy logistyczne takie jak rozłożenie kabli w budynkach, co w niektórych
+przypadkach jak, np. obiekty zabytkowe może być niemożliwe.
+
+
+Wszystkie przedstawione systemy wykorzystują technologie chmurowe do przechowywania danych.
+Niesie to ze sobą wiele korzyści takich jak ułatwiony dostęp w każdym miejscu z połączeniem z
+siecią Internet, ale niesie też ze sobą w niektórych przypadkach dodatkowe koszty.
+Innym problemem jest przypadek braku dostępu do danego serwisu lub całkowite wygaśnięcie oferowanej
+usługi. W takim przypadku dane urządzenia stają się bezużyteczne, a cały system należy migrować
+do rozwiązań innego producenta. Problem ten można prosto rozwiązać oddając kontrolę nad
+serwerem klientowi. Oczywiście wymaga to, aby proces wdrażania systemu był jak najprostszy, żeby
+mógł trafić on do jak największej liczby osób.
+
+
+Żaden z przedstawionych systemów nie pozwala na prawdziwą rozbudowę poza tym co oferuje 
+dany producent. Sensory różnych producentów nie mogą być połączone z systemem innych.
+Może zostać to rozwiązane poprzez publikację standardu, który taka aplikacja obsługuje.
+Pozwoliłoby to na implementację różnych rozwiązań bazujących na dowolnej platformie.
+

@@ -1,0 +1,47 @@
+\documentclass[oneside,12pt]{wipb}
+\usetikzlibrary{mindmap,trees}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[polish, english]{babel}
+\usepackage{textcomp,mathcomp}
+
+\typpracy{INŻYNIERSKA}
+\temat{System monitorowania parametrów środowiska w pomieszczeniach z użyciem Raspberry Pi}
+\autor{Kacper Bajeński}
+\promotor{dr inż. Marcin Adamski}
+\indeks{107598}
+\studia{stacjonarne}
+\rokakademicki{2022/2023}
+\profil{stacjonarne I stopnia}
+\kierunekstudiow{informatyka}
+\specjalnosc{}
+\zakres{1. Analiza wymagań I \newline 2. Przegląd i wybranie technologii \newline 3. Projekt i implementacja aplikacji}
+
+\hypersetup{ %wpisy w pdf info
+pdfauthor={mgr inż. Maciej Brzozowski},
+pdftitle={Opis użycia klasy wipb},
+pdfsubject={},
+pdfkeywords={Praca dyplomowa},
+pdfpagemode=UseNone,
+linkcolor=black,
+citecolor=black
+} 
+
+\begin{document}
+\selectlanguage{polish}
+\maketitle
+\tableofcontents
+\thispagestyle{empty}
+\setcounter{page}{0}
+\pagestyle{plain}
+
+\input{wstep}
+\input{analiza_wymagan}
+\input{podobne_rozwiazania}
+
+\nocite{*} %wszystkie wpisy w bibliografi
+\bibliographystyle{plain} %{latex8} posortowane wzgledem wystepowania
+\bibliography{bibliografia}%
+
+%\biblioteka{tak} % tak/nie
+\end{document}
