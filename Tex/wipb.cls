@@ -14,9 +14,10 @@
 \RequirePackage[OT4,plmath]{polski}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{graphicx}
-\RequirePackage[colorlinks,plainpages=false,
- pdfpagelabels,
- naturalnames=true,
+\RequirePackage[breaklinks,
+  plainpages=false,
+  pdfpagelabels,
+  naturalnames=true,
   dvips]{hyperref}
 \RequirePackage[tableposition=top]{caption}
 \RequirePackage{listings}

@@ -1,9 +1,12 @@
 \documentclass[oneside,12pt]{wipb}
 \usetikzlibrary{mindmap,trees}
-\usepackage{url}
-\usepackage{hyperref}
+
 \usepackage[polish, english]{babel}
 \usepackage{textcomp,mathcomp}
+\usepackage{url}
+\def\UrlBreaks{\do\/\do-}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref}
 
 \typpracy{INŻYNIERSKA}
 \temat{System monitorowania parametrów środowiska w pomieszczeniach z użyciem Raspberry Pi}
@@ -38,8 +41,11 @@ citecolor=black
 \input{wstep}
 \input{analiza_wymagan}
 \input{podobne_rozwiazania}
+\input{wybrane_technologie}
 
 \nocite{*} %wszystkie wpisy w bibliografi
+\Urlmuskip=0mu plus 1mu\relax
+\def\UrlBreaks{\do\/\do-}
 \bibliographystyle{plain} %{latex8} posortowane wzgledem wystepowania
 \bibliography{bibliografia}%
 

@@ -1,0 +1,139 @@
+\chapter{Wybrane technologie}
+
+W tym rozdziale opisane zostaną technologie użyte do rozwiązania zadanego problemu.
+Aplikacja została podzielona na 3 warstwy wymagające zastosowania różnych rozwiązań,
+i zostaną one omówione w swoich sekcjach.
+
+\section{Aplikacja kliencka}
+Aplikacja kliencka została wykonana w formie strony internetowej.
+
+\subsection{WebAssembly}
+WebAssembly to technologia opisująca standardowy kod binarny oraz jego reprezentację tekstową,
+niezależne od platformy jego wykonania \cite{mdn:wasm, wasm:standard}. Umożliwia to
+tworzenie przenośnego oprogramowania, które może zostać wykorzystane w wielu różnych systemach.
+Głównymi celem WebAssembly jest umożliwienie tworzenia szybkiego oraz bezpiecznego pod względem
+obsługi pamięci oprogramowania, które może być stworzone w dowolnym języku programowania, 
+niezależnie od platformy oraz sprzętu, na którym ma być wykonywane \cite{wasm:standard}.
+
+\subsection{Rust}
+Rust to wielo-paradygmatowy kompilowany język programowania. Oznacza to, że łączy ze sobą cechy różnych
+konwencje wielu sposobów tworzenia oprogramowanie m.in. programowanie obiektowe, funkcjonalne
+czy strukturalne i umożliwia osobie je tworzącej na korzystanie z dowolnych zasobów oraz
+schematów danego paradygmatu. 
+
+Celem tego języka jest umożliwienie tworzenia wydajnego oprogramowania jednocześnie
+dbając o bezpieczeństwo pamięci oraz konkurencji \cite{infoworld:what_is_rust}. 
+Uzyskane jest to poprzez wykorzystanie mechanizmu sprawdzania zapożyczeń (ang. \textit{borrow checker}).
+Mechanizm ten sprawdza czas życia danego obiektu podczas kompilacji co sprawia, że nie wymagane
+jest to podczas działania oprogramowania w przeciwieństwie do systemów z klasycznym zliczaniem referencji.
+Dzięki temu nie jest wymagane użycie algorytmów odśmiecania pamięci
+(ang. \textit{garbage collection}) lub zliczania referencji (ang. \textit{reference counting}), 
+które dodają dodatkowe koszty wykonywania obliczeń.
+
+Środowisko programistyczne Rust zapewnia również wiele przydatnych narzędzi
+ułatwiających tworzenie oprogramowania \cite{klabnik:rust}.
+Jednym z nich jest serwer języka rust-analyzer, który może zostać zintegrowany
+z wieloma popularnymi środowiskami deweloperskimi oraz edytorami tekstu,
+w celu zapewnienia dodatkowych funkcjonalności takie jak
+autouzupełnianie czy wyświetlanie błędów kompilacji podczas edycji kodu.
+Kolejnym z nich jest oprogramowanie Cargo spełniające dwie główne funkcje - 
+jest systemem budującym projekt oraz umożliwia na zarządzanie zależnościami.
+Pozwala to na łatwe umieszczanie kodu innych publicznie dostępnych projektów
+w oprogramowaniu docelowym oraz wykorzystywanie jego funkcjonalności.
+
+Cechy te sprawiają, że ten język programowania regularnie cieszy się z
+wysokiego zadowolenia użytkowników w rankingach StackOverflow.
+W roku 2022 9,32\% respondentów używało języka Rust i aż 86,73\% z nich
+uznało, że kocha z nim pracować \cite{stackoverflow:popularity}.
+Jest to najwyższy wynik z jakiejkolwiek technologii w tej ankiecie,
+drugie miejsce zajmuje język Elixir z wynikiem 75,46\%.
+Dzięki tak dużej popularności powstało wiele otwarto-źródłowych bibliotek,
+które mogą pomóc w rozwiązaniu zadanego problemu.
+
+\subsection{Yew}
+Yew to framework umożliwiający tworzenie witryn WWW w języku Rust.
+Z użyciem tej biblioteki możliwe jest konstruowanie niezawodnych
+oraz wydajnych stron internetowych. Yew wykorzystuje WebAssembly wraz
+z renderowaniem po stronie serwera, aby znacznie przyśpieszyć działanie
+aplikacji na docelowej platformie.
+
+Do tworzenia stron Yew wykorzystuje język podobny do HTML i JSX dzięki
+czemu jest przystępny dla programistów mających wcześniejsze doświadczenie
+z tymi technologiami. Podobnie jak inne środowiska takie jak React czy Angular
+tworzone są komponenty, które mogą być wielokrotnie używane w różnych miejsach
+na stronie co sprawia, że kod jest czytelniejszy i jest jego mniej.
+
+\subsection{Bootstrap}
+Bootstrap to darmowe i otwarto-źródłowe środowisko programistyczne składające się
+ze zbioru szablonów stworzonych w językach HTML, CSS i JavaScript, które mogą
+być dowolnie wykorzystane z kompatybilnymi technologiami.
+Ten framework zawiera podstawowe style potrzebne, aby stworzyć responsywną 
+aplikacje webowe na wielu urządzeniach z różnymi rozmiarami ekranów oraz rozdzielczością. 
+
+\section{Aplikacja serwerowa}
+
+\subsection{.NET Core}
+.NET Core to następca popularnej platformy programistycznej .NET Framework stworzonej przez
+firmę Microsoft. W przeciwieństwie do poprzednika, którego oficjalne wsparcie ograniczone było
+do systemu Windows, a same oprogramowanie było własnościowe, jest to technologia otwarto-źródłowa
+wspierająca wiele systemów operacyjnych \cite{price2021c}. Możliwe jest to poprzez zastosowanie
+języka pośredniego niezależnego od systemu lub sprzętu. Instrukcje te tłumaczone są w 
+wirtualnej maszynie CLR (ang. \textit{Common Language Runtime}) na język maszynowy, a
+następnie wykonywane jak standardowy natywny kod \cite{msdn:clr}. Dzięki takiemu podjeściu
+możliwe jest wytworzenie przenośnego oprogramowania, które może być wykorzystane na wielu
+systemach.
+
+\subsection{C\#}
+C\# to silnie typowany język obiektowy wysokiego poziomu stworzony przez firmę Microsoft.
+Do kompilacji wykorzystywane jest środowisko .NET, dzięki czemu zachowane są
+jego cechy takie jak przenośność oprogramowania oraz możliwość wykorzystania
+innych języków programowania bazujących na tej technologii.
+
+Dzięki automatycznemu zarządzaniu pamięcią ułatwia znacznie tworzenie
+oprogramowania, gdyż w bezpiecznym kontekście nie pozwala na 
+błędne jej wykorzystanie. Wykonywane jest to poprzez zastosowanie
+mechanizmu odśmiecania pamięci (ang. \textit{garbage collection}).
+
+C\# zawiera również rozszerzenia kolekcji LINQ (ang. \textit{Language Integrated Query})
+pozwalające na wykonywanie na nich dodatkowych operacji, tj. grupowanie, sortowanie czy wyszukiwanie.
+Te dodatkowe metody mogą być wykorzystane do działań na róznych źródłach danych takich jak dokumenty XML
+czy też bazy danych SQL \cite{zhang2014}. Ich wysokopoziomowy kod jest przenośny i może być
+wykorzystywany w takiej samej formie przy różnych źródłach danych.
+
+Kolejną zaletą tej technologii jest możliwość wykorzystania meta-programowania. 
+Jest to technika umożliwiająca modyfikację kodu podczas jego kompilacji lub wykonywania. 
+Dzięki niej podczas wykonywania programu, poprzez refleksję, możliwe jest rozpoznanie
+typu obiektu oraz jego modyfikacja. Pozwala również na tworzenie drzew wyrażeń, które
+mogą zostać dynamicznie skompilowane w celu, np. wykorzystania zaawansowanej logiki
+biznesowej, która może być zmienna.
+
+\subsection{ASP.NET}
+ASP.NET to modularna platforma programistyczna oparta na technologii .NET. 
+Jej bogata funkcjonalność pozwala na tworzenie stron internetowych, API HTTP oraz 
+wiele innych aplikacji webowych poprzez zastosowanie wielu z jej rozszerzeń.
+
+\subsection{MongoDB}
+MongoDB to wieloplatformowy system bazodanowy. Dane przechowywane są w postaci dokumentów
+w formacie podobnym do JSON. Umożliwia dzięki temu, w porównaniu do klasycznych baz
+danych SQL, na większą elastyczność dzięki braku konieczności określania schematu tabel.
+
+\section{Urządzenie pomiarowe}
+
+\subsection{Raspberry Pi Pico W}
+
+\subsection{C++}
+C++ to obiektowy język programowania wysokiego poziomu, często nazywany również "C z klasami".
+Obsługuje on wysokopoziomowe abstrakcje takie jak obiekty, programowanie generyczne czy
+abstrakcje pozwalając w tym samym czasie na używanie niskopoziomowej funkcjonalności 
+takiej jak zarządzenie pamięcią czy używanie języka maszynowego. Przez te cechy
+używany jest tam, gdzie potrzebna jest wysoka wydajność lub zasoby komputerowe
+są znacznie ograniczone, np. serwery WWW, gry wideo czy systemy wbudowane.
+
+W porównaniu do C zawiera również rozbudowaną standardową bibliotekę klas i funkcji.
+Dodaje ona dodatkową funkcjonalność taką jak zaawansowane typy pozwalające na
+przechowywanie zmiennej liczby danych, algorytmy takie jak sortowanie czy 
+generowanie liczb losowych, obsługa plików, czasu oraz wielowątkowości.
+
+\subsection{Arduino}
+
+
