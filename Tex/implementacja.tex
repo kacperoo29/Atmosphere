@@ -1,0 +1,137 @@
+\chapter{Implementacja}
+
+\section{Komunikacja między warstwami}
+Komunikacja między warstwami aplikacji odbywa się z wykorzystaniem protokołu 
+HTTP (ang. \textit{Hypertext Transfer Protocol}).
+Jest to jedna z technologii wykorzystywana w modelu TCP/IP 
+nazywanego również protokołem Internetowym (ang. \textit{Internet Protocol}).
+Jest protokołem bezstanowym \cite{http:rfc9110} służącym do przesyłania
+informacji w postaci hipertekstowej i jest podstawowym rozwiązaniem
+stosowanym w sieci WWW (ang. \textit{World Wide Web}), będąca systemem 
+służącym do udostępniania informacji poprzez sieć Internet
+z wykorzystaniem adresów URI (ang. \textit{Uniform Resource Identifier}) \cite{Jacobs:04:AWW}.
+
+
+\section{Aplikacja serwerowa}
+Aplikacja serwerowa została zaimplementowana jako centralny komponent systemu.
+Zajmuje się zapisem odczytów w bazie danych, przetwarzaniem zapytań
+pozostałych warstw, klienckiej oraz urządzeń pomiarowych,
+poprzez wykorzystanie różnych metod HTTP.
+Metoda POST zajmuje używana jest w nim do przekazywania danych
+dla serwera w procesach takich jak tworzenie konta użytkownika,
+wysyłanie nowego odczytu czy uwierzytelnianie.
+Aplikacja następnie przetwarza te zapytanie oraz w odpowiedni 
+sposób na nie reaguje, np. zapisując je na stałe do bazy danych 
+lub wysyłając notyfikację użytkownikowi, po czym odpowiada
+odpowiednim statusem klientowi.
+Kolejną szeroko zastosowaną metodą jest GET. Służy ona do pobierania
+zasobów z serwera. Klient wykorzystuje odpowiedni adres URI z
+podstawowymi danymi lub bez, pod który wykonuje zapytanie, a
+następnie serwer zwraca odpowiedź z zażądanymi informacjami.
+Metodami służącymi do modyfikacji zasobów są PUT oraz DELETE.
+Pierwsza z nich wykorzystywana jest do zmieniania istniejących
+już zasobów lub tworzenia ich na nowo. DELETE natomiast służy
+do usuwania zasobów.
+
+Kolejnym zadaniem tej aplikacji jest również przechowywanie oraz synchronizacja konfiguracji
+między pozostałymi urządzeniami w systemie. Użytkownik może ustawić podstawowe
+parametry aplikacji takie jak graniczne wartości odczytów lub
+częstotliwość pobierania odczytów z sensorów po czym te ustawienia
+synchronizowane są z pozostałymi urządzeniami systemu.
+
+Całość została wykonana z użyciem technologii ASP.NET Core.
+Ułatwiło to znacznie implementację ze względu na bogate zasoby
+tego środowiska ułatwiające pracę z protokołem HTTP oraz mnogość
+bibliotek oraz wcześniej wykonanych projektów i przykładów z użyciem
+tej technologii. 
+Pierwszym z takich dodatkowych rozwiązań jest oficjalny sterownik
+baz danych MongoDB dla środowiska .NET. Jego wykorzystanie 
+umożliwiło na prostą interakcję między aplikacją oraz bazą
+danych. Zamiast ręcznie dokonywać połączenia oraz przesyłać
+komendy możliwa jest interakcja poprzez udostępniony interfejs.
+Umożliwia on na wykorzystanie zaawansowanych technik takich jak
+LINQ co znacznie ułatwiło tworzenie zapytań. Technologia ta
+pomaga również w mapowaniu obiektów baz danych na klasy języka C\#.
+W większości przypadków takie zależności tworzone są automatycznie,
+jedynie w przypadku nadmiarowych lub braku wymaganych danych potrzebna
+jest interakcja programisty. Przykładem z implementacji jest wymaganie
+mapowania klas dziedziczących.
+\begin{lstlisting}
+BsonClassMap.RegisterClassMap<BaseUser>(cm =>
+{
+    cm.AutoMap();
+    cm.AddKnownType(typeof(Device));
+    cm.AddKnownType(typeof(User));
+});
+\end{lstlisting}
+W tym odcinku kodu tworzona jest mapa automatyczna dla klasy BaseUser - podstawowej
+użytkownika, a następnie wiązane są z nią dwa typy pochodne - Device, czyli urządzenie
+oraz User, czyli użytkownik. Pozwala to na dostęp do obu typów użytkownika
+z jednego kontekstu bazy danych.
+
+Wykorzystanie ASP.NET ułatwiło również wykonanie systemu autoryzacji. 
+Pakiet Microsoft.AspNetCore.Authentication zawiera często wykorzystywane metody
+uwierzytelniania użytkowników. W implementacji aplikacji użyto metody tokenów JWT
+(ang. \textit{JSON Web Token}). Jest to krótka, zakodowana w systemie Base64, 
+reprezentacja uprawnień użytkownika używana w środowiskach z ograniczoną przestrzenią 
+takich jak HTTP\cite{jwt:rfc7519}. Oprócz tego zawiera informacje o
+czasie jego przedawnienia, audiencji oraz emitenta. Dzięki temu
+może zostać wykorzystany w systemach pojedynczego logowania
+SSO (ang. \textit{Single sign-on}) i wykorzystywany poprzez wiele aplikacji.
+W implementacji został wykorzystany algorytm HmacSha256 do cyfrowego
+podpisywania ważności tokenu. Sterowanie innymi parametrami takimi jak czas
+przedawnienia, audiencja orz emitent odbywa się za pomocą edytowalnych
+plików konfiguracyjnych.
+\begin{lstlisting}
+var token = new JwtSecurityToken(
+  config["Issuer"],
+  config["Audience"],
+  claims,
+  expires: DateTime.Now.Add(expiration),
+  signingCredentials: new SigningCredentials(
+    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["SecretKey"])),
+  SecurityAlgorithms.HmacSha256));
+\end{lstlisting} 
+Hasła użytkowników przechowywane są po wcześniejszym zakodowaniu algorytmem SHA256
+z dodatkowymi informacjami nazywanymi solą. Są to losowe dane, które pozwalają na
+dodatkowe zabezpieczenie kluczy przed wykryciem duplikatów lub ataków słownikowych
+\cite{anderson2020security}.
+Aby odpowiednio przejść proces uwieżytleniania użytkownik musi przesłać
+swoją nazwę użytkownika oraz hasło zapytaniem z metodą POST pod odpowiedni adres
+URI. Następnie jeżeli dane są prawidłowe w odpowiedzi otrzyma on wartość
+token, która następnie może wykorzystać do dostępu do zablokowanych anonimowym
+użytkownikom zasobów, takich jak tworzenie nowych odczytów. Wartość
+ta musi zostać przesłana w nagłówku Authorization.
+Użytkownicy dzielą się na różne role: administrator, użytkownik oraz urządzenie.
+Administrator ma dostęp do wszystkich opcji aplikacji - konfiguracji, zarządzania odczytami
+oraz użytkownikami, przeglądanie zasobów. Urządzenie może zarządzać jedynie swoimi
+danymi, a zwykły użytkownik nie ma dostępu do edycji zasobów i może jedynie przeglądać
+wartości.
+
+Jako szkielet logiki aplikacji został wykorzystany wzorzec CQRS 
+(ang. \textit{Command Query Responsibility Separation}).
+W tym modelu akcje dzielą się na dwa typy komendy oraz zapytania \cite{fowler:cqrs}.
+Komendy służą do interakcji z systemem, np. tworzenie użytkowników.
+Mogą zawierać dodatkową logikę jak weryfikacja danych wejściowych 
+czy sprawdzanie duplikatów.
+Zapytania spełniają funkcję dostępu do danych. Pobierane oraz
+filtrowane są w nich informacje z systemu i w razie potrzeby
+odpowiednio transformowane.
+Dzięki stosowaniu się do zasad tej metodyki aplikacja wolna
+jest od efektów ubocznych i tworzenie zapytań nie zmienia
+wartości systemu. Pozwala również na uproszczenie logiki
+aplikacji ze względu na podział na proste moduły oraz bardzo
+dobrą skalowalność z rozwiązaniami wielowątkowymi.
+W implementacji tej metodyki wykorzystano bibliotekę MediatR.
+Udostępnia ona bardzo łatwy w użyciu wzorzec mediatora.
+Pozwala on na redukcję zależności między komponentami poprzez
+zastosowanie centralnego obiektu zajmującego się komunikacją między nimi\cite{freeman2004head}.
+W tym przypadku komponentami są komendy oraz zapytania i do ich realizacji
+została wykorzystana dynamiczna implementacja centralnego
+mediatora z biblioteki MediatR. Oddziela to dane od implementacji
+zachowań i pozwala na ich niezależną modyfikacje.
+
+\section{Aplikacja kliencka}
+
+
+\section{Urządzenie pomiarowe}

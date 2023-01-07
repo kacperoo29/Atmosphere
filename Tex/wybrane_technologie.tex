@@ -1,13 +1,15 @@
 \chapter{Wybrane technologie}
 
 W tym rozdziale opisane zostaną technologie użyte do rozwiązania zadanego problemu.
-Aplikacja została podzielona na 3 warstwy wymagające zastosowania różnych rozwiązań,
-i zostaną one omówione w swoich sekcjach.
+System został podzielony na różne komunikujące się ze sobą aplikacje i każda z nich
+wymaga różnego podejścia do ich wytworzenia. Z tego powodu ten rozdział został podzielony
+na podrozdziały, każdy z nich opisujący dany program i technologie użyte do ich
+utworzenia.
 
 \section{Aplikacja kliencka}
 Aplikacja kliencka została wykonana w formie strony internetowej.
 
-\subsection{WebAssembly}
+\subsection*{WebAssembly}
 WebAssembly to technologia opisująca standardowy kod binarny oraz jego reprezentację tekstową,
 niezależne od platformy jego wykonania \cite{mdn:wasm, wasm:standard}. Umożliwia to
 tworzenie przenośnego oprogramowania, które może zostać wykorzystane w wielu różnych systemach.
@@ -15,7 +17,7 @@ Głównymi celem WebAssembly jest umożliwienie tworzenia szybkiego oraz bezpiec
 obsługi pamięci oprogramowania, które może być stworzone w dowolnym języku programowania, 
 niezależnie od platformy oraz sprzętu, na którym ma być wykonywane \cite{wasm:standard}.
 
-\subsection{Rust}
+\subsection*{Rust}
 Rust to wielo-paradygmatowy kompilowany język programowania. Oznacza to, że łączy ze sobą cechy różnych
 konwencje wielu sposobów tworzenia oprogramowanie m.in. programowanie obiektowe, funkcjonalne
 czy strukturalne i umożliwia osobie je tworzącej na korzystanie z dowolnych zasobów oraz
@@ -50,7 +52,7 @@ drugie miejsce zajmuje język Elixir z wynikiem 75,46\%.
 Dzięki tak dużej popularności powstało wiele otwarto-źródłowych bibliotek,
 które mogą pomóc w rozwiązaniu zadanego problemu.
 
-\subsection{Yew}
+\subsection*{Yew}
 Yew to framework umożliwiający tworzenie witryn WWW w języku Rust.
 Z użyciem tej biblioteki możliwe jest konstruowanie niezawodnych
 oraz wydajnych stron internetowych. Yew wykorzystuje WebAssembly wraz
@@ -63,7 +65,7 @@ z tymi technologiami. Podobnie jak inne środowiska takie jak React czy Angular
 tworzone są komponenty, które mogą być wielokrotnie używane w różnych miejsach
 na stronie co sprawia, że kod jest czytelniejszy i jest jego mniej.
 
-\subsection{Bootstrap}
+\subsection*{Bootstrap}
 Bootstrap to darmowe i otwarto-źródłowe środowisko programistyczne składające się
 ze zbioru szablonów stworzonych w językach HTML, CSS i JavaScript, które mogą
 być dowolnie wykorzystane z kompatybilnymi technologiami.
@@ -72,7 +74,7 @@ aplikacje webowe na wielu urządzeniach z różnymi rozmiarami ekranów oraz roz
 
 \section{Aplikacja serwerowa}
 
-\subsection{.NET Core}
+\subsection*{.NET Core}
 .NET Core to następca popularnej platformy programistycznej .NET Framework stworzonej przez
 firmę Microsoft. W przeciwieństwie do poprzednika, którego oficjalne wsparcie ograniczone było
 do systemu Windows, a same oprogramowanie było własnościowe, jest to technologia otwarto-źródłowa
@@ -83,7 +85,7 @@ następnie wykonywane jak standardowy natywny kod \cite{msdn:clr}. Dzięki takie
 możliwe jest wytworzenie przenośnego oprogramowania, które może być wykorzystane na wielu
 systemach.
 
-\subsection{C\#}
+\subsection*{C\#}
 C\# to silnie typowany język obiektowy wysokiego poziomu stworzony przez firmę Microsoft.
 Do kompilacji wykorzystywane jest środowisko .NET, dzięki czemu zachowane są
 jego cechy takie jak przenośność oprogramowania oraz możliwość wykorzystania
@@ -107,21 +109,21 @@ typu obiektu oraz jego modyfikacja. Pozwala również na tworzenie drzew wyraże
 mogą zostać dynamicznie skompilowane w celu, np. wykorzystania zaawansowanej logiki
 biznesowej, która może być zmienna.
 
-\subsection{ASP.NET}
+\subsection*{ASP.NET}
 ASP.NET to modularna platforma programistyczna oparta na technologii .NET. 
 Jej bogata funkcjonalność pozwala na tworzenie stron internetowych, API HTTP oraz 
 wiele innych aplikacji webowych poprzez zastosowanie wielu z jej rozszerzeń.
 
-\subsection{MongoDB}
+\subsection*{MongoDB}
 MongoDB to wieloplatformowy system bazodanowy. Dane przechowywane są w postaci dokumentów
 w formacie podobnym do JSON. Umożliwia dzięki temu, w porównaniu do klasycznych baz
 danych SQL, na większą elastyczność dzięki braku konieczności określania schematu tabel.
 
 \section{Urządzenie pomiarowe}
 
-\subsection{Raspberry Pi Pico W}
+\subsection*{Raspberry Pi Pico W}
 
-\subsection{C++}
+\subsection*{C++}
 C++ to obiektowy język programowania wysokiego poziomu, często nazywany również "C z klasami".
 Obsługuje on wysokopoziomowe abstrakcje takie jak obiekty, programowanie generyczne czy
 abstrakcje pozwalając w tym samym czasie na używanie niskopoziomowej funkcjonalności 
@@ -134,6 +136,4 @@ Dodaje ona dodatkową funkcjonalność taką jak zaawansowane typy pozwalające 
 przechowywanie zmiennej liczby danych, algorytmy takie jak sortowanie czy 
 generowanie liczb losowych, obsługa plików, czasu oraz wielowątkowości.
 
-\subsection{Arduino}
-
-
+\subsection*{Arduino}

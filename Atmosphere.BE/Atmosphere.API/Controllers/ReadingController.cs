@@ -59,4 +59,20 @@ public class ReadingController : ControllerBase
             return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(List<ReadingDto>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetReadingsByDate([FromQuery] GetReadingsByDate request)
+    {
+        try
+        {
+            var readings = await _mediator.Send(request);
+
+            return this.Ok(readings);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

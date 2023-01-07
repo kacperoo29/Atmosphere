@@ -1,20 +1,58 @@
 \chapter{Analiza problemu}
 
 Problem pomiarów parametrów środowiska jest powszechny w każdej dziedzinie życia.
-Urządzenia pozwalające na wykonywanie prostych pomiarów takich jak temperatura
-powstawały już od XVII wieku naszej ery \cite{bigotti:thermomethers}.
-Są to jednak proste urządzenia niepozwalające na automatyzację oraz serializację
-danych, co dzięki rozwojowi sensorów oraz systemów komputerowych jest teraz
-możliwe. Wykorzystanie nowoczesnych rozwiązań i stworzenie systemu pomiarowego
-może pomóc w rozwiązaniu problemów, które wcześniej były niemożliwe do rozwiązania
-lub były znacznie utrudnione przez liczne czynniki. 
+Wykonywanie ich pomaga nam w życiu codziennym przy prostych czynnościach jak
+wybieranie ubioru odpowiedniego do pogody, ale również przydaje się w bardziej
+zaawansowanych sferach jak badania naukowe. Częstym zastosowaniem są również
+domowe hodowle roślin, które wymagają stałego monitorowania parametrów
+takich jak temperatura czy wilgotność, aby zapewnić im odpowiednie warunki
+do rozwoju. Innym przykładem użyteczności takiego rozwiązania są automatyczne
+systemy kontroli jakości powietrza w pomieszczeniach. Mogą się one składać
+z uzdatniaczy powietrza, klimatyzatorów, pieców, itp. Taki system monitorowania
+może wydawać komendy tym urządzeniom w celu automatycznej i precyzyjnej kontroli.
 
 
 Zwracając uwagę na powszechność problemu oraz ilość możliwych parametrów,
-które można zmierzyć, stworzony
-system powinien umożliwiać na obsługę jak największej grupy rodzajów
-odczytów. Możliwe jest stworzenie generycznego rozwiązania nielimitującego
-użytkownika do zastosowanych sensorów oraz zbieranych czynników środowiskowych.
+które można zmierzyć, stworzony system powinien umożliwiać na obsługę jak 
+największej grupy rodzajów odczytów. Zależnie od przeznaczenia użytkownik
+powinien mieć możliwość wykorzystania jak największej grupy sensorów ze
+zdolnością do wykonywania odczytów różnych parametrów środowiska.
+Taka implementacja możliwa jest poprzez stworzenie generycznego rozwiązania, które
+nie ograniczałoby użytkownika i na jego podstawie tworzenie oprogramowania
+sterującego danym modelem urządzenia.
 Może być to osiągnięte z użyciem odpowiednich poziomów abstrakcji w oprogramowaniu.
 Umożliwiłoby to również na zwiększoną modularność rozwiązania oraz
 wyłączenie niewymaganych w danym zastosowaniu składników systemu.
+Dzięki temu zmniejszona zostaje złożoność oraz rozmiar oprogramowania
+na urządzeniu monitorującym.
+
+
+Niektóre sytuacje mogą wymagać reakcji człowieka na zdarzenie, np.
+w przypadku niespodziewanego uszkodzenia, którejś z części kontrolującej
+temperaturę powietrza. W takich przypadkach dobrym rozwiązaniem jest możliwość
+wysyłania powiadomień użytkownikowi o niestandardowym zachowaniu.
+Mogą być to informacje o przekroczeniu skonfigurowanej wartości danego czynnika
+lub niespodziewanej nagłej jego zmianie. Taki system notyfikacji wraz z
+częstym odczytem parametrów może znacznie przyśpieszyć czas reakcji
+i naprawy problemu, co może przełożyć się na znacznie zredukowane straty.
+Taki system mógłby zostać również wykorzystany do notyfikowania innych
+urządzeń o zmianach parametrów tym samym pozwalając na automatyzację
+ich działania oraz konfiguracji. Urządzenie mogłoby reagować na daną 
+informację i sama dostosować swoje działanie lub w bardziej zaawansowanych
+przypadkach logika biznesowa mogłaby znaleźć się po stronie serwera i 
+kontrolować pracę tego urządzenia.
+
+
+Do wielu zastosowań może być również konieczne przeglądanie odczytów historycznych.
+Taka funkcjonalność jest konieczna w przypadku, np. badań wpływu danych
+parametrów środowiska na badany obiekt. Umożliwia to na ułatwioną korelację
+wartości odczytów ze zmianami w podmiocie badań. Przydaje się również 
+wraz z wykorzystaniem systemów poprawiających jakość czy temperaturę
+powietrza, gdzie porównując wykorzystaną moc urządzenia możemy skorelować
+ze zmianami parametrów środowiska wraz z biegiem czasu.
+Aplikacja powinna więc mieć możliwość zapisu oraz odczytu danych. Powinny być
+one przechowywane w formacie, który umożliwi późniejsze ich łatwe przetwarzanie,
+co pomoże w przypadku budowy innych funkcjonalności na zgromadzonych danych
+jak również ułatwi samą ich prezentację użytkownikowi. Funkcjonalnością, która
+powinna się również pojawić powinna być możliwość filtrowania oraz sortowania
+odczytów przez użytkownika.
