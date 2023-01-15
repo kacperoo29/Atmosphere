@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -9,6 +10,8 @@ using Atmosphere.Application.Services;
 using Atmosphere.Core.Enums;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
+using Atmosphere.Core.Validation;
+using Atmosphere.Services;
 using Atmosphere.Services.Auth;
 using Atmosphere.Services.Consts;
 using Atmosphere.Services.Notifications;
@@ -18,8 +21,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -132,7 +137,7 @@ builder.Services.AddAuthorization(opt =>
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
         .Build();
-    
+
     opt.AddPolicy(
         nameof(UserRole.Admin),
         policy => policy.RequireClaim(ClaimTypes.Role, nameof(UserRole.Admin))
@@ -152,6 +157,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReadingValidator, ReadingValidator>();
 
 builder.Services.AddScoped(opt =>
 {
@@ -201,6 +207,12 @@ BsonClassMap.RegisterClassMap<BaseModel>(cm =>
     cm.MapIdMember(c => c.Id).SetIdGenerator(GuidGenerator.Instance);
 });
 
+BsonSerializer.RegisterSerializer(
+    new EnumSerializer<ReadingType>(BsonType.String)
+);
+
+BsonSerializer.RegisterSerializer(new LinqSerializer<Func<Reading, bool>>());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -223,12 +235,7 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseCors(
-    opt => opt
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-);
+app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();

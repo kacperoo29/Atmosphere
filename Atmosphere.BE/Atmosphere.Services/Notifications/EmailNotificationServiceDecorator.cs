@@ -11,13 +11,16 @@ public class EmailNotificationServiceDecorator : INotificationService
     private readonly IConfigService _configService;
     private readonly INotificationService _wrapee;
 
-    public EmailNotificationServiceDecorator(INotificationService wrapee, IConfigService configService)
+    public EmailNotificationServiceDecorator(
+        INotificationService wrapee,
+        IConfigService configService
+    )
     {
         _configService = configService;
         _wrapee = wrapee;
     }
 
-    public async Task Notify(Reading reading, List<ValidationResult> validationResults)
+    public async Task Notify(Reading reading, IEnumerable<ValidationResult> validationResults)
     {
         await _wrapee.Notify(reading, validationResults);
 
@@ -34,7 +37,8 @@ public class EmailNotificationServiceDecorator : INotificationService
         // TODO: Make more sensible email body
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $"<p>{reading.Value}</p>";
-        foreach (var result in validationResults) bodyBuilder.HtmlBody += $"<p>{result.ErrorMessage}</p>";
+        foreach (var result in validationResults)
+            bodyBuilder.HtmlBody += $"<p>{result.ErrorMessage}</p>";
         message.Body = bodyBuilder.ToMessageBody();
 
         var smtpServerAddress = config.SmtpServer;
@@ -45,7 +49,9 @@ public class EmailNotificationServiceDecorator : INotificationService
         using (var client = new SmtpClient())
         {
             await client.ConnectAsync(smtpServerAddress, smtpServerPort, false);
-            await client.AuthenticateAsync(smtpServerUsername, smtpServerPassword);
+            if (!string.IsNullOrEmpty(smtpServerUsername))
+                await client.AuthenticateAsync(smtpServerUsername, smtpServerPassword);
+
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }

@@ -5,5 +5,5 @@ namespace Atmosphere.Application.Services;
 
 public interface INotificationService
 {
-    Task Notify(Reading reading, List<ValidationResult> validationResults);
+    Task Notify(Reading reading, IEnumerable<ValidationResult> validationResults);
 }

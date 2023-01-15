@@ -1,4 +1,5 @@
 using System.Net;
+using Atmosphere.Application.Configuration;
 using Atmosphere.Application.Configuration.Commands;
 using Atmosphere.Application.Configuration.Queries;
 using Atmosphere.Application.DTO;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Atmosphere.API.Controllers;
 
-[Authorize(nameof(UserRole.Admin))]
+[Authorize(Roles = nameof(UserRole.Admin))]
 [Route("api/[controller]/[action]")]
 [ApiController]
 public class ConfigurationController : ControllerBase
@@ -98,19 +99,19 @@ public class ConfigurationController : ControllerBase
         }
     }
 
-    [HttpPut]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [HttpPatch]
+    [ProducesResponseType(typeof(EmailConfiguration), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> UpdateNotificationSettings(
-        [FromBody, BindRequired] UpdateNotificationSettings request
+    public async Task<IActionResult> UpdateEmailConfiguration(
+        [FromBody, BindRequired] UpdateEmailConfig request
     )
     {
         try
         {
-            await _mediator.Send(request);
+            var configuration = await _mediator.Send(request);
 
-            return Ok();
+            return Ok(configuration);
         }
         catch (Exception e)
         {
@@ -119,16 +120,36 @@ public class ConfigurationController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(NotificationSettingsDto), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(EmailConfiguration), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> GetNotificationSettings()
+    public async Task<IActionResult> GetEmailConfiguration()
     {
         try
         {
-            var notificationSettings = await _mediator.Send(new GetNotificationSettings());
+            var configuration = await _mediator.Send(new GetEmailConfiguration());
 
-            return Ok(notificationSettings);
+            return Ok(configuration);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpPut]
+    [ProducesResponseType(typeof(IEnumerable<NotificationType>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> ToggleNotificationType(
+        [FromBody, BindRequired] ToggleNotificationType request
+    )
+    {
+        try
+        {
+            var configuration = await _mediator.Send(request);
+
+            return Ok(configuration);
         }
         catch (Exception e)
         {

@@ -6,7 +6,7 @@ namespace Atmosphere.Services.Notifications;
 
 public class NotificationService : INotificationService
 {
-    public Task Notify(Reading reading, List<ValidationResult> validationResults)
+    public Task Notify(Reading reading, IEnumerable<ValidationResult> validationResults)
     {
         return Task.CompletedTask;
     }

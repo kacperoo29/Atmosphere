@@ -22,7 +22,7 @@ public class ReadingController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(nameof(UserRole.Device))]
+    [Authorize(Roles = nameof(UserRole.Admin) + "," + nameof(UserRole.Device))]
     [ProducesResponseType(typeof(ReadingDto), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
