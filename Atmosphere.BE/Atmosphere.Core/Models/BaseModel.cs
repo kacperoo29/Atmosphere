@@ -27,4 +27,9 @@ public abstract class BaseModel
 
         return Id == other.Id;
     }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, CreatedAt, UpdatedAt);
+    }
 }

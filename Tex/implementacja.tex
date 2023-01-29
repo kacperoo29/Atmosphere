@@ -1,5 +1,7 @@
 \chapter{Implementacja}
-W tym rozdziale przedstawiono szczegóły implementacji aplikacji.
+W tym rozdziale przedstawiono szczegóły implementacji systemu. 
+Poszczególne zagadnienia oraz aplikacje wchodzące w jego skład
+zostały opisane w oddzielnych sekcjach tego rozdziału.
 
 \section{Komunikacja między warstwami}
 Komunikacja między warstwami aplikacji odbywa się z wykorzystaniem protokołu 
@@ -11,7 +13,6 @@ informacji w postaci hipertekstowej i jest podstawowym rozwiązaniem
 stosowanym w sieci WWW (ang. \textit{World Wide Web}), będąca systemem 
 służącym do udostępniania informacji poprzez sieć Internet
 z wykorzystaniem adresów URI (ang. \textit{Uniform Resource Identifier}) \cite{Jacobs:04:AWW}.
-
 
 \section{Aplikacja serwerowa}
 Aplikacja serwerowa została zaimplementowana jako centralny komponent systemu.
@@ -57,7 +58,7 @@ W większości przypadków takie zależności tworzone są automatycznie,
 jedynie w przypadku nadmiarowych lub braku wymaganych danych potrzebna
 jest interakcja programisty. Przykładem z implementacji jest wymaganie
 mapowania klas dziedziczących.
-\begin{lstlisting}
+\begin{lstlisting}[language={[Sharp]C}]
 BsonClassMap.RegisterClassMap<BaseUser>(cm =>
 {
     cm.AutoMap();
@@ -83,7 +84,7 @@ W implementacji został wykorzystany algorytm HmacSha256 do cyfrowego
 podpisywania ważności tokenu. Sterowanie innymi parametrami takimi jak czas
 przedawnienia, audiencja orz emitent odbywa się za pomocą edytowalnych
 plików konfiguracyjnych.
-\begin{lstlisting}
+\begin{lstlisting}[language={[Sharp]C}]
 var token = new JwtSecurityToken(
   config["Issuer"],
   config["Audience"],
@@ -132,7 +133,69 @@ została wykorzystana dynamiczna implementacja centralnego
 mediatora z biblioteki MediatR. Oddziela to dane od implementacji
 zachowań i pozwala na ich niezależną modyfikacje.
 
+Serwis notyfikacji został zaimplementowany z użyciem wzorca dekorator.
+Jest to wzorzec projektowy pozwalający na dynamiczne dodawanie nowego
+zachowania obiektowi bez modyfikacji innych obiektów tej samej klasy
+\cite{freeman2004head}. Tym samym ułatwia on dostosowanie się do zasady
+pojedynczej odpowiedzialności (ang. \textit{Single responsibility principle})
+poprzez wydzielenie logiki na klasy zajmujące się tylko jednym zadaniem.
+Jego wykorzystanie oznacza również zastosowanie zasady otwarte-zamknięte, w
+której części systemu powinny być otwarte na rozszerzanie, ale zamknięte
+na modyfikacje \cite{meyer1988object}. Jest to możliwe, gdyż dekorator pozwala
+na dodanie nowych funkcjonalności obiektowi bez jego ponownego tworzenia.
+Z jego wykorzystaniem użytkownik jest w stanie skonfigurować system notyfikacji,
+aby ten wysyłał powiadomienia do różnych celów takich jak poczta elektroniczna
+czy powiadomienia SMS.
+
+Aby ułatwić implementację pozostałych aplikacji oraz w celu zapewnienia dokumentacji
+wykorzystano bibliotekę Swashbuckle. Dostarcza ona składniki takie jak 
+\begin{itemize}
+  \item generator schematów OpenAPI, które mogą być następnie wykorzystane do generowania klientów
+wykorzystujących dane API,
+  \item generator dokumentacji bazujący na komentarzach znajdujących się w kodzie aplikacji,
+  \item interfejs swagger-ui umożliwiający na przeglądanie zasobów z poziomu przeglądarki internetowej.
+\end{itemize}
+Kod wygenerowany na podstawie schematów wygenerowanych przez tą bibliotekę został następnie
+wykorzystany zarówno w aplikacji klienckiej jak i urządzeniach pomiarowych.
+Wykorzystano do tego oprogramowanie openapi-generator wspierające wiele języków
+programowania oraz różnych bibliotek służących do komunikacji z użyciem protokołu HTTP.
+Jest ono w stanie, na podstawie schematów OpenAPI, utworzyć klienta wraz z odpowiednimi
+modelami jak również trzon aplikacji serwerowej oraz dokumentację. Pozwala również
+na modyfikowanie wzorów generowanego kodu poprzez pliku mustache, za pomocą których
+definiowana jest struktura wygenerowanych plików.
+
+
 \section{Aplikacja kliencka}
 
 
 \section{Urządzenie pomiarowe}
+Do wykonywania pomiarów wykorzystany został mikrokontroler Raspberry Pi Pico W.
+W celu uproszczenia tworzenia oprogramowania użyto nieoficjalnej implementacji
+środowiska Arduino dla płytek z rodziny RP2040. Udostępnia ona prosty
+w obsłudze poziom abstrakcji, który umożliwia na wykorzystanie głównych
+możliwości mikrokontrolera takich jak odczyty z portów czy możliwość połączenia
+z siecią bezprzewodową Wi-Fi. Możliwe jest dzięki temu również korzystanie z
+wielu bibliotek stworzonych przez społeczność, które znacznie ułatwiają implementację.
+Przykładem takiego modułu jest OneWire - biblioteka dodająca obsługę sensorów 
+wykorzystujących jedną linię danych jako magistralę.
+Jej wykorzystanie umożliwiło wykorzystanie jednej linii danych do połączenia wielu 
+sensorów tej samej klasy.
+
+W celu ułatwienia komunikacji z serwerem wykorzystana została zmodyfikowana wersja
+generatora cpp-tiny znajdująca się w oprogramowaniu openapi-generator wykorzystując
+wygenerowaną dokumentację OpenAPI 3.0. 
+Ze względu na różnice w implementacji frameworku Arduino, aby uzyskać poprawnie 
+wygenerowany kod zostały dokonane zmiany do plików mustache odpowiadających za składnię
+generowanego kodu. W pliku Service.h.mustache, będącej nagłówkiem klasy odpowiadającej za komunikację z serwerem
+oraz odpowiadającym serwisem, w celu usprawnionej obsługi nagłówków
+HTTP oraz ich przechowywaniu do wykonania zapytania dodano zmienną przechowujące te nagłówki.
+Podobnie, aby dostosować się do zmienionej logiki w pliku Service.cpp.mustache zmodyfikowane
+zostało zapisywanie nagłówków - zamiast przechowywać je w kliencie HTTP, gdzie byłyby usuwane podczas
+rozpoczęcia zapytania, przechowywane są we wcześniej stworzonej zmiennej, a następnie są one
+wstrzykiwane klientowi zaraz po rozpoczęciu zapytania oraz przed jego wysłaniem.
+Podobnie w przypadku pustych odpowiedzi wygenerowany kod nie był ich w stanie obsłużyć
+co kończyło się dostępem do niezmapowanej pamięci. Aby to rozwiązać w funkcji odpowiedzialnej 
+za pobieranie odpowiedzi dodano dodatkowe zabezpieczenie w postaci sprawdzenia
+długości odpowiedzi, jeżeli jest ona mniejsza niż 0 zwracany jest pusty ciąg znaków.
+
+

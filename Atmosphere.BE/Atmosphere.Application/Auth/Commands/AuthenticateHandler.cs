@@ -1,5 +1,4 @@
 using Atmosphere.Application.Services;
-using Atmosphere.Application.Services;
 using MediatR;
 
 namespace Atmosphere.Application.Auth.Commands;

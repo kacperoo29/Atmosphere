@@ -5,7 +5,7 @@ namespace Atmosphere.Core.Validation;
 
 public class ValidationRule 
 {
-    public string Message { get; set; }
-    public decimal Value { get; set; }
-    public Expression<Func<Reading, bool>> Condition { get; set; }
+    public string Message { get; init; }
+    public decimal Value { get; init; }
+    public Expression<Func<Reading, bool>> Condition { get; init; }
 }

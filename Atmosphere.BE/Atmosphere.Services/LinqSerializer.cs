@@ -10,7 +10,10 @@ public class LinqSerializer<TDelegate> : IBsonSerializer<Expression<TDelegate>>
 {
     public Type ValueType => typeof(Expression<TDelegate>);
 
-    public Expression<TDelegate> Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    public Expression<TDelegate> Deserialize(
+        BsonDeserializationContext context,
+        BsonDeserializationArgs args
+    )
     {
         var bsonReader = context.Reader;
         if (bsonReader.CurrentBsonType == BsonType.Null)
@@ -26,7 +29,11 @@ public class LinqSerializer<TDelegate> : IBsonSerializer<Expression<TDelegate>>
         return (Expression<TDelegate>)expression;
     }
 
-    public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Expression<TDelegate> value)
+    public void Serialize(
+        BsonSerializationContext context,
+        BsonSerializationArgs args,
+        Expression<TDelegate> value
+    )
     {
         var bsonWriter = context.Writer;
         if (value is null)
@@ -40,12 +47,19 @@ public class LinqSerializer<TDelegate> : IBsonSerializer<Expression<TDelegate>>
         bsonWriter.WriteString(jsonString);
     }
 
-    public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
+    public void Serialize(
+        BsonSerializationContext context,
+        BsonSerializationArgs args,
+        object value
+    )
     {
         Serialize(context, args, (Expression<TDelegate>)value);
     }
 
-    object IBsonSerializer.Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    object IBsonSerializer.Deserialize(
+        BsonDeserializationContext context,
+        BsonDeserializationArgs args
+    )
     {
         return Deserialize(context, args);
     }

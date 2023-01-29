@@ -113,22 +113,76 @@ biznesowej, która może być zmienna.
 ASP.NET to modularna platforma programistyczna oparta na technologii .NET. 
 Jej bogata funkcjonalność pozwala na tworzenie stron internetowych, API HTTP oraz 
 wiele innych aplikacji webowych poprzez zastosowanie wielu z jej rozszerzeń.
+Jednym z nich jest wstrzykiwanie zależności (ang. \textit{dependency injection})
+pozwalające na uzyskanie rozwiązania podobnego do wzorca architektury inwersji
+kontroli (ang. \textit{Inversion of Control}). W takiej architekturze, zamiast
+polegać na szczegółowej implementacji danej funkcjonalności czy serwisu,
+użytkownik otrzymuje interfejs mówiący jedynie o tym do czego jest on przeznaczony.
+Dzięki temu uzyskany kod jest całkowicie oddzielny od implementacji i pozwala
+na znaczne ograniczenie efektów ubocznych przy działaniach takich jak refaktoryzacja,
+restrukturyzacja czy przenoszenie implementacji, aby ta korzystały z innej biblioteki, np.
+przy zmianie systemu bazodanowego.
+
+Poprzez zastosowanie tak zwanych pośredników (ang. \textit{Middleware}) ASP.NET udostępnia
+bardzo modularną oraz modyfikowalną strukturę przetwarzania zapytań HTTP.
+Są to proste kroki, w których wykonywana jest logika związana z zapytaniem lub odpowiedzią
+wysyłaną przez serwer. Podczas ich wykonania możliwy jest dostęp do danych zawartych
+w zapytania oraz następnie jego modyfikacja, jak również decyzja o tym czy powinno
+być ono propagowane do dalszych warstw. Przydatne to jest w przypadku, np. autoryzacji
+gdzie w module sprawdzającym tożsamość użytkownika możliwe jest modyfikacja oraz zwrócenie
+odpowiedzi o nieautoryzowanym dostępie i nie przekazywanie zapytania dalej do warstw, które zajmują
+się dostępem do danych. Możliwe jest również zastosowanie innych pośredników takich
+jak przechowywanie zapytań oraz odpowiedzi na nie w pamięci podręcznej, co znacznie
+zwiększa wydajność systemu przy wielu takich samych zapytaniach. Poza wieloma wbudowanymi
+pośrednikami programista sam może definiować swoją własną logikę oraz umieszczać
+ją w odpowiednim momencie łańcucha wykonania.
 
 \subsection*{MongoDB}
-MongoDB to wieloplatformowy system bazodanowy. Dane przechowywane są w postaci dokumentów
-w formacie podobnym do JSON. Umożliwia dzięki temu, w porównaniu do klasycznych baz
-danych SQL, na większą elastyczność dzięki braku konieczności określania schematu tabel.
+MongoDB to wieloplatformowy system bazodanowy. Dane przechowywane są w postaci dokumentów,
+w formacie podobnym do JSON (ang. \textit{JavaScript Object Notation}), określaną nazwą
+BSON (ang. \textit{Binary JSON}). Główną różnicą między tymi formatami jest sposób kodowania
+danych - w przypadku formatu JSON jest to postać znaków UTF-8, a BSON jest to zapis binarny.
+Pozwala to na łatwą konwersję między tymi typami, czyli co za tym idzie również uzyskiwanie
+czytelnych dla człowieka danych, tym samym oszczędzając miejsce potrzebne do przechowywania
+informacji jak również przyśpieszenie niektórych operacji jak indeksowanie.
+
+W porównaniu do klasycznych baz danych SQL, MongoDB pozwala na większą elastyczność dzięki braku
+konieczności określania schematu tabel. Wszystkie schematy są dynamiczne i mogą w dowolnym momencie 
+zostać zmienione w celu dodania dodatkowych informacji jednocześnie nie zmieniając pozostałych
+danych zapisanych w danej kolekcji. Jednocześnie ten system pozwala na tworzenie 
+walidatorów kolekcji, co przydaje się w momentach kiedy chcemy uzyskać większą kontrolę
+nad strukturą naszych danych.
 
 \section{Urządzenie pomiarowe}
 
 \subsection*{Raspberry Pi Pico W}
+Raspberry Pi Pico W to komputer jedno-płytkowy zbudowany na podstawie mikrokontrolera RP2040. 
+Do głównych jego cech, które zostały wykorzystane do stworzenia systemu należą \cite{rp2040:datasheet}:
+\begin{itemize}
+  \item procesor dwurdzeniowy ARM Cortex-M0+,
+  \item 264kB pamięci SRAM,
+  \item 2MB pamięci flash,
+  \item kontroller DMA (ang. \textit{Direct memory access}),
+  \item 30 pinów GPIO (ang. \textit{General-purpose input/output}),
+  \item 2 kontrollery SPI (ang. \textit{Direct memory access}),
+  \item 2 kontrollery I2C (ang. \textit{Serial Peripheral Interface}),
+  \item 16 kanałów PWM (ang. \textit{Pulse-width modulation}).
+\end{itemize}
+Płytka umożliwia łączność z siecią Wi-Fi przy użyciu wbudowanego chipu CYW43439
+obsługujący standard 802.11n, który w odpowiednich warunkach pozwala na łączność
+z prędkością do 600Mb/s.
+
+Aktualnie dostępne oprogramowanie pozwala tworzyć systemy w językach programowania takich jak
+Assembly, C, C++, Python oraz Rust. Istnieje również nieoficjalne wsparcie dla środowiska
+Arduino oraz możliwość wykorzystania istniejących na tą platformę bibliotek.
 
 \subsection*{C++}
-C++ to obiektowy język programowania wysokiego poziomu, często nazywany również "C z klasami".
+C++ to obiektowy język programowania wysokiego poziomu, będący często określany jako
+rozszerzenie języka C często używanego do tworzenia oprogramowania na systemy wbudowane.
 Obsługuje on wysokopoziomowe abstrakcje takie jak obiekty, programowanie generyczne czy
 abstrakcje pozwalając w tym samym czasie na używanie niskopoziomowej funkcjonalności 
-takiej jak zarządzenie pamięcią czy używanie języka maszynowego. Przez te cechy
-używany jest tam, gdzie potrzebna jest wysoka wydajność lub zasoby komputerowe
+takiej jak zarządzenie pamięcią czy dostęp do rejestrów procesora oraz używanie języka asembler.
+Przez te cechy używany jest tam, gdzie potrzebna jest wysoka wydajność lub zasoby komputerowe
 są znacznie ograniczone, np. serwery WWW, gry wideo czy systemy wbudowane.
 
 W porównaniu do C zawiera również rozbudowaną standardową bibliotekę klas i funkcji.
@@ -136,4 +190,3 @@ Dodaje ona dodatkową funkcjonalność taką jak zaawansowane typy pozwalające 
 przechowywanie zmiennej liczby danych, algorytmy takie jak sortowanie czy 
 generowanie liczb losowych, obsługa plików, czasu oraz wielowątkowości.
 
-\subsection*{Arduino}
