@@ -1,5 +1,6 @@
 namespace Atmosphere.Application.DTO.Mapping;
 
+using Atmosphere.Application.Extensions;
 using Atmosphere.Core.Models;
 using AutoMapper;
 
@@ -18,6 +19,10 @@ public class MappingProfile : Profile
         CreateMap<IEnumerable<ConfigurationEntry>, Dictionary<string, object?>>()
             .ConvertUsing(src => src.ToDictionary(x => x.Key, x => x.Value));
 
-        CreateMap<Core.Models.NotificationSettings, NotificationSettingsDto>();
+        CreateMap<Core.Validation.ValidationRule, ValidationRuleDto>()
+            .ForMember(
+                dest => dest.Condition,
+                opt => opt.MapFrom(src => src.Condition.ToStringReadable())
+            );
     }
 }

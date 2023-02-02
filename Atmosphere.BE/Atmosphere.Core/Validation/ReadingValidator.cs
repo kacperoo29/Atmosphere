@@ -32,25 +32,21 @@ public class ReadingValidator : IReadingValidator
                 new ValidationRule
                 {
                     Message = "Temperature is below warning threshold of 0",
-                    Value = 0,
                     Condition = v => v.Value < 0
                 },
                 new ValidationRule
                 {
                     Message = "Temperature is above warning threshold of 100",
-                    Value = 100,
                     Condition = v => v.Value > 100
                 },
                 new ValidationRule
                 {
                     Message = "Temperature is below error threshold of -10",
-                    Value = -10,
                     Condition = v => v.Value < -10
                 },
                 new ValidationRule
                 {
                     Message = "Temperature is above error threshold of 110",
-                    Value = 110,
                     Condition = v => v.Value > 110
                 }
             });

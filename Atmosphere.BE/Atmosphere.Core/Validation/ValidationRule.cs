@@ -6,6 +6,5 @@ namespace Atmosphere.Core.Validation;
 public class ValidationRule 
 {
     public string Message { get; init; }
-    public decimal Value { get; init; }
     public Expression<Func<Reading, bool>> Condition { get; init; }
 }

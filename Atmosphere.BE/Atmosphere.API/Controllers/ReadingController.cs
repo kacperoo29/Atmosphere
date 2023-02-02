@@ -62,11 +62,20 @@ public class ReadingController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(List<ReadingDto>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetReadingsByDate([FromQuery] GetReadingsByDate request)
+    public async Task<IActionResult> GetReadingsByDate(
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null
+    )
     {
         try
         {
-            var readings = await _mediator.Send(request);
+            var readings = await _mediator.Send(
+                new GetReadingsByDate
+                {
+                    StartDate = startDate ?? DateTime.MinValue,
+                    EndDate = endDate ?? DateTime.MaxValue
+                }
+            );
 
             return this.Ok(readings);
         }

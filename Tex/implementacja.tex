@@ -147,6 +147,15 @@ Z jego wykorzystaniem użytkownik jest w stanie skonfigurować system notyfikacj
 aby ten wysyłał powiadomienia do różnych celów takich jak poczta elektroniczna
 czy powiadomienia SMS.
 
+Reguły sterujące logiką wysyłania powiadomień zbudowane zostały przy użyciu systemu
+ekspresji środowiska .NET. Dzięki temu użytkownik może w rozbudowany sposób
+tworzyć logikę określającą przy jakich warunkach powinna być wysłana dana wiadomość.
+Dzięki temu, że są one kompilowane podczas wykonywania programu mogą przyjąć dowolną
+formę, więc nie ograniczają użytkownika w ich tworzeniu oraz modyfikacji.
+Serializacja oraz de-serializacja ekspresji została wykonana przy użyciu biblioteki
+Serialize.Linq pozwalająca na ich zapis oraz odczyt do różnych formatów takich jak
+JSON czy XML, które następnie przechowywane są w bazie danych.
+
 Aby ułatwić implementację pozostałych aplikacji oraz w celu zapewnienia dokumentacji
 wykorzystano bibliotekę Swashbuckle. Dostarcza ona składniki takie jak 
 \begin{itemize}
@@ -155,6 +164,12 @@ wykorzystujących dane API,
   \item generator dokumentacji bazujący na komentarzach znajdujących się w kodzie aplikacji,
   \item interfejs swagger-ui umożliwiający na przeglądanie zasobów z poziomu przeglądarki internetowej.
 \end{itemize}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{swagger}
+  \caption{Intefejs swagger-ui}
+  \label{swagger:interface}
+\end{figure}
 Kod wygenerowany na podstawie schematów wygenerowanych przez tą bibliotekę został następnie
 wykorzystany zarówno w aplikacji klienckiej jak i urządzeniach pomiarowych.
 Wykorzystano do tego oprogramowanie openapi-generator wspierające wiele języków
@@ -163,6 +178,19 @@ Jest ono w stanie, na podstawie schematów OpenAPI, utworzyć klienta wraz z odp
 modelami jak również trzon aplikacji serwerowej oraz dokumentację. Pozwala również
 na modyfikowanie wzorów generowanego kodu poprzez pliku mustache, za pomocą których
 definiowana jest struktura wygenerowanych plików.
+
+Pozostałe aplikacje w systemie mogą komunikować się z serwerem poprzez wykorzystanie
+zapytań do odpowiednich kontrolerów. Zależnie od punktu końcowego muszą one
+przesłać odpowiednie informacje w postaci ciała, ciągu lub argumentu pozycyjnego
+zapytania. Aplikacja zawiera 3 główne kontrolery zajmujące się odpowiednim im zadaniom:
+\begin{itemize}
+  \item zapis oraz odczyt parametrów środowiska,
+  \item autoryzacja oraz tworzenie kont,
+  \item konfiguracja oraz pobieranie konfiguracji systemu.
+\end{itemize}
+W celu ułatwienia obsługi każdy z kontrolerów znajduje się na ścieżce URI odpowiadającej
+jego nazwie, np. kontroler odczytów znajduje się pod ścieżką /api/Reading.
+
 
 
 \section{Aplikacja kliencka}
@@ -197,5 +225,4 @@ Podobnie w przypadku pustych odpowiedzi wygenerowany kod nie był ich w stanie o
 co kończyło się dostępem do niezmapowanej pamięci. Aby to rozwiązać w funkcji odpowiedzialnej 
 za pobieranie odpowiedzi dodano dodatkowe zabezpieczenie w postaci sprawdzenia
 długości odpowiedzi, jeżeli jest ona mniejsza niż 0 zwracany jest pusty ciąg znaków.
-
 

@@ -4,6 +4,7 @@ using Atmosphere.Application.Configuration.Commands;
 using Atmosphere.Application.Configuration.Queries;
 using Atmosphere.Application.DTO;
 using Atmosphere.Core.Enums;
+using Atmosphere.Services.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -99,44 +100,6 @@ public class ConfigurationController : ControllerBase
         }
     }
 
-    [HttpPatch]
-    [ProducesResponseType(typeof(EmailConfiguration), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> UpdateEmailConfiguration(
-        [FromBody, BindRequired] UpdateEmailConfig request
-    )
-    {
-        try
-        {
-            var configuration = await _mediator.Send(request);
-
-            return Ok(configuration);
-        }
-        catch (Exception e)
-        {
-            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-        }
-    }
-
-    [HttpGet]
-    [ProducesResponseType(typeof(EmailConfiguration), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> GetEmailConfiguration()
-    {
-        try
-        {
-            var configuration = await _mediator.Send(new GetEmailConfiguration());
-
-            return Ok(configuration);
-        }
-        catch (Exception e)
-        {
-            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-        }
-    }
-
     [HttpPut]
     [ProducesResponseType(typeof(IEnumerable<NotificationType>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
@@ -157,4 +120,81 @@ public class ConfigurationController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<NotificationType>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetNotificationTypes()
+    {
+        try
+        {
+            var notificationTypes = await _mediator.Send(new GetNotificationTypes());
+
+            return Ok(notificationTypes);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<NotificationType>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetEnabledNotificationTypes()
+    {
+        try
+        {
+            var notificationTypes = await _mediator.Send(new GetEnabledNotificationTypes());
+
+            return Ok(notificationTypes);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(List<ValidationRuleDto>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetValidationRules(
+        [FromQuery, BindRequired] ReadingType readingType
+    )
+    {
+        try
+        {
+            return Ok(await _mediator.Send(new GetValidationRules { ReadingType = readingType }));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpPut]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> UpdateValidationRules(
+        [FromBody, BindRequired] UpdateValidationRules request
+    )
+    {
+        try
+        {
+            await _mediator.Send(request);
+
+            return Ok();
+        }
+        catch (InvalidRuleException e)
+        {
+            return this.StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

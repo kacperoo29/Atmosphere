@@ -1,13 +1,16 @@
 using System.Linq.Expressions;
+using System.Text.Json;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
-using Serialize.Linq.Serializers;
+using Remote.Linq;
+using Remote.Linq.Text.Json;
 
 namespace Atmosphere.Services;
 
 public class LinqSerializer<TDelegate> : IBsonSerializer<Expression<TDelegate>>
 {
+    private static JsonSerializerOptions jsonSerializerOptions =
+        new JsonSerializerOptions().ConfigureRemoteLinq();
     public Type ValueType => typeof(Expression<TDelegate>);
 
     public Expression<TDelegate> Deserialize(
@@ -22,11 +25,13 @@ public class LinqSerializer<TDelegate> : IBsonSerializer<Expression<TDelegate>>
             return null;
         }
 
-        var jsonString = bsonReader.ReadString();
-        var serializer = new ExpressionSerializer(new JsonSerializer());
-        var expression = serializer.DeserializeText(jsonString);
+        var binaryData = bsonReader.ReadBinaryData();
+        var remote = JsonSerializer.Deserialize<Remote.Linq.Expressions.LambdaExpression>(
+            binaryData.Bytes,
+            jsonSerializerOptions
+        );
 
-        return (Expression<TDelegate>)expression;
+        return (Expression<TDelegate>)remote.ToLinqExpression();
     }
 
     public void Serialize(
@@ -42,9 +47,10 @@ public class LinqSerializer<TDelegate> : IBsonSerializer<Expression<TDelegate>>
             return;
         }
 
-        var serializer = new ExpressionSerializer(new JsonSerializer());
-        var jsonString = serializer.SerializeText(value);
-        bsonWriter.WriteString(jsonString);
+        var remote = value.ToRemoteLinqExpression();
+        bsonWriter.WriteBinaryData(
+            JsonSerializer.SerializeToUtf8Bytes(remote, jsonSerializerOptions)
+        );
     }
 
     public void Serialize(

@@ -26,6 +26,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using Remote.Linq.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
