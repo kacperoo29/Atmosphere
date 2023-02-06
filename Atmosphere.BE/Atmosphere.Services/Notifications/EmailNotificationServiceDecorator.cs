@@ -48,7 +48,7 @@ public class EmailNotificationServiceDecorator : INotificationService
 
         using (var client = new SmtpClient())
         {
-            await client.ConnectAsync(smtpServerAddress, smtpServerPort, false);
+            await client.ConnectAsync(smtpServerAddress, smtpServerPort ?? 587, false);
             if (!string.IsNullOrEmpty(smtpServerUsername))
                 await client.AuthenticateAsync(smtpServerUsername, smtpServerPassword);
 

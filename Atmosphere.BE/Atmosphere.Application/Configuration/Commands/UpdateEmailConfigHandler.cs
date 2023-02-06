@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Atmosphere.Application.Configuration.Commands;
 
-public class UpdateEmailConfigHandler : IRequestHandler<UpdateEmailConfig, EmailConfiguration>
+public class UpdateEmailConfigHandler : IRequestHandler<EmailConfiguration, EmailConfiguration>
 {
     private readonly IConfigService _configService;
 
@@ -13,7 +13,7 @@ public class UpdateEmailConfigHandler : IRequestHandler<UpdateEmailConfig, Email
     }
 
     public async Task<EmailConfiguration> Handle(
-        UpdateEmailConfig request,
+        EmailConfiguration request,
         CancellationToken cancellationToken
     )
     {

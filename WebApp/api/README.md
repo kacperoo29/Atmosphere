@@ -32,11 +32,17 @@ Class | Method | HTTP request | Description
 *ConfigurationApi* | [**api_configuration_get_all_configurations_get**](docs/ConfigurationApi.md#api_configuration_get_all_configurations_get) | **GET** /api/Configuration/GetAllConfigurations | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entries_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entries_get) | **GET** /api/Configuration/GetConfigurationEntries | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entry_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entry_get) | **GET** /api/Configuration/GetConfigurationEntry | 
-*ConfigurationApi* | [**api_configuration_get_notification_settings_get**](docs/ConfigurationApi.md#api_configuration_get_notification_settings_get) | **GET** /api/Configuration/GetNotificationSettings | 
+*ConfigurationApi* | [**api_configuration_get_email_config_get**](docs/ConfigurationApi.md#api_configuration_get_email_config_get) | **GET** /api/Configuration/GetEmailConfig | 
+*ConfigurationApi* | [**api_configuration_get_enabled_notification_types_get**](docs/ConfigurationApi.md#api_configuration_get_enabled_notification_types_get) | **GET** /api/Configuration/GetEnabledNotificationTypes | 
+*ConfigurationApi* | [**api_configuration_get_notification_types_get**](docs/ConfigurationApi.md#api_configuration_get_notification_types_get) | **GET** /api/Configuration/GetNotificationTypes | 
+*ConfigurationApi* | [**api_configuration_get_validation_rules_get**](docs/ConfigurationApi.md#api_configuration_get_validation_rules_get) | **GET** /api/Configuration/GetValidationRules | 
+*ConfigurationApi* | [**api_configuration_toggle_notification_type_put**](docs/ConfigurationApi.md#api_configuration_toggle_notification_type_put) | **PUT** /api/Configuration/ToggleNotificationType | 
 *ConfigurationApi* | [**api_configuration_update_configuration_put**](docs/ConfigurationApi.md#api_configuration_update_configuration_put) | **PUT** /api/Configuration/UpdateConfiguration | 
-*ConfigurationApi* | [**api_configuration_update_notification_settings_put**](docs/ConfigurationApi.md#api_configuration_update_notification_settings_put) | **PUT** /api/Configuration/UpdateNotificationSettings | 
+*ConfigurationApi* | [**api_configuration_update_email_config_patch**](docs/ConfigurationApi.md#api_configuration_update_email_config_patch) | **PATCH** /api/Configuration/UpdateEmailConfig | 
+*ConfigurationApi* | [**api_configuration_update_validation_rules_put**](docs/ConfigurationApi.md#api_configuration_update_validation_rules_put) | **PUT** /api/Configuration/UpdateValidationRules | 
 *ReadingApi* | [**api_reading_create_reading_post**](docs/ReadingApi.md#api_reading_create_reading_post) | **POST** /api/Reading/CreateReading | 
 *ReadingApi* | [**api_reading_get_all_readings_get**](docs/ReadingApi.md#api_reading_get_all_readings_get) | **GET** /api/Reading/GetAllReadings | 
+*ReadingApi* | [**api_reading_get_readings_by_date_get**](docs/ReadingApi.md#api_reading_get_readings_by_date_get) | **GET** /api/Reading/GetReadingsByDate | 
 
 
 ## Documentation For Models
@@ -45,14 +51,17 @@ Class | Method | HTTP request | Description
  - [BaseUserDto](docs/BaseUserDto.md)
  - [CreateReading](docs/CreateReading.md)
  - [DeviceDto](docs/DeviceDto.md)
- - [NotificationSettingsDto](docs/NotificationSettingsDto.md)
+ - [EmailConfiguration](docs/EmailConfiguration.md)
+ - [NotificationType](docs/NotificationType.md)
  - [ProblemDetails](docs/ProblemDetails.md)
  - [ReadingDto](docs/ReadingDto.md)
  - [ReadingType](docs/ReadingType.md)
  - [RegisterDevice](docs/RegisterDevice.md)
+ - [ToggleNotificationType](docs/ToggleNotificationType.md)
  - [UpdateConfiguration](docs/UpdateConfiguration.md)
- - [UpdateNotificationSettings](docs/UpdateNotificationSettings.md)
+ - [UpdateValidationRules](docs/UpdateValidationRules.md)
  - [UserRole](docs/UserRole.md)
+ - [ValidationRuleDto](docs/ValidationRuleDto.md)
 
 
 To get access to the crate's generated documentation, use:

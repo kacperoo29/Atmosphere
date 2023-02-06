@@ -15,9 +15,9 @@ namespace Atmosphere.Application.Config;
 
 public class ConfigService : IConfigService
 {
-    private const string NOTIFICATION_TYPES_KEY = "notificationTypes";
-    private const string NOTIFICATIONS_SETTINGS_KEY = "notificationsSettings";
-    public const string EMAIL_CONFIG_KEY = "emailConfig";
+    private const string NOTIFICATION_TYPES_KEY = "Atmosphere.Notification.Types";
+    private const string NOTIFICATIONS_SETTINGS_KEY = "Atmosphere.Notification.Settings";
+    public const string EMAIL_CONFIG_KEY = "Atmosphere.Notification.EmailConfig";
 
     private readonly IConfigurationRepository _configRepo;
     private readonly IConfiguration _configuration;

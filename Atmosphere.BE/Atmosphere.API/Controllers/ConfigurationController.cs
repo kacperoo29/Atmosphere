@@ -197,4 +197,42 @@ public class ConfigurationController : ControllerBase
             return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(EmailConfiguration), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetEmailConfig()
+    {
+        try
+        {
+            var emailConfig = await _mediator.Send(new GetEmailConfiguration());
+
+            return Ok(emailConfig);
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpPatch]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> UpdateEmailConfig(
+        [FromBody, BindRequired] EmailConfiguration request
+    )
+    {
+        try
+        {
+            await _mediator.Send(request);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

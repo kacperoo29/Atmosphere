@@ -11,9 +11,3 @@ pub struct TemperatureNotificationConfig {
     pub min: f64,
     pub max: f64,
 }
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Default)]
-pub struct NotificationConfig {
-    pub base: BaseNotificationConfig,
-    pub temperature: TemperatureNotificationConfig,
-}

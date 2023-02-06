@@ -28,15 +28,11 @@ pub fn reading_list_entry(props: &Props) -> Html {
         .collect::<String>();
 
     html! {
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{format!("Reading id: {}", &reading.id)}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{format!("Device id: {}", &reading.device_id)}</h6>
-                <p class="card-text">{format!("Sensor address: {}", &sensor_address)}</p>
-                <p class="card-text">{format!("Value: {}", &reading.value)}</p>
-                <p class="card-text">{format!("Type: {}", &reading.r#type.to_string())}</p>
-                <p class="card-text">{format!("Date taken: {}", date.naive_local())}</p>
-            </div>
-        </div>
+        <tr>
+            <td>{date.format("%Y-%m-%d %H:%M:%S").to_string()}</td>
+            <td>{&reading.r#type.to_string()}</td>
+            <td>{&reading.value}</td>
+            <td>{&sensor_address}</td>
+        </tr>
     }
 }

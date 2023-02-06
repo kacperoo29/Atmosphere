@@ -1,4 +1,5 @@
 using Atmosphere.Application.Configuration;
+using Atmosphere.Application.DTO;
 using Atmosphere.Core.Enums;
 using Atmosphere.Core.Validation;
 
@@ -18,4 +19,5 @@ public interface IConfigService
     );
     Task UpdateEmailConfigAsync(EmailConfiguration config, CancellationToken cancellationToken);
     Task<List<ValidationRule>> GetValidationRules(ReadingType readingType);
+    Task UpdateValidationRules(ReadingType readingType, List<ValidationRuleDto> rules);
 }

@@ -11,7 +11,7 @@
 
 use reqwest;
 
-use crate::apis::ResponseContent;
+use crate::{apis::ResponseContent, models::ReadingType};
 use super::{Error, configuration};
 
 
@@ -42,10 +42,46 @@ pub enum ApiConfigurationGetConfigurationEntryGetError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`api_configuration_get_notification_settings_get`]
+/// struct for typed errors of method [`api_configuration_get_email_config_get`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum ApiConfigurationGetNotificationSettingsGetError {
+pub enum ApiConfigurationGetEmailConfigGetError {
+    Status401(crate::models::ProblemDetails),
+    Status403(crate::models::ProblemDetails),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`api_configuration_get_enabled_notification_types_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiConfigurationGetEnabledNotificationTypesGetError {
+    Status401(crate::models::ProblemDetails),
+    Status403(crate::models::ProblemDetails),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`api_configuration_get_notification_types_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiConfigurationGetNotificationTypesGetError {
+    Status401(crate::models::ProblemDetails),
+    Status403(crate::models::ProblemDetails),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`api_configuration_get_validation_rules_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiConfigurationGetValidationRulesGetError {
+    Status401(crate::models::ProblemDetails),
+    Status403(crate::models::ProblemDetails),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`api_configuration_toggle_notification_type_put`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiConfigurationToggleNotificationTypePutError {
     Status401(crate::models::ProblemDetails),
     Status403(crate::models::ProblemDetails),
     UnknownValue(serde_json::Value),
@@ -60,10 +96,19 @@ pub enum ApiConfigurationUpdateConfigurationPutError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`api_configuration_update_notification_settings_put`]
+/// struct for typed errors of method [`api_configuration_update_email_config_patch`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum ApiConfigurationUpdateNotificationSettingsPutError {
+pub enum ApiConfigurationUpdateEmailConfigPatchError {
+    Status401(crate::models::ProblemDetails),
+    Status403(crate::models::ProblemDetails),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`api_configuration_update_validation_rules_put`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ApiConfigurationUpdateValidationRulesPutError {
     Status401(crate::models::ProblemDetails),
     Status403(crate::models::ProblemDetails),
     UnknownValue(serde_json::Value),
@@ -180,12 +225,12 @@ pub async fn api_configuration_get_configuration_entry_get(configuration: &confi
     }
 }
 
-pub async fn api_configuration_get_notification_settings_get(configuration: &configuration::Configuration, ) -> Result<crate::models::NotificationSettingsDto, Error<ApiConfigurationGetNotificationSettingsGetError>> {
+pub async fn api_configuration_get_email_config_get(configuration: &configuration::Configuration, ) -> Result<crate::models::EmailConfiguration, Error<ApiConfigurationGetEmailConfigGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
 
-    let local_var_uri_str = format!("{}/api/Configuration/GetNotificationSettings", local_var_configuration.base_path);
+    let local_var_uri_str = format!("{}/api/Configuration/GetEmailConfig", local_var_configuration.base_path);
     let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
 
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
@@ -209,7 +254,149 @@ pub async fn api_configuration_get_notification_settings_get(configuration: &con
     if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
         serde_json::from_str(&local_var_content).map_err(Error::from)
     } else {
-        let local_var_entity: Option<ApiConfigurationGetNotificationSettingsGetError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_entity: Option<ApiConfigurationGetEmailConfigGetError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+        Err(Error::ResponseError(local_var_error))
+    }
+}
+
+pub async fn api_configuration_get_enabled_notification_types_get(configuration: &configuration::Configuration, ) -> Result<Vec<crate::models::NotificationType>, Error<ApiConfigurationGetEnabledNotificationTypesGetError>> {
+    let local_var_configuration = configuration;
+
+    let local_var_client = &local_var_configuration.client;
+
+    let local_var_uri_str = format!("{}/api/Configuration/GetEnabledNotificationTypes", local_var_configuration.base_path);
+    let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
+
+    if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+        local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+    }
+    if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+        let local_var_key = local_var_apikey.key.clone();
+        let local_var_value = match local_var_apikey.prefix {
+            Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+            None => local_var_key,
+        };
+        local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+    };
+
+    let local_var_req = local_var_req_builder.build()?;
+    let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+    let local_var_status = local_var_resp.status();
+    let local_var_content = local_var_resp.text().await?;
+
+    if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+        serde_json::from_str(&local_var_content).map_err(Error::from)
+    } else {
+        let local_var_entity: Option<ApiConfigurationGetEnabledNotificationTypesGetError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+        Err(Error::ResponseError(local_var_error))
+    }
+}
+
+pub async fn api_configuration_get_notification_types_get(configuration: &configuration::Configuration, ) -> Result<Vec<crate::models::NotificationType>, Error<ApiConfigurationGetNotificationTypesGetError>> {
+    let local_var_configuration = configuration;
+
+    let local_var_client = &local_var_configuration.client;
+
+    let local_var_uri_str = format!("{}/api/Configuration/GetNotificationTypes", local_var_configuration.base_path);
+    let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
+
+    if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+        local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+    }
+    if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+        let local_var_key = local_var_apikey.key.clone();
+        let local_var_value = match local_var_apikey.prefix {
+            Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+            None => local_var_key,
+        };
+        local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+    };
+
+    let local_var_req = local_var_req_builder.build()?;
+    let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+    let local_var_status = local_var_resp.status();
+    let local_var_content = local_var_resp.text().await?;
+
+    if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+        serde_json::from_str(&local_var_content).map_err(Error::from)
+    } else {
+        let local_var_entity: Option<ApiConfigurationGetNotificationTypesGetError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+        Err(Error::ResponseError(local_var_error))
+    }
+}
+
+pub async fn api_configuration_get_validation_rules_get(configuration: &configuration::Configuration, reading_type: ReadingType) -> Result<Vec<crate::models::ValidationRuleDto>, Error<ApiConfigurationGetValidationRulesGetError>> {
+    let local_var_configuration = configuration;
+
+    let local_var_client = &local_var_configuration.client;
+
+    let local_var_uri_str = format!("{}/api/Configuration/GetValidationRules", local_var_configuration.base_path);
+    let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
+
+    local_var_req_builder = local_var_req_builder.query(&[("readingType", &reading_type.to_string())]);
+    if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+        local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+    }
+    if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+        let local_var_key = local_var_apikey.key.clone();
+        let local_var_value = match local_var_apikey.prefix {
+            Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+            None => local_var_key,
+        };
+        local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+    };
+
+    let local_var_req = local_var_req_builder.build()?;
+    let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+    let local_var_status = local_var_resp.status();
+    let local_var_content = local_var_resp.text().await?;
+
+    if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+        serde_json::from_str(&local_var_content).map_err(Error::from)
+    } else {
+        let local_var_entity: Option<ApiConfigurationGetValidationRulesGetError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+        Err(Error::ResponseError(local_var_error))
+    }
+}
+
+pub async fn api_configuration_toggle_notification_type_put(configuration: &configuration::Configuration, toggle_notification_type: crate::models::ToggleNotificationType) -> Result<Vec<crate::models::NotificationType>, Error<ApiConfigurationToggleNotificationTypePutError>> {
+    let local_var_configuration = configuration;
+
+    let local_var_client = &local_var_configuration.client;
+
+    let local_var_uri_str = format!("{}/api/Configuration/ToggleNotificationType", local_var_configuration.base_path);
+    let mut local_var_req_builder = local_var_client.request(reqwest::Method::PUT, local_var_uri_str.as_str());
+
+    if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+        local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+    }
+    if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+        let local_var_key = local_var_apikey.key.clone();
+        let local_var_value = match local_var_apikey.prefix {
+            Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+            None => local_var_key,
+        };
+        local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+    };
+    local_var_req_builder = local_var_req_builder.json(&toggle_notification_type);
+
+    let local_var_req = local_var_req_builder.build()?;
+    let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+    let local_var_status = local_var_resp.status();
+    let local_var_content = local_var_resp.text().await?;
+
+    if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+        serde_json::from_str(&local_var_content).map_err(Error::from)
+    } else {
+        let local_var_entity: Option<ApiConfigurationToggleNotificationTypePutError> = serde_json::from_str(&local_var_content).ok();
         let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
         Err(Error::ResponseError(local_var_error))
     }
@@ -251,12 +438,48 @@ pub async fn api_configuration_update_configuration_put(configuration: &configur
     }
 }
 
-pub async fn api_configuration_update_notification_settings_put(configuration: &configuration::Configuration, update_notification_settings: crate::models::UpdateNotificationSettings) -> Result<(), Error<ApiConfigurationUpdateNotificationSettingsPutError>> {
+pub async fn api_configuration_update_email_config_patch(configuration: &configuration::Configuration, email_configuration: crate::models::EmailConfiguration) -> Result<(), Error<ApiConfigurationUpdateEmailConfigPatchError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
 
-    let local_var_uri_str = format!("{}/api/Configuration/UpdateNotificationSettings", local_var_configuration.base_path);
+    let local_var_uri_str = format!("{}/api/Configuration/UpdateEmailConfig", local_var_configuration.base_path);
+    let mut local_var_req_builder = local_var_client.request(reqwest::Method::PATCH, local_var_uri_str.as_str());
+
+    if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
+        local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
+    }
+    if let Some(ref local_var_apikey) = local_var_configuration.api_key {
+        let local_var_key = local_var_apikey.key.clone();
+        let local_var_value = match local_var_apikey.prefix {
+            Some(ref local_var_prefix) => format!("{} {}", local_var_prefix, local_var_key),
+            None => local_var_key,
+        };
+        local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
+    };
+    local_var_req_builder = local_var_req_builder.json(&email_configuration);
+
+    let local_var_req = local_var_req_builder.build()?;
+    let local_var_resp = local_var_client.execute(local_var_req).await?;
+
+    let local_var_status = local_var_resp.status();
+    let local_var_content = local_var_resp.text().await?;
+
+    if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
+        Ok(())
+    } else {
+        let local_var_entity: Option<ApiConfigurationUpdateEmailConfigPatchError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
+        Err(Error::ResponseError(local_var_error))
+    }
+}
+
+pub async fn api_configuration_update_validation_rules_put(configuration: &configuration::Configuration, update_validation_rules: crate::models::UpdateValidationRules) -> Result<(), Error<ApiConfigurationUpdateValidationRulesPutError>> {
+    let local_var_configuration = configuration;
+
+    let local_var_client = &local_var_configuration.client;
+
+    let local_var_uri_str = format!("{}/api/Configuration/UpdateValidationRules", local_var_configuration.base_path);
     let mut local_var_req_builder = local_var_client.request(reqwest::Method::PUT, local_var_uri_str.as_str());
 
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
@@ -270,7 +493,7 @@ pub async fn api_configuration_update_notification_settings_put(configuration: &
         };
         local_var_req_builder = local_var_req_builder.header("Authorization", local_var_value);
     };
-    local_var_req_builder = local_var_req_builder.json(&update_notification_settings);
+    local_var_req_builder = local_var_req_builder.json(&update_validation_rules);
 
     let local_var_req = local_var_req_builder.build()?;
     let local_var_resp = local_var_client.execute(local_var_req).await?;
@@ -281,7 +504,7 @@ pub async fn api_configuration_update_notification_settings_put(configuration: &
     if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
         Ok(())
     } else {
-        let local_var_entity: Option<ApiConfigurationUpdateNotificationSettingsPutError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_entity: Option<ApiConfigurationUpdateValidationRulesPutError> = serde_json::from_str(&local_var_content).ok();
         let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
         Err(Error::ResponseError(local_var_error))
     }
