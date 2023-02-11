@@ -16,10 +16,14 @@ public class CreateReading : IRequest<ReadingDto>
     [Required]
     public DateTime Timestamp { get; init; }
 
+    [Required]
+    public string Unit { get; init; }
+
     public CreateReading()
     {
         Value = 0;
         Type = ReadingType.Temperature;
         Timestamp = DateTime.UtcNow;
+        Unit = string.Empty;
     }
 }

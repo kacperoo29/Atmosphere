@@ -12,21 +12,24 @@ public class Reading : BaseModel
         Type = ReadingType.Unknown;
         Value = 0;
         Timestamp = DateTime.UtcNow;
+        Unit = string.Empty;
     }
 
     public Guid DeviceId { get; private set; }
     public decimal Value { get; private set; }
+    public string Unit { get; private set; }
     public DateTime Timestamp { get; private set; }
     public ReadingType Type { get; private set; }
 
-    public static Reading Create(Guid deviceId, decimal value, DateTime timestamp, ReadingType type)
+    public static Reading Create(Guid deviceId, decimal value, string unit, DateTime timestamp, ReadingType type)
     {
         return new Reading
         {
             DeviceId = deviceId,
             Value = value,
             Timestamp = timestamp,
-            Type = type
+            Type = type,
+            Unit = unit
         };
     }
 }

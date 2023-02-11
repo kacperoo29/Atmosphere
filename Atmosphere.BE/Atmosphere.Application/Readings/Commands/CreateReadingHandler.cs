@@ -42,6 +42,7 @@ public class CreateReadingHandler : IRequestHandler<CreateReading, ReadingDto>
         var reading = Reading.Create(
             device.Id,
             request.Value,
+            request.Unit,
             request.Timestamp,
             request.Type
         );

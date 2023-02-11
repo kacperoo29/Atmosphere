@@ -9,13 +9,13 @@ public class ReadingDto
     public Guid Id { get; set; }
 
     [Required]
-    public Guid DeviceId { get; set; }
+    public DeviceDto Device { get; set; }
 
     [Required]
-    public string SensorIdentifier { get; set; }
+    public decimal Value { get; set; }
 
     [Required]
-    public double Value { get; set; }
+    public string Unit { get; set; }
 
     [Required]
     public DateTime Timestamp { get; set; }
@@ -25,6 +25,5 @@ public class ReadingDto
 
     public ReadingDto()
     {
-        SensorIdentifier = string.Empty;
     }
 }

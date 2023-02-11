@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
@@ -215,6 +216,9 @@ builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
 builder.Services.AddAutoMapper(typeof(CreateReadingHandler).Assembly);
 
 builder.Services.AddSingleton<IWebSocketHub<Notification>, NotificationsHub>();
+builder.Services.AddSingleton<IWebSocketHub<Device>, DeviceHub>();
+
+builder.Services.AddScoped<IDeviceService, DeviceService>();
 
 BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {
@@ -238,6 +242,12 @@ BsonClassMap.RegisterClassMap<BaseModel>(cm =>
 BsonSerializer.RegisterSerializer(new EnumSerializer<ReadingType>(BsonType.String));
 
 BsonSerializer.RegisterSerializer(new LinqSerializer<Func<Reading, bool>>());
+
+ConventionRegistry.Register(
+    "Ignore extra elements",
+    new ConventionPack { new IgnoreExtraElementsConvention(true) },
+    t => true
+);
 
 var app = builder.Build();
 

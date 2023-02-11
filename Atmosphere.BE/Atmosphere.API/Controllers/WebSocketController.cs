@@ -1,5 +1,6 @@
 using System.Net.WebSockets;
 using System.Text;
+using Atmosphere.Application.Devices.Commands;
 using Atmosphere.Application.Notfications;
 using Atmosphere.Application.Notfications.Commands;
 using MediatR;
@@ -26,6 +27,21 @@ public class WebSocketController : ControllerBase
         try
         {
             await _mediator.Send(new ConnectToNotificationStream());
+        }
+        catch (Exception e)
+        {
+            HttpContext.Response.StatusCode = 400;
+            await HttpContext.Response.WriteAsync(e.Message);
+        }
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task Devices()
+    {
+        try
+        {
+            await _mediator.Send(new ConnectToDeviceStream());
         }
         catch (Exception e)
         {

@@ -13,6 +13,9 @@ public class DeviceDto
     [Required]
     public bool IsActive { get; set; }
 
+    [Required]
+    public bool IsConnected { get; set; }
+
     public DeviceDto()
     {
         Identifier = string.Empty;

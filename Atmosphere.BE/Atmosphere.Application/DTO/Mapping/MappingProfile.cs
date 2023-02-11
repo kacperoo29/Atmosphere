@@ -8,8 +8,8 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Core.Models.Device, DeviceDto>();
-        CreateMap<Core.Models.Reading, ReadingDto>();
+        CreateMap<Core.Models.Device, DeviceDto>().ConvertUsing<DeviceConverter>();
+        CreateMap<Core.Models.Reading, ReadingDto>().ConvertUsing<ReadingConverter>();
         CreateMap<Core.Models.BaseUser, BaseUserDto>();
         CreateMap<Core.Models.User, BaseUserDto>();
         CreateMap<Core.Models.Device, BaseUserDto>();
