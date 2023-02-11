@@ -40,9 +40,12 @@ Class | Method | HTTP request | Description
 *ConfigurationApi* | [**api_configuration_update_configuration_put**](docs/ConfigurationApi.md#api_configuration_update_configuration_put) | **PUT** /api/Configuration/UpdateConfiguration | 
 *ConfigurationApi* | [**api_configuration_update_email_config_patch**](docs/ConfigurationApi.md#api_configuration_update_email_config_patch) | **PATCH** /api/Configuration/UpdateEmailConfig | 
 *ConfigurationApi* | [**api_configuration_update_validation_rules_put**](docs/ConfigurationApi.md#api_configuration_update_validation_rules_put) | **PUT** /api/Configuration/UpdateValidationRules | 
+*DeviceApi* | [**api_device_get_all_get**](docs/DeviceApi.md#api_device_get_all_get) | **GET** /api/Device/GetAll | 
 *ReadingApi* | [**api_reading_create_reading_post**](docs/ReadingApi.md#api_reading_create_reading_post) | **POST** /api/Reading/CreateReading | 
 *ReadingApi* | [**api_reading_get_all_readings_get**](docs/ReadingApi.md#api_reading_get_all_readings_get) | **GET** /api/Reading/GetAllReadings | 
 *ReadingApi* | [**api_reading_get_readings_by_date_get**](docs/ReadingApi.md#api_reading_get_readings_by_date_get) | **GET** /api/Reading/GetReadingsByDate | 
+*ReadingApi* | [**api_reading_get_readings_by_device_get**](docs/ReadingApi.md#api_reading_get_readings_by_device_get) | **GET** /api/Reading/GetReadingsByDevice | 
+*WebSocketApi* | [**api_web_socket_notifications_get**](docs/WebSocketApi.md#api_web_socket_notifications_get) | **GET** /api/WebSocket/Notifications | 
 
 
 ## Documentation For Models
@@ -57,6 +60,7 @@ Class | Method | HTTP request | Description
  - [ReadingDto](docs/ReadingDto.md)
  - [ReadingType](docs/ReadingType.md)
  - [RegisterDevice](docs/RegisterDevice.md)
+ - [Severity](docs/Severity.md)
  - [ToggleNotificationType](docs/ToggleNotificationType.md)
  - [UpdateConfiguration](docs/UpdateConfiguration.md)
  - [UpdateValidationRules](docs/UpdateValidationRules.md)

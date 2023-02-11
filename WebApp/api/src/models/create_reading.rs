@@ -13,8 +13,6 @@
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateReading {
-    #[serde(rename = "sensorIdentifier")]
-    pub sensor_identifier: String,
     #[serde(rename = "value")]
     pub value: f64,
     #[serde(rename = "type")]
@@ -24,9 +22,8 @@ pub struct CreateReading {
 }
 
 impl CreateReading {
-    pub fn new(sensor_identifier: String, value: f64, r#type: crate::models::ReadingType, timestamp: String) -> CreateReading {
+    pub fn new(value: f64, r#type: crate::models::ReadingType, timestamp: String) -> CreateReading {
         CreateReading {
-            sensor_identifier,
             value,
             r#type,
             timestamp,

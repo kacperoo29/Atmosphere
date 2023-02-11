@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Atmosphere.Application.Config;
 using Atmosphere.Application.Configuration;
+using Atmosphere.Application.Notfications;
 using Atmosphere.Application.Readings.Commands;
 using Atmosphere.Application.Services;
 using Atmosphere.Core.Enums;
@@ -26,7 +27,6 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using Remote.Linq.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -129,6 +129,24 @@ builder.Services
                     Encoding.UTF8.GetBytes(config.GetValue<string>("SecretKey"))
                 )
             };
+
+            opt.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (
+                        !string.IsNullOrEmpty(accessToken)
+                        && (path.StartsWithSegments("/api/websocket"))
+                    )
+                    {
+                        context.Token = accessToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
         }
     );
 
@@ -165,6 +183,7 @@ builder.Services.AddScoped(opt =>
     using var scope = opt.CreateScope();
     var config = scope.ServiceProvider.GetRequiredService<IConfigService>();
     var types = config.GetNotificationTypesAsync().GetAwaiter().GetResult();
+    var notificationHub = scope.ServiceProvider.GetRequiredService<IWebSocketHub<Notification>>();
 
     INotificationService notificationService = new NotificationService();
     foreach (var type in types)
@@ -174,6 +193,12 @@ builder.Services.AddScoped(opt =>
                 notificationService = new EmailNotificationServiceDecorator(
                     notificationService,
                     config
+                );
+                break;
+            case NotificationType.WebSocket:
+                notificationService = new WebSocketNotificationServiceDecorator(
+                    notificationService,
+                    notificationHub
                 );
                 break;
             default:
@@ -188,6 +213,8 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
 builder.Services.AddAutoMapper(typeof(CreateReadingHandler).Assembly);
+
+builder.Services.AddSingleton<IWebSocketHub<Notification>, NotificationsHub>();
 
 BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {
@@ -208,9 +235,7 @@ BsonClassMap.RegisterClassMap<BaseModel>(cm =>
     cm.MapIdMember(c => c.Id).SetIdGenerator(GuidGenerator.Instance);
 });
 
-BsonSerializer.RegisterSerializer(
-    new EnumSerializer<ReadingType>(BsonType.String)
-);
+BsonSerializer.RegisterSerializer(new EnumSerializer<ReadingType>(BsonType.String));
 
 BsonSerializer.RegisterSerializer(new LinqSerializer<Func<Reading, bool>>());
 
@@ -242,5 +267,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseWebSockets();
 
 app.Run();

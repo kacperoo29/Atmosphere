@@ -5,5 +5,5 @@ namespace Atmosphere.Core.Validation;
 
 public interface IReadingValidator
 {
-    Task<IEnumerable<ValidationResult>> Validate(Reading reading);
+    Task<IEnumerable<Notification>> Validate(Reading reading);
 }

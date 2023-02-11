@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**api_reading_create_reading_post**](ReadingApi.md#api_reading_create_reading_post) | **POST** /api/Reading/CreateReading | 
 [**api_reading_get_all_readings_get**](ReadingApi.md#api_reading_get_all_readings_get) | **GET** /api/Reading/GetAllReadings | 
 [**api_reading_get_readings_by_date_get**](ReadingApi.md#api_reading_get_readings_by_date_get) | **GET** /api/Reading/GetReadingsByDate | 
+[**api_reading_get_readings_by_device_get**](ReadingApi.md#api_reading_get_readings_by_device_get) | **GET** /api/Reading/GetReadingsByDevice | 
 
 
 
@@ -75,6 +76,34 @@ Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **start_date** | Option<**String**> |  |  |
 **end_date** | Option<**String**> |  |  |
+
+### Return type
+
+[**Vec<crate::models::ReadingDto>**](ReadingDto.md)
+
+### Authorization
+
+[Bearer](../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: text/plain, application/json, text/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## api_reading_get_readings_by_device_get
+
+> Vec<crate::models::ReadingDto> api_reading_get_readings_by_device_get(device_id)
+
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**device_id** | Option<**uuid::Uuid**> |  |  |
 
 ### Return type
 

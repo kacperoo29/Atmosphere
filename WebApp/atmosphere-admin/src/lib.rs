@@ -5,6 +5,7 @@ pub mod hooks;
 pub mod models;
 pub mod routes;
 pub mod services;
+pub mod bindings;
 
 use wasm_bindgen::prelude::*;
 
@@ -20,4 +21,12 @@ pub fn run() -> Result<(), JsValue> {
     wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<App>();
     Ok(())
+}
+
+pub fn to_title_case(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().chain(c).collect(),
+    }
 }

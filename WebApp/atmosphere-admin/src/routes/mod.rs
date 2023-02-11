@@ -4,6 +4,7 @@ use yew_router::prelude::*;
 pub mod home;
 pub mod settings;
 pub mod signin;
+pub mod devices;
 
 use home::Home;
 use signin::SignIn;
@@ -16,6 +17,8 @@ pub enum AppRoute {
     Settings,
     #[at("/signin")]
     SignIn,
+    #[at("/devices")]
+    Devices,
     #[not_found]
     #[at("/page-not-found")]
     PageNotFound,
@@ -29,6 +32,7 @@ pub fn switch(routes: &AppRoute) -> Html {
         AppRoute::Home => html! { <Home /> },
         AppRoute::SignIn => html! { <SignIn /> },
         AppRoute::Settings => html! { <Settings /> },
+        AppRoute::Devices => html! { <devices::Devices /> },
         AppRoute::PageNotFound => html! { "Page not found" },
     }
 }

@@ -140,7 +140,14 @@ public class ConfigService : IConfigService
                     options
                 );
 
-                newRules.Add(new ValidationRule { Condition = expression, Message = rule.Message });
+                newRules.Add(
+                    new ValidationRule
+                    {
+                        Condition = expression,
+                        Message = rule.Message,
+                        Severity = rule.Severity
+                    }
+                );
             }
             catch (CompilationErrorException e)
             {

@@ -8,9 +8,6 @@ namespace Atmosphere.Application.Readings.Commands;
 public class CreateReading : IRequest<ReadingDto>
 {
     [Required]
-    public string SensorIdentifier { get; init; }
-
-    [Required]
     public decimal Value { get; init; }
 
     [Required]
@@ -21,7 +18,6 @@ public class CreateReading : IRequest<ReadingDto>
 
     public CreateReading()
     {
-        SensorIdentifier = string.Empty;
         Value = 0;
         Type = ReadingType.Temperature;
         Timestamp = DateTime.UtcNow;

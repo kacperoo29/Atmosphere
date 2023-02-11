@@ -20,7 +20,7 @@ public class EmailNotificationServiceDecorator : INotificationService
         _wrapee = wrapee;
     }
 
-    public async Task Notify(Reading reading, IEnumerable<ValidationResult> validationResults)
+    public async Task Notify(Reading reading, IEnumerable<Notification> validationResults)
     {
         await _wrapee.Notify(reading, validationResults);
 
@@ -38,7 +38,7 @@ public class EmailNotificationServiceDecorator : INotificationService
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $"<p>{reading.Value}</p>";
         foreach (var result in validationResults)
-            bodyBuilder.HtmlBody += $"<p>{result.ErrorMessage}</p>";
+            bodyBuilder.HtmlBody += $"<p>{result.Message}</p>";
         message.Body = bodyBuilder.ToMessageBody();
 
         var smtpServerAddress = config.SmtpServer;

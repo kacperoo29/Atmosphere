@@ -6,6 +6,7 @@ docs/Authenticate.md
 docs/BaseUserDto.md
 docs/ConfigurationApi.md
 docs/CreateReading.md
+docs/DeviceApi.md
 docs/DeviceDto.md
 docs/EmailConfiguration.md
 docs/NotificationType.md
@@ -14,17 +15,21 @@ docs/ReadingApi.md
 docs/ReadingDto.md
 docs/ReadingType.md
 docs/RegisterDevice.md
+docs/Severity.md
 docs/ToggleNotificationType.md
 docs/UpdateConfiguration.md
 docs/UpdateValidationRules.md
 docs/UserRole.md
 docs/ValidationRuleDto.md
+docs/WebSocketApi.md
 git_push.sh
 src/apis/auth_api.rs
 src/apis/configuration.rs
 src/apis/configuration_api.rs
+src/apis/device_api.rs
 src/apis/mod.rs
 src/apis/reading_api.rs
+src/apis/web_socket_api.rs
 src/lib.rs
 src/models/authenticate.rs
 src/models/base_user_dto.rs
@@ -37,6 +42,7 @@ src/models/problem_details.rs
 src/models/reading_dto.rs
 src/models/reading_type.rs
 src/models/register_device.rs
+src/models/severity.rs
 src/models/toggle_notification_type.rs
 src/models/update_configuration.rs
 src/models/update_validation_rules.rs

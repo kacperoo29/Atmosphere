@@ -17,13 +17,16 @@ pub struct ValidationRuleDto {
     pub message: String,
     #[serde(rename = "condition")]
     pub condition: String,
+    #[serde(rename = "severity")]
+    pub severity: crate::models::Severity,
 }
 
 impl ValidationRuleDto {
-    pub fn new(message: String, condition: String) -> ValidationRuleDto {
+    pub fn new(message: String, condition: String, severity: crate::models::Severity) -> ValidationRuleDto {
         ValidationRuleDto {
             message,
             condition,
+            severity,
         }
     }
 }

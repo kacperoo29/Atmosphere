@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using Atmosphere.Core.Enums;
+
 namespace Atmosphere.Application.DTO;
 
 public class ValidationRuleDto
@@ -8,4 +10,7 @@ public class ValidationRuleDto
 
     [Required]
     public string Condition { get; set; }
+
+    [Required]
+    public Severity Severity { get; set; }
 }

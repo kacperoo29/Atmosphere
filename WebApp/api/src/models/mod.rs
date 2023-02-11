@@ -18,6 +18,8 @@ pub mod reading_type;
 pub use self::reading_type::ReadingType;
 pub mod register_device;
 pub use self::register_device::RegisterDevice;
+pub mod severity;
+pub use self::severity::Severity;
 pub mod toggle_notification_type;
 pub use self::toggle_notification_type::ToggleNotificationType;
 pub mod update_configuration;

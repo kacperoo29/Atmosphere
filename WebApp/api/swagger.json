@@ -1083,6 +1083,64 @@
         }
       }
     },
+    "/api/Device/GetAll": {
+      "get": {
+        "tags": [
+          "Device"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Reading/CreateReading": {
       "post": {
         "tags": [
@@ -1265,6 +1323,66 @@
           }
         }
       }
+    },
+    "/api/Reading/GetReadingsByDevice": {
+      "get": {
+        "tags": [
+          "Reading"
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadingDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadingDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadingDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WebSocket/Notifications": {
+      "get": {
+        "tags": [
+          "WebSocket"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1312,16 +1430,12 @@
       },
       "CreateReading": {
         "required": [
-          "sensorIdentifier",
           "timestamp",
           "type",
           "value"
         ],
         "type": "object",
         "properties": {
-          "sensorIdentifier": {
-            "type": "string"
-          },
           "value": {
             "type": "number",
             "format": "double"
@@ -1339,7 +1453,8 @@
       "DeviceDto": {
         "required": [
           "id",
-          "identifier"
+          "identifier",
+          "isActive"
         ],
         "type": "object",
         "properties": {
@@ -1349,6 +1464,9 @@
           },
           "identifier": {
             "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -1387,6 +1505,7 @@
       "NotificationType": {
         "enum": [
           "email",
+          "webSocket",
           "unknown"
         ],
         "type": "string"
@@ -1483,6 +1602,14 @@
         },
         "additionalProperties": false
       },
+      "Severity": {
+        "enum": [
+          "info",
+          "warning",
+          "error"
+        ],
+        "type": "string"
+      },
       "ToggleNotificationType": {
         "required": [
           "type"
@@ -1539,7 +1666,8 @@
       "ValidationRuleDto": {
         "required": [
           "condition",
-          "message"
+          "message",
+          "severity"
         ],
         "type": "object",
         "properties": {
@@ -1548,6 +1676,9 @@
           },
           "condition": {
             "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Severity"
           }
         },
         "additionalProperties": false

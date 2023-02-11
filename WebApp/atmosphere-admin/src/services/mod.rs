@@ -1,10 +1,12 @@
 pub mod config;
-pub mod user;
+pub mod device;
 pub mod reading;
+pub mod user;
+pub mod websocket;
 
 use std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-use atmosphere_api::apis::configuration::{Configuration, ApiKey};
+use atmosphere_api::apis::configuration::{ApiKey, Configuration};
 use lazy_static::lazy_static;
 
 use crate::services::user::get_token;

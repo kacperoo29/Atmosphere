@@ -1,7 +1,9 @@
+use wasm_bindgen::{prelude::Closure, JsCast};
+use web_sys::MessageEvent;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{hooks::use_user_context::use_user_context, routes::AppRoute};
+use crate::{hooks::use_user_context::use_user_context, routes::AppRoute, services::websocket::open_notification_socket, bindings, models::notification_payload::NotificationPayload};
 
 /// Nav component
 #[function_component(Nav)]
@@ -16,6 +18,29 @@ pub fn nav() -> Html {
             user.logout();
         })
     };
+
+    use_effect_with_deps(
+        |_user| {
+            if (*_user).is_some() {
+                let notification_ws = open_notification_socket().unwrap();
+                let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
+                    let data = e.data().as_string().unwrap();
+
+                    // deserialize data
+                    let notification: NotificationPayload = serde_json::from_str(&data).unwrap();
+                    if notification.r#type.to_lowercase() == "notification" {
+                        bindings::notify("New notification", &notification.data.join(" "));
+                    }
+                });
+
+                notification_ws.set_onmessage(Some(on_message.as_ref().unchecked_ref()));
+                on_message.forget();
+            }
+
+            || ()
+        },
+        (*user).clone(),
+    );
 
     html! {
         <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark vh-100 sticky-top p-3">

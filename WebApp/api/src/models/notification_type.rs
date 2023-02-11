@@ -14,6 +14,8 @@
 pub enum NotificationType {
     #[serde(rename = "email")]
     Email,
+    #[serde(rename = "webSocket")]
+    WebSocket,
     #[serde(rename = "unknown")]
     Unknown,
 
@@ -23,6 +25,7 @@ impl ToString for NotificationType {
     fn to_string(&self) -> String {
         match self {
             Self::Email => String::from("email"),
+            Self::WebSocket => String::from("webSocket"),
             Self::Unknown => String::from("unknown"),
         }
     }

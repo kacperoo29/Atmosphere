@@ -1,9 +1,9 @@
+use crate::to_title_case;
 use atmosphere_api::models::{ReadingType, ValidationRuleDto};
 use serde::{Deserialize, Serialize};
-use serde_json::de::Read;
-use web_sys::{HtmlInputElement, InputEvent};
+use web_sys::{Event, HtmlInputElement, HtmlSelectElement, InputEvent};
 use yew::{
-    function_component, html, use_effect_with_deps, use_state, Callback, Properties, TargetCast,
+    function_component, html, use_effect_with_deps, use_state, Callback, Properties, TargetCast, use_node_ref,
 };
 use yew_hooks::{use_async, use_mount};
 
@@ -104,6 +104,22 @@ pub fn validation_rule(props: &Props) -> Html {
         })
     };
 
+    let update_severity = {
+        let rules = rules.clone();
+        let update_rule = update_rule.clone();
+        Callback::from(move |(index, severity): (usize, String)| {
+            let mut rule = (*rules).clone().into_iter().nth(index).unwrap();
+            rule.severity = match severity.as_str() {
+                "Info" => atmosphere_api::models::Severity::Info,
+                "Warning" => atmosphere_api::models::Severity::Warning,
+                "Error" => atmosphere_api::models::Severity::Error,
+                _ => atmosphere_api::models::Severity::Info,
+            };
+
+            update_rule.emit((index, rule));
+        })
+    };
+
     html! {
         <div class="mt-4 mb-4">
             <h3>{ format!("Validation Rules for {}", props.reading_type.to_string()) }</h3>
@@ -112,6 +128,7 @@ pub fn validation_rule(props: &Props) -> Html {
                     <tr>
                         <th>{ "Message" }</th>
                         <th>{ "Condition" }</th>
+                        <th>{ "Severity" }</th>
                         <th>{ "Actions" }</th>
                     </tr>
                 </thead>
@@ -119,34 +136,17 @@ pub fn validation_rule(props: &Props) -> Html {
                     {
                         for (*rules).clone().into_iter().enumerate().map(|(i, rule)| {
                             let rule_clone = rule.clone();
+                            let update_rule = update_rule.clone();
+                            let update_severity = update_severity.clone();
+                            let remove_rule = remove_rule.clone();
                             html! {
-                                <tr>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            value={rule.message.clone()}
-                                            oninput={update_rule.reform(move |e: InputEvent| (i, ValidationRuleDto {
-                                                message: e.target_unchecked_into::<HtmlInputElement>().value(),
-                                                ..rule_clone.clone()
-                                            }))}
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            value={rule.condition.clone()}
-                                            oninput={update_rule.reform(move |e: InputEvent| (i, ValidationRuleDto {
-                                                condition: e.target_unchecked_into::<HtmlInputElement>().value(),
-                                                ..rule.clone()
-                                            }))}
-                                        />
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger" onclick={remove_rule.reform(move |_| i)}>{ "Remove" }</button>
-                                    </td>
-                                </tr>
+                                <ValidationRuleInternal
+                                    rule={rule_clone}
+                                    update_rule={update_rule}
+                                    update_severity={update_severity}
+                                    remove_rule={remove_rule}
+                                    i={i}
+                                />
                             }
                         })
                     }
@@ -155,5 +155,79 @@ pub fn validation_rule(props: &Props) -> Html {
             <button class="btn btn-primary" onclick={add_rule}>{ "Add Rule" }</button>
             <button class="btn btn-primary" onclick={save_rules}>{ "Save Rules" }</button>
         </div>
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+struct InternalProp {
+    rule: ValidationRuleDto,
+    update_rule: Callback<(usize, ValidationRuleDto)>,
+    update_severity: Callback<(usize, String)>,
+    remove_rule: Callback<usize>,
+    i: usize,
+}
+
+#[function_component(ValidationRuleInternal)]
+fn validation_rule_internal(validation_rule: &InternalProp) -> Html {
+    let rule = validation_rule.rule.clone();
+    let update_rule = validation_rule.update_rule.clone();
+    let update_severity = validation_rule.update_severity.clone();
+    let remove_rule = validation_rule.remove_rule.clone();
+    let i = validation_rule.i;
+
+    let select_ref = use_node_ref();
+
+    {
+        let select_ref = select_ref.clone();
+        use_effect_with_deps(
+            move |severity| {
+                let select = select_ref.cast::<HtmlSelectElement>().unwrap();
+                select.set_value(&to_title_case(&severity.to_string()));
+                || ()
+            },
+            rule.severity,
+        );
+    }
+
+    html! {
+        <tr>
+            <td>
+                <input
+                    type="text"
+                    class="form-control"
+                    value={rule.message.clone()}
+                    oninput={let rule = rule.clone(); update_rule.reform(move |e: InputEvent| (i, ValidationRuleDto {
+                        message: e.target_unchecked_into::<HtmlInputElement>().value(),
+                        ..rule.clone()
+                    }))}
+                />
+            </td>
+            <td>
+                <input
+                    type="text"
+                    class="form-control"
+                    value={rule.condition.clone()}
+                    oninput={let rule = rule.clone(); update_rule.reform(move |e: InputEvent| (i, ValidationRuleDto {
+                        condition: e.target_unchecked_into::<HtmlInputElement>().value(),
+                        ..rule.clone()
+                    }))}
+                />
+            </td>
+            <td>
+                <select
+                    ref={select_ref.clone()}
+                    class="form-control"
+                    value={to_title_case(&rule.severity.to_string())}
+                    onchange={update_severity.reform(move |e: Event| (i, e.target_unchecked_into::<HtmlSelectElement>().value()))}
+                >
+                    <option value="Info">{ "Info" }</option>
+                    <option value="Warning">{ "Warning" }</option>
+                    <option value="Error">{ "Error" }</option>
+                </select>
+            </td>
+            <td>
+                <button class="btn btn-danger" onclick={remove_rule.reform(move |_| i)}>{ "Remove" }</button>
+            </td>
+        </tr>
     }
 }

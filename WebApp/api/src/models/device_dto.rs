@@ -17,13 +17,16 @@ pub struct DeviceDto {
     pub id: uuid::Uuid,
     #[serde(rename = "identifier")]
     pub identifier: String,
+    #[serde(rename = "isActive")]
+    pub is_active: bool,
 }
 
 impl DeviceDto {
-    pub fn new(id: uuid::Uuid, identifier: String) -> DeviceDto {
+    pub fn new(id: uuid::Uuid, identifier: String, is_active: bool) -> DeviceDto {
         DeviceDto {
             id,
             identifier,
+            is_active,
         }
     }
 }

@@ -10,6 +10,9 @@ public class DeviceDto
     [Required]
     public string Identifier { get; set; }
 
+    [Required]
+    public bool IsActive { get; set; }
+
     public DeviceDto()
     {
         Identifier = string.Empty;

@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**sensor_identifier** | **String** |  | 
 **value** | **f64** |  | 
 **r#type** | [**crate::models::ReadingType**](ReadingType.md) |  | 
 **timestamp** | **String** |  | 
