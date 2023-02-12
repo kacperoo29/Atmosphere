@@ -6,16 +6,16 @@ namespace Atmosphere.Application.DTO.Mapping;
 
 public class DeviceConverter : ITypeConverter<Device, DeviceDto>
 {
-    private readonly IDeviceService _deviceService;
+    private readonly WebSocketHub<Device> _deviceHub;
 
-    public DeviceConverter(IDeviceService deviceService)
+    public DeviceConverter(WebSocketHub<Device> deviceHub)
     {
-        _deviceService = deviceService;
+        _deviceHub = deviceHub;
     }
 
     public DeviceDto Convert(Device source, DeviceDto destination, ResolutionContext context)
     {
-        var connected = _deviceService.ConnectedDevices.Contains(source.Id);
+        var connected = _deviceHub.ConnectedSockets.Any(x => x.UserId == source.Id);
 
         return new DeviceDto
         {

@@ -47,6 +47,13 @@ public:
 
 	/*! \brief Get 
 	 */
+	std::string getUsername();
+
+	/*! \brief Set 
+	 */
+	void setUsername(std::string  username);
+	/*! \brief Get 
+	 */
 	std::string getIdentifier();
 
 	/*! \brief Set 
@@ -62,6 +69,7 @@ public:
 
 
     private:
+    std::string username{};
     std::string identifier{};
     std::string password{};
 };

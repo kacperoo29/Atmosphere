@@ -24,14 +24,9 @@ public class WebSocketController : ControllerBase
     [Authorize]
     public async Task Notifications()
     {
-        try
+        if (HttpContext.WebSockets.IsWebSocketRequest)
         {
             await _mediator.Send(new ConnectToNotificationStream());
-        }
-        catch (Exception e)
-        {
-            HttpContext.Response.StatusCode = 400;
-            await HttpContext.Response.WriteAsync(e.Message);
         }
     }
 
@@ -39,14 +34,9 @@ public class WebSocketController : ControllerBase
     [Authorize]
     public async Task Devices()
     {
-        try
+        if (HttpContext.WebSockets.IsWebSocketRequest)
         {
             await _mediator.Send(new ConnectToDeviceStream());
-        }
-        catch (Exception e)
-        {
-            HttpContext.Response.StatusCode = 400;
-            await HttpContext.Response.WriteAsync(e.Message);
         }
     }
 }

@@ -8,6 +8,7 @@
 #include <list>
 
 #include "CreateReading.h"
+#include "ReadingDto.h"
 
 namespace Tiny {
 
@@ -26,9 +27,9 @@ public:
    * .
    *
    *
-   * \param createReading
+   * \param createReading  *Required*
    */
-  Response<String> apiReadingCreateReadingPost(
+  Response<ReadingDto> apiReadingCreateReadingPost(
 
       CreateReading createReading
 
@@ -37,9 +38,29 @@ public:
    * .
    *
    *
+   */
+  Response<std::list<ReadingDto>> apiReadingGetAllReadingsGet();
+  /**
+   * .
+   *
+   *
+   * \param startDate
+   * \param endDate
+   */
+  Response<std::list<ReadingDto>> apiReadingGetReadingsByDateGet(
+
+      std::string startDate,
+
+      std::string endDate
+
+  );
+  /**
+   * .
+   *
+   *
    * \param deviceId
    */
-  Response<String> apiReadingGetAllReadingsGet(
+  Response<std::list<ReadingDto>> apiReadingGetReadingsByDeviceGet(
 
       std::string deviceId
 

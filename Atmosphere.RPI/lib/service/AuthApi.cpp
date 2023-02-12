@@ -39,7 +39,7 @@ Response<String> AuthApi::apiAuthActivateUserIdPut(
   return response;
 }
 
-Response<String> AuthApi::apiAuthAuthenticatePost(
+Response<AuthResponseDto> AuthApi::apiAuthAuthenticatePost(
 
     Authenticate authenticate
 
@@ -67,11 +67,39 @@ Response<String> AuthApi::apiAuthAuthenticatePost(
   String output = getResponseBody();
   std::string output_string = output.c_str();
 
-  Response<String> response(output, httpCode);
+  AuthResponseDto obj(output_string);
+
+  Response<AuthResponseDto> response(obj, httpCode);
   return response;
 }
 
-Response<String> AuthApi::apiAuthRegisterDevicePost(
+Response<BaseUserDto> AuthApi::apiAuthGetCurrentUserGet() {
+  std::string url = basepath + "/api/Auth/GetCurrentUser"; //
+
+  // Headers  |
+
+  // Query    |
+
+  // Form     |
+
+  std::string payload = "";
+  // Send Request
+  // METHOD | GET
+  // Body     |
+  int httpCode = sendRequest(
+      url, "GET", reinterpret_cast<uint8_t *>(&payload[0]), payload.length());
+
+  // Handle Request
+  String output = getResponseBody();
+  std::string output_string = output.c_str();
+
+  BaseUserDto obj(output_string);
+
+  Response<BaseUserDto> response(obj, httpCode);
+  return response;
+}
+
+Response<DeviceDto> AuthApi::apiAuthRegisterDevicePost(
 
     RegisterDevice registerDevice
 
@@ -99,6 +127,8 @@ Response<String> AuthApi::apiAuthRegisterDevicePost(
   String output = getResponseBody();
   std::string output_string = output.c_str();
 
-  Response<String> response(output, httpCode);
+  DeviceDto obj(output_string);
+
+  Response<DeviceDto> response(obj, httpCode);
   return response;
 }

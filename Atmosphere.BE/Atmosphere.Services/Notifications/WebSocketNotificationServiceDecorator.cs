@@ -10,11 +10,11 @@ namespace Atmosphere.Services.Notifications;
 public class WebSocketNotificationServiceDecorator : INotificationService
 {
     private readonly INotificationService _wrapee;
-    private readonly IWebSocketHub<Notification> _webSocketHub;
+    private readonly WebSocketHub<Notification> _webSocketHub;
 
     public WebSocketNotificationServiceDecorator(
         INotificationService notificationService,
-        IWebSocketHub<Notification> webSocketHub
+        WebSocketHub<Notification> webSocketHub
     )
     {
         _wrapee = notificationService;

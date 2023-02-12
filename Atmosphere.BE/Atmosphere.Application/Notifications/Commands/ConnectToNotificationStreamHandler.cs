@@ -7,12 +7,12 @@ namespace Atmosphere.Application.Notfications.Commands;
 
 public class ConnectToNotificationStreamHandler : IRequestHandler<ConnectToNotificationStream>
 {
-    private readonly IWebSocketHub<Notification> _notificationsHub;
+    private readonly WebSocketHub<Notification> _notificationsHub;
     private readonly IHttpContextAccessor _httpContext;
     private readonly IUserService _userService;
 
     public ConnectToNotificationStreamHandler(
-        IWebSocketHub<Notification> notificationsHub,
+        WebSocketHub<Notification> notificationsHub,
         IHttpContextAccessor httpContext,
         IUserService userService
     )

@@ -1,9 +1,10 @@
+using Atmosphere.Application.DTO;
 using Atmosphere.Application.Services;
 using MediatR;
 
 namespace Atmosphere.Application.Auth.Commands;
 
-public class AuthenticateHandler : IRequestHandler<Authenticate, string>
+public class AuthenticateHandler : IRequestHandler<Authenticate, AuthResponseDto>
 {
     private readonly ITokenService _tokenService;
     private readonly IUserService _userService;
@@ -14,10 +15,13 @@ public class AuthenticateHandler : IRequestHandler<Authenticate, string>
         _userService = userRepository;
     }
 
-    public async Task<string> Handle(Authenticate request, CancellationToken cancellationToken)
+    public async Task<AuthResponseDto> Handle(
+        Authenticate request,
+        CancellationToken cancellationToken
+    )
     {
         var user = await _userService.GetByCredentialsAsync(request.Username, request.Password);
 
-        return await _tokenService.GenerateToken(user);
+        return new AuthResponseDto { Token = await _tokenService.GenerateToken(user) };
     }
 }

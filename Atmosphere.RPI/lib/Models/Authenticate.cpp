@@ -1,106 +1,56 @@
-
-
 #include "Authenticate.h"
+#include "Arduino.h"
 
 using namespace Tiny;
 
-Authenticate::Authenticate()
-{
-	identifier = std::string();
-	key = std::string();
+Authenticate::Authenticate() {
+  username = std::string();
+  password = std::string();
 }
 
-Authenticate::Authenticate(std::string jsonString)
-{
-	this->fromJson(jsonString);
+Authenticate::Authenticate(std::string jsonString) {
+  this->fromJson(jsonString);
 }
 
-Authenticate::~Authenticate()
-{
+Authenticate::~Authenticate() {}
 
+void Authenticate::fromJson(std::string jsonObj) {
+  bourne::json object = bourne::json::parse(jsonObj);
+
+  const char *usernameKey = "username";
+
+  if (object.has_key(usernameKey)) {
+    bourne::json value = object[usernameKey];
+
+    jsonToValue(&username, value, "std::string");
+  }
+
+  const char *passwordKey = "password";
+
+  if (object.has_key(passwordKey)) {
+    bourne::json value = object[passwordKey];
+
+    jsonToValue(&password, value, "std::string");
+  }
 }
 
-void
-Authenticate::fromJson(std::string jsonObj)
-{
-    bourne::json object = bourne::json::parse(jsonObj);
+bourne::json Authenticate::toJson() {
+  bourne::json object = bourne::json::object();
 
-    const char *identifierKey = "identifier";
+  object["username"] = getUsername();
+  object["password"] = getPassword();
 
-    if(object.has_key(identifierKey))
-    {
-        bourne::json value = object[identifierKey];
-
-
-
-        jsonToValue(&identifier, value, "std::string");
-
-
-    }
-
-    const char *keyKey = "key";
-
-    if(object.has_key(keyKey))
-    {
-        bourne::json value = object[keyKey];
-
-
-
-        jsonToValue(&key, value, "std::string");
-
-
-    }
-
-
+  return object;
 }
 
-bourne::json
-Authenticate::toJson()
-{
-    bourne::json object = bourne::json::object();
+std::string Authenticate::getUsername() { return username; }
 
-
-
-
-
-    object["identifier"] = getIdentifier();
-
-
-
-
-
-
-    object["key"] = getKey();
-
-
-
-    return object;
-
+void Authenticate::setUsername(std::string username) {
+  this->username = username;
 }
 
-std::string
-Authenticate::getIdentifier()
-{
-	return identifier;
+std::string Authenticate::getPassword() { return password; }
+
+void Authenticate::setPassword(std::string password) {
+  this->password = password;
 }
-
-void
-Authenticate::setIdentifier(std::string  identifier)
-{
-	this->identifier = identifier;
-}
-
-std::string
-Authenticate::getKey()
-{
-	return key;
-}
-
-void
-Authenticate::setKey(std::string  key)
-{
-	this->key = key;
-}
-
-
-

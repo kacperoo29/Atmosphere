@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using Atmosphere.Application.Devices.Commands;
 using Atmosphere.Application.Services;
@@ -7,61 +8,21 @@ using MediatR;
 
 namespace Atmosphere.Services;
 
-public class DeviceHub : IWebSocketHub<Device>
+public class DeviceHub : WebSocketHub<Device>
 {
-    private readonly IMediator _mediator;
+    public DeviceHub() : base() { }
 
-    public DeviceHub(IMediator mediator)
-    {
-        Sockets = new List<WebSocketWrapper>();
-        _mediator = mediator;
-    }
-
-    public List<WebSocketWrapper> Sockets { get; private set; }
-
-    public async Task ConnectAsync(WebSocket socket, Guid? userId = null)
+    protected override async Task OnConnectedAsync(WebSocket socket, Guid? userId)
     {
         if (userId == null)
         {
-            return;
-        }
-
-        Sockets.Add(new WebSocketWrapper(socket, userId));
-        await _mediator.Send(new ConnectDevice { UserId = userId.Value });
-
-        while (socket.State == WebSocketState.Open)
-        {
-            var buffer = new ArraySegment<byte>(new byte[4096]);
-            var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
-
-            if (result.MessageType == WebSocketMessageType.Close)
-            {
-                await _mediator.Send(new DisconnectDevice { UserId = userId.Value });
-
-                await socket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure,
-                    string.Empty,
-                    CancellationToken.None
-                );
-            }
+            throw new UnauthorizedAccessException();
         }
     }
 
-    public async Task SendToAllAsync(string message)
-    {
-        if (Sockets.Count == 0)
-        {
-            return;
-        }
-
-        foreach (var socket in Sockets)
-        {
-            if (socket.Socket.State != WebSocketState.Open)
-            {
-                continue;
-            }
-
-            await socket.SendAsync(message);
-        }
-    }
+    protected override async Task OnMessageReceivedAsync(
+        WebSocket socket,
+        WebSocketReceiveResult result,
+        ArraySegment<byte> buffer
+    ) { }
 }

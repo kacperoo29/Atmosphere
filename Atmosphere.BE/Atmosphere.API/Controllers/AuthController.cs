@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AuthResponseDto), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Authenticate([FromBody, BindRequired] Authenticate request)
     {
         try

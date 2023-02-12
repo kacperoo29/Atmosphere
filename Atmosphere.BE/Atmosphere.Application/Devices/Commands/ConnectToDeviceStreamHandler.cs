@@ -7,12 +7,12 @@ namespace Atmosphere.Application.Devices.Commands;
 
 public class ConnectToDeviceStreamHandler : IRequestHandler<ConnectToDeviceStream>
 {
-    private readonly IWebSocketHub<Device> _deviceService;
+    private readonly WebSocketHub<Device> _deviceService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserService _userService;
 
     public ConnectToDeviceStreamHandler(
-        IWebSocketHub<Device> deviceService,
+        WebSocketHub<Device> deviceService,
         IHttpContextAccessor httpContextAccessor,
         IUserService userService
     )

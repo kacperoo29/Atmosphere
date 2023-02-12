@@ -1,18 +1,18 @@
 
 /*
- * CreateReading.h
+ * BaseUserDto.h
  *
  * 
  */
 
-#ifndef TINY_CPP_CLIENT_CreateReading_H_
-#define TINY_CPP_CLIENT_CreateReading_H_
+#ifndef TINY_CPP_CLIENT_BaseUserDto_H_
+#define TINY_CPP_CLIENT_BaseUserDto_H_
 
 
 #include <string>
 #include "bourne/json.hpp"
 #include "Helpers.h"
-#include "ReadingType.h"
+#include "UserRole.h"
 
 namespace Tiny {
 
@@ -23,18 +23,18 @@ namespace Tiny {
  *
  */
 
-class CreateReading{
+class BaseUserDto{
 public:
 
     /*! \brief Constructor.
 	 */
-    CreateReading();
-    CreateReading(std::string jsonString);
+    BaseUserDto();
+    BaseUserDto(std::string jsonString);
 
 
     /*! \brief Destructor.
 	 */
-    virtual ~CreateReading();
+    virtual ~BaseUserDto();
 
 
     /*! \brief Retrieve a bourne JSON representation of this class.
@@ -48,40 +48,40 @@ public:
 
 	/*! \brief Get 
 	 */
-	double getValue();
+	std::string getId();
 
 	/*! \brief Set 
 	 */
-	void setValue(double  value);
+	void setId(std::string  id);
 	/*! \brief Get 
 	 */
-	ReadingType getType();
+	std::string getUsername();
 
 	/*! \brief Set 
 	 */
-	void setType(ReadingType  type);
+	void setUsername(std::string  username);
 	/*! \brief Get 
 	 */
-	std::string getTimestamp();
+	UserRole getRole();
 
 	/*! \brief Set 
 	 */
-	void setTimestamp(std::string  timestamp);
+	void setRole(UserRole  role);
 	/*! \brief Get 
 	 */
-	std::string getUnit();
+	bool isIsActive();
 
 	/*! \brief Set 
 	 */
-	void setUnit(std::string  unit);
+	void setIsActive(bool  isActive);
 
 
     private:
-    double value{};
-    ReadingType type;
-    std::string timestamp{};
-    std::string unit{};
+    std::string id{};
+    std::string username{};
+    UserRole role;
+    bool isActive{};
 };
 }
 
-#endif /* TINY_CPP_CLIENT_CreateReading_H_ */
+#endif /* TINY_CPP_CLIENT_BaseUserDto_H_ */

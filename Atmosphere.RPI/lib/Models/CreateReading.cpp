@@ -5,10 +5,10 @@
 using namespace Tiny;
 
 CreateReading::CreateReading() {
-  deviceAddress = std::string();
   value = float(0);
   type = ReadingType();
   timestamp = std::string();
+  unit = std::string();
 }
 
 CreateReading::CreateReading(std::string jsonString) {
@@ -19,14 +19,6 @@ CreateReading::~CreateReading() {}
 
 void CreateReading::fromJson(std::string jsonObj) {
   bourne::json object = bourne::json::parse(jsonObj);
-
-  const char *deviceAddressKey = "deviceAddress";
-
-  if (object.has_key(deviceAddressKey)) {
-    bourne::json value = object[deviceAddressKey];
-
-    jsonToValue(&deviceAddress, value, "std::string");
-  }
 
   const char *valueKey = "value";
 
@@ -52,12 +44,18 @@ void CreateReading::fromJson(std::string jsonObj) {
 
     jsonToValue(&timestamp, value, "std::string");
   }
+
+  const char *unitKey = "unit";
+
+  if (object.has_key(unitKey)) {
+    bourne::json value = object[unitKey];
+
+    jsonToValue(&unit, value, "std::string");
+  }
 }
 
 bourne::json CreateReading::toJson() {
   bourne::json object = bourne::json::object();
-
-  object["deviceAddress"] = getDeviceAddress();
 
   object["value"] = getValue();
 
@@ -65,13 +63,9 @@ bourne::json CreateReading::toJson() {
 
   object["timestamp"] = getTimestamp();
 
+  object["unit"] = getUnit();
+
   return object;
-}
-
-std::string CreateReading::getDeviceAddress() { return deviceAddress; }
-
-void CreateReading::setDeviceAddress(std::string deviceAddress) {
-  this->deviceAddress = deviceAddress;
 }
 
 double CreateReading::getValue() { return value; }
@@ -87,3 +81,7 @@ std::string CreateReading::getTimestamp() { return timestamp; }
 void CreateReading::setTimestamp(std::string timestamp) {
   this->timestamp = timestamp;
 }
+
+std::string CreateReading::getUnit() { return unit; }
+
+void CreateReading::setUnit(std::string unit) { this->unit = unit; }

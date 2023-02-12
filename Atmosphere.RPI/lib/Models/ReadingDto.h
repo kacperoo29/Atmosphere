@@ -1,17 +1,18 @@
 
 /*
- * CreateReading.h
+ * ReadingDto.h
  *
  * 
  */
 
-#ifndef TINY_CPP_CLIENT_CreateReading_H_
-#define TINY_CPP_CLIENT_CreateReading_H_
+#ifndef TINY_CPP_CLIENT_ReadingDto_H_
+#define TINY_CPP_CLIENT_ReadingDto_H_
 
 
 #include <string>
 #include "bourne/json.hpp"
 #include "Helpers.h"
+#include "DeviceDto.h"
 #include "ReadingType.h"
 
 namespace Tiny {
@@ -23,18 +24,18 @@ namespace Tiny {
  *
  */
 
-class CreateReading{
+class ReadingDto{
 public:
 
     /*! \brief Constructor.
 	 */
-    CreateReading();
-    CreateReading(std::string jsonString);
+    ReadingDto();
+    ReadingDto(std::string jsonString);
 
 
     /*! \brief Destructor.
 	 */
-    virtual ~CreateReading();
+    virtual ~ReadingDto();
 
 
     /*! \brief Retrieve a bourne JSON representation of this class.
@@ -48,6 +49,20 @@ public:
 
 	/*! \brief Get 
 	 */
+	std::string getId();
+
+	/*! \brief Set 
+	 */
+	void setId(std::string  id);
+	/*! \brief Get 
+	 */
+	DeviceDto getDevice();
+
+	/*! \brief Set 
+	 */
+	void setDevice(DeviceDto  device);
+	/*! \brief Get 
+	 */
 	double getValue();
 
 	/*! \brief Set 
@@ -55,11 +70,11 @@ public:
 	void setValue(double  value);
 	/*! \brief Get 
 	 */
-	ReadingType getType();
+	std::string getUnit();
 
 	/*! \brief Set 
 	 */
-	void setType(ReadingType  type);
+	void setUnit(std::string  unit);
 	/*! \brief Get 
 	 */
 	std::string getTimestamp();
@@ -69,19 +84,21 @@ public:
 	void setTimestamp(std::string  timestamp);
 	/*! \brief Get 
 	 */
-	std::string getUnit();
+	ReadingType getType();
 
 	/*! \brief Set 
 	 */
-	void setUnit(std::string  unit);
+	void setType(ReadingType  type);
 
 
     private:
+    std::string id{};
+    DeviceDto device;
     double value{};
-    ReadingType type;
-    std::string timestamp{};
     std::string unit{};
+    std::string timestamp{};
+    ReadingType type;
 };
 }
 
-#endif /* TINY_CPP_CLIENT_CreateReading_H_ */
+#endif /* TINY_CPP_CLIENT_ReadingDto_H_ */

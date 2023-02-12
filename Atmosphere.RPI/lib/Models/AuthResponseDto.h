@@ -1,12 +1,12 @@
 
 /*
- * Authenticate.h
+ * AuthResponseDto.h
  *
  * 
  */
 
-#ifndef TINY_CPP_CLIENT_Authenticate_H_
-#define TINY_CPP_CLIENT_Authenticate_H_
+#ifndef TINY_CPP_CLIENT_AuthResponseDto_H_
+#define TINY_CPP_CLIENT_AuthResponseDto_H_
 
 
 #include <string>
@@ -22,18 +22,18 @@ namespace Tiny {
  *
  */
 
-class Authenticate{
+class AuthResponseDto{
 public:
 
     /*! \brief Constructor.
 	 */
-    Authenticate();
-    Authenticate(std::string jsonString);
+    AuthResponseDto();
+    AuthResponseDto(std::string jsonString);
 
 
     /*! \brief Destructor.
 	 */
-    virtual ~Authenticate();
+    virtual ~AuthResponseDto();
 
 
     /*! \brief Retrieve a bourne JSON representation of this class.
@@ -47,24 +47,16 @@ public:
 
 	/*! \brief Get 
 	 */
-	std::string getUsername();
+	std::string getToken();
 
 	/*! \brief Set 
 	 */
-	void setUsername(std::string  username);
-	/*! \brief Get 
-	 */
-	std::string getPassword();
-
-	/*! \brief Set 
-	 */
-	void setPassword(std::string  password);
+	void setToken(std::string  token);
 
 
     private:
-    std::string username{};
-    std::string password{};
+    std::string token{};
 };
 }
 
-#endif /* TINY_CPP_CLIENT_Authenticate_H_ */
+#endif /* TINY_CPP_CLIENT_AuthResponseDto_H_ */

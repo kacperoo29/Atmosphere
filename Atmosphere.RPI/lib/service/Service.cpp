@@ -3,9 +3,11 @@
 
 void Tiny::Service::begin(std::string url) {
   http.begin(String(url.c_str()));
-  for (const auto &header : headers) {
-    http.addHeader(String(std::get<0>(header).c_str()),
-                   String(std::get<1>(header).c_str()));
+  if (!headers.empty()) {
+    for (const auto &header : headers) {
+      http.addHeader(String(std::get<0>(header).c_str()),
+                     String(std::get<1>(header).c_str()));
+    }
   }
 
   headers.clear();
@@ -61,7 +63,7 @@ std::string Tiny::Service::encodeKeyValueTuple(
 }
 
 String Tiny::Service::getResponseBody() {
-  if (http.getSize() <= 0) {
+  if (http.getSize() == 0) {
     http.end();
 
     return String();

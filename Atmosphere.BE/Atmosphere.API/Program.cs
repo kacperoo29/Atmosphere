@@ -184,7 +184,7 @@ builder.Services.AddScoped(opt =>
     using var scope = opt.CreateScope();
     var config = scope.ServiceProvider.GetRequiredService<IConfigService>();
     var types = config.GetNotificationTypesAsync().GetAwaiter().GetResult();
-    var notificationHub = scope.ServiceProvider.GetRequiredService<IWebSocketHub<Notification>>();
+    var notificationHub = scope.ServiceProvider.GetRequiredService<WebSocketHub<Notification>>();
 
     INotificationService notificationService = new NotificationService();
     foreach (var type in types)
@@ -215,10 +215,8 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
 builder.Services.AddAutoMapper(typeof(CreateReadingHandler).Assembly);
 
-builder.Services.AddSingleton<IWebSocketHub<Notification>, NotificationsHub>();
-builder.Services.AddSingleton<IWebSocketHub<Device>, DeviceHub>();
-
-builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddSingleton<WebSocketHub<Notification>, NotificationsHub>();
+builder.Services.AddSingleton<WebSocketHub<Device>, DeviceHub>();
 
 BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {

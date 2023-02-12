@@ -31,12 +31,12 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
 
     public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
+        return await _collection.Find<T>(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null,
         CancellationToken cancellationToken = default)
     {
-        return await _collection.Find(filter ?? (x => true)).ToListAsync();
+        return await _collection.Find<T>(filter ?? (x => true)).ToListAsync();
     }
 }
