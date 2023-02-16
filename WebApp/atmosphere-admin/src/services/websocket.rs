@@ -1,13 +1,11 @@
 use web_sys::WebSocket;
 
-use crate::error::Error;
-
 use super::get_config;
 
-pub fn open_notification_socket() -> Result<WebSocket, Error> {
+pub fn open_notification_socket() -> Option<WebSocket> {
     let config = get_config().clone();
     let Some(token) = config.api_key else {
-        return Err(Error::Unauthorized("User not logged in.".to_string()));
+        return None;
     };
 
     let url = format!(
@@ -15,7 +13,7 @@ pub fn open_notification_socket() -> Result<WebSocket, Error> {
         config.base_path, "/api/websocket/notifications", token.key
     ).replace("http", "ws");
 
-    log::info!("Opening websocket: {}", url);
+    let socket = WebSocket::new(&url).expect("Failed to create websocket.");
 
-    WebSocket::new(&url).map_err(|e| e.into())
+    Some(socket)
 }

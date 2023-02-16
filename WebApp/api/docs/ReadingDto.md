@@ -5,9 +5,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | [**uuid::Uuid**](uuid::Uuid.md) |  | 
-**device_id** | [**uuid::Uuid**](uuid::Uuid.md) |  | 
-**sensor_identifier** | **String** |  | 
+**device** | [**crate::models::DeviceDto**](DeviceDto.md) |  | 
 **value** | **f64** |  | 
+**unit** | **String** |  | 
 **timestamp** | **String** |  | 
 **r#type** | [**crate::models::ReadingType**](ReadingType.md) |  | 
 

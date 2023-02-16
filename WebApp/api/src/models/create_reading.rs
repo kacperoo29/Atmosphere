@@ -19,14 +19,17 @@ pub struct CreateReading {
     pub r#type: crate::models::ReadingType,
     #[serde(rename = "timestamp")]
     pub timestamp: String,
+    #[serde(rename = "unit")]
+    pub unit: String,
 }
 
 impl CreateReading {
-    pub fn new(value: f64, r#type: crate::models::ReadingType, timestamp: String) -> CreateReading {
+    pub fn new(value: f64, r#type: crate::models::ReadingType, timestamp: String, unit: String) -> CreateReading {
         CreateReading {
             value,
             r#type,
             timestamp,
+            unit,
         }
     }
 }

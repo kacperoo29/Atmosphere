@@ -3,6 +3,7 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
+use crate::bindings::show_error;
 use crate::components::reading::reading_list_entry::ReadingListEntry;
 
 use crate::services::reading::get_readings_by_date;
@@ -33,6 +34,10 @@ pub fn reading_list() -> Html {
             move |get_readings| {
                 if let Some(res) = &get_readings.data {
                     readings.set(Some((*res).clone()));
+                }
+
+                if let Some(err) = &get_readings.error {
+                    show_error(&err.to_string());
                 }
 
                 || ()
@@ -96,7 +101,8 @@ pub fn reading_list() -> Html {
                         <th>{"Date"}</th>
                         <th>{"Type"}</th>
                         <th>{"Value"}</th>
-                        <th>{"Device address"}</th>
+                        <th>{"Unit"}</th>
+                        <th>{"Device name"}</th>
                     </tr>
                 </thead>
                 <tbody>

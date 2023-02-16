@@ -45,11 +45,13 @@ Class | Method | HTTP request | Description
 *ReadingApi* | [**api_reading_get_all_readings_get**](docs/ReadingApi.md#api_reading_get_all_readings_get) | **GET** /api/Reading/GetAllReadings | 
 *ReadingApi* | [**api_reading_get_readings_by_date_get**](docs/ReadingApi.md#api_reading_get_readings_by_date_get) | **GET** /api/Reading/GetReadingsByDate | 
 *ReadingApi* | [**api_reading_get_readings_by_device_get**](docs/ReadingApi.md#api_reading_get_readings_by_device_get) | **GET** /api/Reading/GetReadingsByDevice | 
+*WebSocketApi* | [**api_web_socket_devices_get**](docs/WebSocketApi.md#api_web_socket_devices_get) | **GET** /api/WebSocket/Devices | 
 *WebSocketApi* | [**api_web_socket_notifications_get**](docs/WebSocketApi.md#api_web_socket_notifications_get) | **GET** /api/WebSocket/Notifications | 
 
 
 ## Documentation For Models
 
+ - [AuthResponseDto](docs/AuthResponseDto.md)
  - [Authenticate](docs/Authenticate.md)
  - [BaseUserDto](docs/BaseUserDto.md)
  - [CreateReading](docs/CreateReading.md)

@@ -1,3 +1,5 @@
+pub mod auth_response_dto;
+pub use self::auth_response_dto::AuthResponseDto;
 pub mod authenticate;
 pub use self::authenticate::Authenticate;
 pub mod base_user_dto;

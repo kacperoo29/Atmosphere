@@ -5,7 +5,7 @@ use yew_hooks::use_async;
 
 use crate::{
     error::Error, hooks::use_user_context::use_user_context, models::user::LoginInfo,
-    services::user::authenticate,
+    services::user::authenticate, bindings::show_error,
 };
 
 use super::AppRoute;
@@ -37,14 +37,7 @@ pub fn signin() -> Html {
                 }
 
                 if let Some(err) = &user_login.error {
-                    match err {
-                        Error::Unauthorized(str) => {
-                            log::info!("User not logged in: {}", str);
-                        }
-                        _ => {
-                            log::error!("Error logging in: {:?}", err);
-                        }
-                    }
+                    show_error(&err.to_string());
                 }
 
                 || ()

@@ -69,15 +69,15 @@ pub async fn authenticate(login_info: LoginInfo) -> Result<UserInfo, Error> {
     };
 
     match api_auth_authenticate_post(&config, model).await {
-        Ok(token) => {
+        Ok(response) => {
             let mut config = get_mut_config();
-            set_token(Some(token.clone()));
+            set_token(Some(response.token.clone()));
             config.api_key = Some(ApiKey {
                 prefix: Some("Bearer".to_string()),
-                key: token.clone(),
+                key: response.token.clone(),
             });
 
-            Ok(token)
+            Ok(response.token)
         }
         Err(err) => {
             Err(err.into())

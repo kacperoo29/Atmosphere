@@ -36,17 +36,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/AuthResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/AuthResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/AuthResponseDto"
                 }
               }
             }
@@ -1383,6 +1383,18 @@
           }
         }
       }
+    },
+    "/api/WebSocket/Devices": {
+      "get": {
+        "tags": [
+          "WebSocket"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1398,6 +1410,18 @@
             "type": "string"
           },
           "password": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthResponseDto": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
             "type": "string"
           }
         },
@@ -1432,6 +1456,7 @@
         "required": [
           "timestamp",
           "type",
+          "unit",
           "value"
         ],
         "type": "object",
@@ -1446,6 +1471,9 @@
           "timestamp": {
             "type": "string",
             "format": "date-time"
+          },
+          "unit": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1454,7 +1482,8 @@
         "required": [
           "id",
           "identifier",
-          "isActive"
+          "isActive",
+          "isConnected"
         ],
         "type": "object",
         "properties": {
@@ -1466,6 +1495,9 @@
             "type": "string"
           },
           "isActive": {
+            "type": "boolean"
+          },
+          "isConnected": {
             "type": "boolean"
           }
         },
@@ -1539,11 +1571,11 @@
       },
       "ReadingDto": {
         "required": [
-          "deviceId",
+          "device",
           "id",
-          "sensorIdentifier",
           "timestamp",
           "type",
+          "unit",
           "value"
         ],
         "type": "object",
@@ -1552,16 +1584,15 @@
             "type": "string",
             "format": "uuid"
           },
-          "deviceId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "sensorIdentifier": {
-            "type": "string"
+          "device": {
+            "$ref": "#/components/schemas/DeviceDto"
           },
           "value": {
             "type": "number",
             "format": "double"
+          },
+          "unit": {
+            "type": "string"
           },
           "timestamp": {
             "type": "string",

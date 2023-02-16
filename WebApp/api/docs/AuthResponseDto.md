@@ -1,13 +1,10 @@
-# DeviceDto
+# AuthResponseDto
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | [**uuid::Uuid**](uuid::Uuid.md) |  | 
-**identifier** | **String** |  | 
-**is_active** | **bool** |  | 
-**is_connected** | **bool** |  | 
+**token** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -1,40 +1,52 @@
+use std::rc::Rc;
+
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::MessageEvent;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{hooks::use_user_context::use_user_context, routes::AppRoute, services::websocket::open_notification_socket, bindings, models::notification_payload::NotificationPayload};
+use crate::{hooks::use_user_context::use_user_context, routes::AppRoute, services::websocket::open_notification_socket, bindings::{self, show_error, set_send_ping_interval, set_on_close}, models::notification_payload::NotificationPayload};
 
 /// Nav component
 #[function_component(Nav)]
 pub fn nav() -> Html {
     let user = use_user_context();
+    let notification_ws = Rc::new(open_notification_socket());
 
     let signout_callback = {
         let user = user.clone();
+        let notification_ws = notification_ws.clone();
 
         Callback::from(move |e: MouseEvent| {
             e.prevent_default();
             user.logout();
+            if let Some(ws) = &*notification_ws.clone() {
+                if ws.close().is_err() {
+                    show_error("Failed to close notification socket");
+                }
+            }
         })
     };
 
     use_effect_with_deps(
-        |_user| {
-            if (*_user).is_some() {
-                let notification_ws = open_notification_socket().unwrap();
+        move |_user| {
+            if let Some(notification_ws) = &*notification_ws.clone() {
                 let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                     let data = e.data().as_string().unwrap();
 
                     // deserialize data
-                    let notification: NotificationPayload = serde_json::from_str(&data).unwrap();
-                    if notification.r#type.to_lowercase() == "notification" {
-                        bindings::notify("New notification", &notification.data.join(" "));
+                    if let Ok(notification) = serde_json::from_str::<NotificationPayload>(&data) {
+                        if notification.r#type.to_lowercase() == "notification" {
+                            bindings::notify("New notification", &notification.data.join(" "));
+                        }
                     }
                 });
 
                 notification_ws.set_onmessage(Some(on_message.as_ref().unchecked_ref()));
                 on_message.forget();
+
+                set_send_ping_interval(notification_ws, 20000);
+                set_on_close(notification_ws);
             }
 
             || ()
@@ -61,18 +73,18 @@ pub fn nav() -> Html {
                         <span class="ms-1 d-none d-sm-inline">{"Settings"}</span>
                     </Link<AppRoute>>
                 </li>
+                <li class="nav-item">
+                    <Link<AppRoute> to={AppRoute::Devices} classes="nav-link">
+                        <i class="fs-4 bi bi-laptop"></i>
+                        <span class="ms-1 d-none d-sm-inline">{"Devices"}</span>
+                    </Link<AppRoute>>
+                </li>
             </ul>
             <hr />
             if user.is_logged_in() {
-                <div class="dropdown pb-4">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span>{user.as_ref().unwrap().username.clone()}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item">{"Settings"}</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" onclick={signout_callback}>{"Sign out"}</a></li>
-                    </ul>
+                <div onclick={signout_callback}>
+                    <i class="fs-4 bi bi-box-arrow-left"></i>
+                    <span class="ms-1 d-none d-sm-inline">{"Sign Out"}</span>
                 </div>
             } else {
                 <Link<AppRoute> to={AppRoute::SignIn} classes="nav-link">

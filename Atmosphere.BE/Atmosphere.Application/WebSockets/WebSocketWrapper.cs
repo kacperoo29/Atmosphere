@@ -7,11 +7,13 @@ public class WebSocketWrapper
 {
     public Guid? UserId { get; private set; }
     public WebSocket Socket { get; private set; }
+    public int Age { get; set; }
 
     public WebSocketWrapper(WebSocket socket, Guid? userId = null)
     {
         Socket = socket;
         UserId = userId;
+        Age = 0;
     }
 
     public async Task SendAsync(string message)

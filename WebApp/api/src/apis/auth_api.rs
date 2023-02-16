@@ -82,7 +82,7 @@ pub async fn api_auth_activate_user_id_put(configuration: &configuration::Config
     }
 }
 
-pub async fn api_auth_authenticate_post(configuration: &configuration::Configuration, authenticate: crate::models::Authenticate) -> Result<String, Error<ApiAuthAuthenticatePostError>> {
+pub async fn api_auth_authenticate_post(configuration: &configuration::Configuration, authenticate: crate::models::Authenticate) -> Result<crate::models::AuthResponseDto, Error<ApiAuthAuthenticatePostError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -110,8 +110,7 @@ pub async fn api_auth_authenticate_post(configuration: &configuration::Configura
     let local_var_content = local_var_resp.text().await?;
 
     if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
-        // Return string instead of deserializing
-        Ok(local_var_content)
+        serde_json::from_str(&local_var_content).map_err(Error::from)
     } else {
         let local_var_entity: Option<ApiAuthAuthenticatePostError> = serde_json::from_str(&local_var_content).ok();
         let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };

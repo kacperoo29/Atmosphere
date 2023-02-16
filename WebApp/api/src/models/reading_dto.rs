@@ -15,12 +15,12 @@
 pub struct ReadingDto {
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
-    #[serde(rename = "deviceId")]
-    pub device_id: uuid::Uuid,
-    #[serde(rename = "sensorIdentifier")]
-    pub sensor_identifier: String,
+    #[serde(rename = "device")]
+    pub device: Box<crate::models::DeviceDto>,
     #[serde(rename = "value")]
     pub value: f64,
+    #[serde(rename = "unit")]
+    pub unit: String,
     #[serde(rename = "timestamp")]
     pub timestamp: String,
     #[serde(rename = "type")]
@@ -28,12 +28,12 @@ pub struct ReadingDto {
 }
 
 impl ReadingDto {
-    pub fn new(id: uuid::Uuid, device_id: uuid::Uuid, sensor_identifier: String, value: f64, timestamp: String, r#type: crate::models::ReadingType) -> ReadingDto {
+    pub fn new(id: uuid::Uuid, device: crate::models::DeviceDto, value: f64, unit: String, timestamp: String, r#type: crate::models::ReadingType) -> ReadingDto {
         ReadingDto {
             id,
-            device_id,
-            sensor_identifier,
+            device: Box::new(device),
             value,
+            unit,
             timestamp,
             r#type,
         }

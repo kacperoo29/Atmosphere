@@ -16,6 +16,22 @@ export function notify(title: string, msg: string) {
     toast_obj.show();
 }
 
+export function show_error(text: string) {
+    notify('Error', text);
+}
+
+export function set_send_ping_interval(ws: WebSocket, interval: number) {
+    setInterval(() => {
+        ws.send('ping');
+    }, interval);
+}
+
+export function set_on_close(ws: WebSocket) {
+    window.onclose = () => {
+        ws.close();
+    };
+}
+
 function build_toast(title: string, msg: string) {
     var toast = document.createElement('div');
     toast.classList.add('toast');

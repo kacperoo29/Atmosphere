@@ -41,7 +41,7 @@ Name | Type | Description  | Required | Notes
 
 ## api_auth_authenticate_post
 
-> String api_auth_authenticate_post(authenticate)
+> crate::models::AuthResponseDto api_auth_authenticate_post(authenticate)
 
 
 ### Parameters
@@ -53,7 +53,7 @@ Name | Type | Description  | Required | Notes
 
 ### Return type
 
-**String**
+[**crate::models::AuthResponseDto**](AuthResponseDto.md)
 
 ### Authorization
 
