@@ -57,13 +57,18 @@ Yew to framework umożliwiający tworzenie witryn WWW w języku Rust.
 Z użyciem tej biblioteki możliwe jest konstruowanie niezawodnych
 oraz wydajnych stron internetowych. Yew wykorzystuje WebAssembly wraz
 z renderowaniem po stronie serwera, aby znacznie przyśpieszyć działanie
-aplikacji na docelowej platformie.
+aplikacji na docelowej platformie. Umożliwia również na wykorzystanie 
+funkcjonalności innych popularnych języków wykorzystywanych do tworzenia
+aplikacji webowych takich jak JavaScript poprzez wykorzystanie biblioteki
+wasm-bindgen udostępniającej standardową funkcjonalność tego języka oraz
+pozwalającą na połączenie ze skryptami stworzonymi w tym języku.
 
 Do tworzenia stron Yew wykorzystuje język podobny do HTML i JSX dzięki
 czemu jest przystępny dla programistów mających wcześniejsze doświadczenie
 z tymi technologiami. Podobnie jak inne środowiska takie jak React czy Angular
-tworzone są komponenty, które mogą być wielokrotnie używane w różnych miejsach
-na stronie co sprawia, że kod jest czytelniejszy i jest jego mniej.
+tworzone są komponenty, które mogą być wielokrotnie używane w różnych komponentach
+oraz podstronach co sprawia, że kod jest czytelniejszy, zmniejszona jest jego złożoność
+oraz możliwe jest wyeliminowanie niepotrzebnych powtórzeń.
 
 \subsection*{Bootstrap}
 Bootstrap to darmowe i otwarto-źródłowe środowisko programistyczne składające się
@@ -71,6 +76,21 @@ ze zbioru szablonów stworzonych w językach HTML, CSS i JavaScript, które mog�
 być dowolnie wykorzystane z kompatybilnymi technologiami.
 Ten framework zawiera podstawowe style potrzebne, aby stworzyć responsywną 
 aplikacje webowe na wielu urządzeniach z różnymi rozmiarami ekranów oraz rozdzielczością. 
+
+\subsection*{TypeScript}
+TypeScript to darmowy, otwarto źródłowy stworzony oraz utrzymywane przez przedsiębiorstow Microsoft.
+Jest rozszerzeniem popularnego języka JavaScript dodającym szeroko zastosowane funkcjonalności
+w innych statycznie typowanych językach, tj. adnotacje typów oraz ich sprawdzanie
+podczas kompilacji, interfejsy, typy wyliczeniowe czy uogólnienia.
+Dodatkowo rozszerza język o słowa kluczowe async/await ułatwiające pracę
+z asynchronicznymi funkcjami. Język TypeScript jest całkowicie kompatybilny ze 
+środowiskami wspierającymi JavaScript - jest to język transpilowany do JS, a
+dodatkowe funkcjonalności dostępne są jedynie podczas tworzenia oprogramowania.
+
+Jego wykorzystanie w aplikacji zostało ograniczone jedynie do wykonania funkcjonalności,
+których implementacja w pozostałych technologiach była niemożliwa lub znacznie 
+utrudniona. Są to głównie funkcje pomocnicze wywoływane w odpowiednich komponentach
+stworzonych w technologii Yew.
 
 \section{Aplikacja serwerowa}
 
@@ -154,6 +174,8 @@ walidatorów kolekcji, co przydaje się w momentach kiedy chcemy uzyskać więks
 nad strukturą naszych danych.
 
 \section{Urządzenie pomiarowe}
+Urządzenie pomiarowe wykonane zostało na płytce Raspberry Pi Pico W, do którego z wykorzystaniem
+portów ogólnego przeznaczenia GPIO podłączono sensory badające parametry środowiska.
 
 \subsection*{Raspberry Pi Pico W}
 Raspberry Pi Pico W to komputer jedno-płytkowy zbudowany na podstawie mikrokontrolera RP2040. 
@@ -170,11 +192,15 @@ Do głównych jego cech, które zostały wykorzystane do stworzenia systemu nale
 \end{itemize}
 Płytka umożliwia łączność z siecią Wi-Fi przy użyciu wbudowanego chipu CYW43439
 obsługujący standard 802.11n, który w odpowiednich warunkach pozwala na łączność
-z prędkością do 600Mb/s.
+z prędkością do 600Mb/s. Wraz z nowszymi wersjami SDK umożliwia również wykorzystanie
+całego potencjału tego urządzenia i umożliwia na połączenia protokołem Bluetooth.
 
 Aktualnie dostępne oprogramowanie pozwala tworzyć systemy w językach programowania takich jak
 Assembly, C, C++, Python oraz Rust. Istnieje również nieoficjalne wsparcie dla środowiska
 Arduino oraz możliwość wykorzystania istniejących na tą platformę bibliotek.
+Ze względu na język, w którym utworzono SDK (ang. \textit{Software Development Kit}) dla
+tej platformy (język programowania C), najczęściej wykorzystywane są języki C oraz C++
+ze względu na wysoki stopień kompatybilności.
 
 \subsection*{C++}
 C++ to obiektowy język programowania wysokiego poziomu, będący często określany jako
@@ -183,9 +209,10 @@ Obsługuje on wysokopoziomowe abstrakcje takie jak obiekty, programowanie genery
 abstrakcje pozwalając w tym samym czasie na używanie niskopoziomowej funkcjonalności 
 takiej jak zarządzenie pamięcią czy dostęp do rejestrów procesora oraz używanie języka asembler.
 Przez te cechy używany jest tam, gdzie potrzebna jest wysoka wydajność lub zasoby komputerowe
-są znacznie ograniczone, np. serwery WWW, gry wideo czy systemy wbudowane.
+są znacznie ograniczone, np. serwery WWW, gry komputerowe czy systemy wbudowane.
 
 W porównaniu do C zawiera również rozbudowaną standardową bibliotekę klas i funkcji.
 Dodaje ona dodatkową funkcjonalność taką jak zaawansowane typy pozwalające na
 przechowywanie zmiennej liczby danych, algorytmy takie jak sortowanie czy 
 generowanie liczb losowych, obsługa plików, czasu oraz wielowątkowości.
+

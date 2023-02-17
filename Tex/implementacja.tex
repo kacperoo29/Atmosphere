@@ -14,6 +14,17 @@ stosowanym w sieci WWW (ang. \textit{World Wide Web}), będąca systemem
 służącym do udostępniania informacji poprzez sieć Internet
 z wykorzystaniem adresów URI (ang. \textit{Uniform Resource Identifier}) \cite{Jacobs:04:AWW}.
 
+Dodatkowo wykorzystany został protokół kanałów komunikacyjnych WebSocket.
+Pracują one w trybie pełnego dupleksu, co zezwala na obustronną komunikację
+klienta z serwerem oraz serwera z klientem. Największą jego zaletą jest
+możliwość wykorzystania protokołu HTTP w celu ustanowienia połączenia 
+oraz wykorzystanie tych samych portów 80 oraz 443.
+Aby ustanowić połączenie klient powinien wysłać odpowiedni
+nagłówek nazywany HTTP Upgrade, na który serwer odpowiada z informacją o zmianie protokołu.
+Następnie połączenie zmienia protokół z HTTP do binarnej transmisji bezpośrednio wykorzystującej TCP.
+W tym momencie obie strony z jego wykorzystaniem mogą odczytywać oraz wysyłać wiadomości
+pomiędzy sobą.
+
 \section{Aplikacja serwerowa}
 Aplikacja serwerowa została zaimplementowana jako centralny komponent systemu.
 Zajmuje się zapisem odczytów w bazie danych, przetwarzaniem zapytań
@@ -164,6 +175,7 @@ wykorzystujących dane API,
   \item generator dokumentacji bazujący na komentarzach znajdujących się w kodzie aplikacji,
   \item interfejs swagger-ui umożliwiający na przeglądanie zasobów z poziomu przeglądarki internetowej.
 \end{itemize}
+Interfejs swagger-ui przedstawiono na Rys. \ref{swagger:interface}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{swagger}
@@ -186,15 +198,94 @@ zapytania. Aplikacja zawiera 3 główne kontrolery zajmujące się odpowiednim i
 \begin{itemize}
   \item zapis oraz odczyt parametrów środowiska,
   \item autoryzacja oraz tworzenie kont,
-  \item konfiguracja oraz pobieranie konfiguracji systemu.
+  \item konfiguracja oraz pobieranie konfiguracji systemu,
+  \item pobieranie szczegółowych danych o urządzeniach oraz ich statusie.
 \end{itemize}
 W celu ułatwienia obsługi każdy z kontrolerów znajduje się na ścieżce URI odpowiadającej
 jego nazwie, np. kontroler odczytów znajduje się pod ścieżką /api/Reading.
-
-
+Dodatkowo serwer udostępnia dwa połączenia WebSocket - notyfikacyjne oraz
+dla urządzeń. Pierwsze z gniazd wykorzystywane jest do przesyłania
+powiadomień do pozostałych aplikacji. Autoryzowani użytkownicy mogą
+się z nim połączyć, aby uzyskać dostęp do wiadomości o niespodziewanych
+wartościach odczytów parametrów środowiska. Gniazdo przeznaczone dla
+urządzeń służy natomiast do synchronizacji konfiguracji oraz
+udostępnienia statusu. Wszystkie połączenia powinny co 30 sekund
+wysyłać wiadomość z zawartością "ping", aby zapewnić stałość połączenia.
+W przeciwnym wypadku serwer uznaje połączenie za przerwane i zamyka je.
+Wykorzystywane są one również do udostępniania notyfikacji oraz
+synchronizacji konfiguracji z pozostałymi urządzeniami.
 
 \section{Aplikacja kliencka}
+Aplikacja kliencka powstała w celu ułatwienia dostępu do zasobów systemu.
+Umożliwia ona na przedstawienie danych związanych z odczytami jak i konfigurację
+aplikacji wykorzystując przyjazny użytkownikowi interfejs. W tym celu komunikuje
+się ona z serwerem i na podstawie otrzymanych danych przedstawia je w formacie
+czytelnym dla człowieka. 
 
+Pierwszym krokiem, który wykonuje użytkownik po uruchomieniu aplikacji jest 
+proces logowania. Aby zwiększyć bezpieczeństwo danych wszystkie funkcjonalności
+dostępne są jedynie aktywnym kontom użytkowników.
+Interfejs logowania przedstawiono na Rys. \ref{atmosphere:signin}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{signin}
+  \caption{Widok logowania}
+  \label{atmosphere:signin}
+\end{figure}
+W przypadku podania błędnych danych serwer zwraca informację o błędzie, która następnie
+wyświetlana jest w formie powiadomienia użytkownikowi. Przykładową zawartość przedstawiono
+na Rys. \ref{atmosphere:failedsignin}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{failedsignin}
+  \caption{Informacja o niepoprawnych danych logowania}
+  \label{atmosphere:failedsignin}
+\end{figure}
+Po udanym zalogowaniu w zależności od poziomu uprawnień użytkownik ma dostęp
+do pozostałych zasobów aplikacji.
+W tym samym momencie aplikacja łączy się z kanałem WebSocket odpowiedzialnym za
+wysyłanie powiadomień o niespodziewanych wydarzeniach, tj. przekroczenie
+wartości parametrów. Aby je utrzymać aplikacja wysyła wykorzystując te samo
+połączenie wiadomość o treści "ping" co 30 sekund. W przypadku, gdy
+wystąpi niespodziewane zdarzenie oraz kanał jest aktywny aplikacja otrzymuje
+o tym wiadomość z serwera, a następnie wyświetlana jest w formacie powiadomienia
+podobnym do wcześniej przedstawionego powiadomienia o nieudanym logowaniu.
+Zawartość powiadomienia może zostać dynamicznie zmieniona przez użytkownika
+jak i bardziej zaawansowana logika weryfikacji odczytów. Przykładowa konfiguracja
+została przedstawiona na Rys. \ref{atmosphere:validation_rule}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{validation_rule}
+  \caption{Przykładowa konfiguracja zasad walidacji}
+  \label{atmosphere:validation_rule}
+\end{figure}
+Te reguły pozwalają na ustalenie dowolnej wiadomości opcjonalnie zawierającej referencje
+do wartości odczytu (\textit{value}) oraz jego poziomu (\textit{severity}). Poziom może zostać
+dostosowany przez użytkownika w zależności od priorytetu danej wiadomości.
+Są one podzielone na trzy kategorie: informacje, ostrzeżenia oraz błędy.
+Same reguły tworzone są za pomocą składni LINQ używanej w językach programowania
+bazujących na środowisku .NET. Umożliwia to na konstrukcję bardziej zaawansowanych reguł
+pozwalających na porównywanie wielu wartości, np. aplikacja może wysyłać powiadomienie, gdy
+wartość odczytu przekroczy dany próg wyrażony w stopniach Celsjusza lub zupełnie inny
+w stopnia Fahrenheita poprzez podanie dodatkowego porównania z polem jednostki (\textit{Unit}).
+Przykład takiego wyrażenia przedstawiony został na Rys. \ref{atmosphere:custom_validation}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{custom_validation}
+  \caption{Przykładowa konfiguracja zasad walidacji ze specyfikacja jednostki}
+  \label{atmosphere:custom_validation}
+\end{figure}
+Aplikacja umożliwia również konfigurację metody wysyłania powiadomień na adres email.
+Administrator może skonfigurować takie parametry jak serwer SMTP oraz port wykorzystywany
+do wysyłania wiadomości jak i nazwę użytkownika oraz hasło użyte do autoryzacji na nim.
+Dodatkowo może on podać adres email, z którego dana wiadomość jest wysyłana jak i również
+docelowy adres email. Przykładowa konfiguracja została zaprezentowana na Rys. \ref{atmosphere:email_configuration}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{email_configuration}
+  \caption{Przykładowa konfiguracja powiadomień email}
+  \label{atmosphere:email_configuration}
+\end{figure}
 
 \section{Urządzenie pomiarowe}
 Do wykonywania pomiarów wykorzystany został mikrokontroler Raspberry Pi Pico W.
@@ -221,8 +312,20 @@ Podobnie, aby dostosować się do zmienionej logiki w pliku Service.cpp.mustache
 zostało zapisywanie nagłówków - zamiast przechowywać je w kliencie HTTP, gdzie byłyby usuwane podczas
 rozpoczęcia zapytania, przechowywane są we wcześniej stworzonej zmiennej, a następnie są one
 wstrzykiwane klientowi zaraz po rozpoczęciu zapytania oraz przed jego wysłaniem.
-Podobnie w przypadku pustych odpowiedzi wygenerowany kod nie był ich w stanie obsłużyć
-co kończyło się dostępem do niezmapowanej pamięci. Aby to rozwiązać w funkcji odpowiedzialnej 
+Podobnie w przypadku pustych odpowiedzi wygenerowany kod nie był ich w stanie obsłużyć,
+ze względu na implementację klienta HTTP, co kończyło się dostępem do niezmapowanej pamięci. 
+Aby to rozwiązać w funkcji odpowiedzialnej 
 za pobieranie odpowiedzi dodano dodatkowe zabezpieczenie w postaci sprawdzenia
-długości odpowiedzi, jeżeli jest ona mniejsza niż 0 zwracany jest pusty ciąg znaków.
+długości odpowiedzi, jeżeli wynosi -1 odpowiedź jest o nieznanej długości i całość przepisywana jest
+do bufora z wykorzystaniem potoku, w przypadku 0 odpowiedź jest pusta, a przy wartościach większych od
+0 tworzony jest bufor o tej długości.
+
+Aby zapewnić synchronizację z serwerem oraz dostęp do statusu połączenia wykorzystano
+technologię WebSocket. Urządzenie łączy się z odpowiednim gniazdem, a następnie co 30
+sekund wysyła wiadomość z zawartością "ping" i oczekuje na odpowiedź "pong" od serwera.
+Jeżeli nie otrzyma takiej wiadomości uznaje, że połączenie zostało zerwane, więc zamyka je
+i po upływie 5 sekund próbuje utworzyć ponowną komunikację. Dzieje się to aż do momentu przywrócenia
+połączenia po czym urządzenie powraca do normalnego trybu operacji odczytywania oraz
+przesyłania danych z sensorów.
+
 
