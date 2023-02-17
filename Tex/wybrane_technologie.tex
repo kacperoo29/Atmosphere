@@ -48,9 +48,18 @@ wysokiego zadowolenia użytkowników w rankingach StackOverflow.
 W roku 2022 9,32\% respondentów używało języka Rust i aż 86,73\% z nich
 uznało, że kocha z nim pracować \cite{stackoverflow:popularity}.
 Jest to najwyższy wynik z jakiejkolwiek technologii w tej ankiecie,
-drugie miejsce zajmuje język Elixir z wynikiem 75,46\%.
+drugie miejsce zajmuje język Elixir z wynikiem 75,46\%. 
+Dane te przedstawiono na Rys. \ref{stack:loved}.
 Dzięki tak dużej popularności powstało wiele otwarto-źródłowych bibliotek,
 które mogą pomóc w rozwiązaniu zadanego problemu.
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\textwidth]{stack_loved}
+  \caption{Wykres przedstawiający współczynnik uwielbiania/nienawiści danej technologii}
+  \label{stack:loved}
+  \caption*{Źródło: \url{https://survey.stackoverflow.co/2022}}
+\end{figure}
+\FloatBarrier
 
 \subsection*{Yew}
 Yew to framework umożliwiający tworzenie witryn WWW w języku Rust.
@@ -171,7 +180,23 @@ konieczności określania schematu tabel. Wszystkie schematy są dynamiczne i mo
 zostać zmienione w celu dodania dodatkowych informacji jednocześnie nie zmieniając pozostałych
 danych zapisanych w danej kolekcji. Jednocześnie ten system pozwala na tworzenie 
 walidatorów kolekcji, co przydaje się w momentach kiedy chcemy uzyskać większą kontrolę
-nad strukturą naszych danych.
+nad strukturą danych.
+
+\subsection*{Docker}
+Docker to zbiór oprogramowania umożliwiający dystrybucję oprogramowania jako tzw. kontener.
+Są to wyspecjalizowane maszyny wirtualne, zawierające jedynie oprogramowanie potrzebne
+do uruchomienia danego rozwiązania. Podobnie jak zwykłe rozwiązania wirtualizacyjne
+są one od siebie odizolowane, ale w przeciwieństwie do innych, klasycznych rozwiązań
+działają one na tym samym jądrze systemu operacyjnego dzięki czemu zużywają znacznie
+mniej zasobów\cite{docker:what_is_container}. Odpowiednio skonfigurowane połączenia
+między maszynami umożliwiają komunikację, np. poprzez protokół TCP. 
+Po odpowiednim spakowaniu obrazu ta technologia umożliwia wykorzystanie identycznego
+oprogramowania w różnych środowiskach niezależnie od systemu operacyjnego hosta.
+
+Oprogramowaniem, które wchodzi w skład tego kompleksu i zostało ekstensywnie wykorzystane 
+w realizacji projektu jest docker-compose. Te narzędzie wykorzystuje pliki konfiguracyjne
+w formacie YAML, aby ułatwić pracę w środowiskach wymagających użycia kliku kontenerów, np.
+w przypadku aplikacji serwerowej, która ma komunikować się z bazą danych.
 
 \section{Urządzenie pomiarowe}
 Urządzenie pomiarowe wykonane zostało na płytce Raspberry Pi Pico W, do którego z wykorzystaniem
@@ -215,4 +240,3 @@ W porównaniu do C zawiera również rozbudowaną standardową bibliotekę klas 
 Dodaje ona dodatkową funkcjonalność taką jak zaawansowane typy pozwalające na
 przechowywanie zmiennej liczby danych, algorytmy takie jak sortowanie czy 
 generowanie liczb losowych, obsługa plików, czasu oraz wielowątkowości.
-

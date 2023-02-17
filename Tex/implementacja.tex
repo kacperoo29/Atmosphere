@@ -287,6 +287,19 @@ docelowy adres email. Przykładowa konfiguracja została zaprezentowana na Rys. 
   \label{atmosphere:email_configuration}
 \end{figure}
 
+Kolejnym widokiem jest lista odczytów parametrów środowiska. Użytkownik może 
+filtrować ją z użyciem daty startowej i/lub daty końcowej po czym uzyskuje
+wyniki znajdujące się w tym przedziale. Przykład przefiltrowanych danych
+został przedstawiony na rysunku \ref{atmosphere:readings}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{readings}
+  \caption{Widok odczytów parametrów środowiska}
+  \label{atmosphere:readings}
+\end{figure}
+Widok przedstawia w formie tabeli datę oraz czas wykonania odczytu, jego typ,
+jednostkę pomiaru oraz adres fizyczny urządzenia pomiarowego.
+
 \section{Urządzenie pomiarowe}
 Do wykonywania pomiarów wykorzystany został mikrokontroler Raspberry Pi Pico W.
 W celu uproszczenia tworzenia oprogramowania użyto nieoficjalnej implementacji
@@ -320,6 +333,16 @@ długości odpowiedzi, jeżeli wynosi -1 odpowiedź jest o nieznanej długości 
 do bufora z wykorzystaniem potoku, w przypadku 0 odpowiedź jest pusta, a przy wartościach większych od
 0 tworzony jest bufor o tej długości.
 
+Podczas startu urządzenie łączy się z siecią Wi-Fi wcześniej zdefiniowaną przez użytkownika.
+Jeżeli połączenie powiodło się następuje synchronizacja czasu z zewnętrznym serwerem NTP.
+Zapewnia to spójność znaków czasu między urządzeniami w systemie, co wykorzystywane jest
+przy procesowaniu pomiarów. Następnym krokiem jest inicjalizacja połączenia z serwerem.
+Urządzenie najpierw próbuje przejść proces uwierzytelniania dostarczonym przez użytkownika
+hasłem, jeżeli jest to pierwszy raz kiedy dane urządzenie łączy się z systemem tworzone jest
+jemu nieaktywne konto, które następnie musi zostać zaakceptowane przez administratora.
+Jeżeli wcześniejszy proces przebiegł z powodzeniem urządzenie kontynuuje do połączenia
+z odpowiednim kanałem WebSocket po czym przechodzi do stanu normalnej operacji.
+
 Aby zapewnić synchronizację z serwerem oraz dostęp do statusu połączenia wykorzystano
 technologię WebSocket. Urządzenie łączy się z odpowiednim gniazdem, a następnie co 30
 sekund wysyła wiadomość z zawartością "ping" i oczekuje na odpowiedź "pong" od serwera.
@@ -328,4 +351,11 @@ i po upływie 5 sekund próbuje utworzyć ponowną komunikację. Dzieje się to 
 połączenia po czym urządzenie powraca do normalnego trybu operacji odczytywania oraz
 przesyłania danych z sensorów.
 
-
+Urządzenie pomiarowe, podczas normalnej operacji, dokonuje pomiarów z podłączonych sensorów, 
+a następnie przetwarza je i w odpowiednim formacie wysyła na serwer. Odbywa się to poprzez
+wykorzystanie metody POST jednego z kontrolerów. Dane pomiaru zawierają takie informacje jak
+data i czas wykonania, wartość, jednostka oraz typ pomiaru. Do autoryzacji tego zapytania
+wykorzystywany jest wcześniej wygenerowany token JWT. Następnie urządzenie odczekuje wcześniej
+skonfigurowaną ilość czasu przed następnym pomiarem. Jest ona obliczana jako różnica czasu, który
+został spędzony na aktualnym przejściu, a ustalonym przez użytkownika okresem. Jeżeli jest ona
+większa od zera urządzenie wyczekuje wyliczony przedział czasu, a następnie kontynuuje pracę.
