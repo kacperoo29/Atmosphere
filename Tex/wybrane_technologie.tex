@@ -79,12 +79,24 @@ tworzone są komponenty, które mogą być wielokrotnie używane w różnych kom
 oraz podstronach co sprawia, że kod jest czytelniejszy, zmniejszona jest jego złożoność
 oraz możliwe jest wyeliminowanie niepotrzebnych powtórzeń.
 
+Platforma umożliwia na wykorzystanie wielu jej rozszerzeń. Jedną z nich jest biblioteka
+yew-hooks pozwalająca na wykorzystanie tzw. haczyków umożliwiających na 
+funkcjonalność taką jak dynamiczne odświeżanie danych, wykonywanie operacji
+asynchronicznych czy obserwowanie zmian zmiennych i reagowanie na nie.
+Kolejną jest wasm-bindgen pozwalająca na generowanie połączeń z szeroko stosowanym
+w tworzeniu aplikacji webowych językiem JavaScript. Umożliwia na stosowanie
+funkcjonalności tego języka jak również generowaniu dwustronnych połączeń między
+środowiskami - w skryptach JavaScript możliwe jest wywoływanie kodu napisanego
+w języku Rust i na odwrót.
+
 \subsection*{Bootstrap}
 Bootstrap to darmowe i otwarto-źródłowe środowisko programistyczne składające się
 ze zbioru szablonów stworzonych w językach HTML, CSS i JavaScript, które mogą
 być dowolnie wykorzystane z kompatybilnymi technologiami.
 Ten framework zawiera podstawowe style potrzebne, aby stworzyć responsywną 
 aplikacje webowe na wielu urządzeniach z różnymi rozmiarami ekranów oraz rozdzielczością. 
+Dzięki zastosowaniu systemu flex bardzo usprawnia rozmieszczanie elementów na stronie
+oraz dostosowanie ich rozmiaru czy zachowania.
 
 \subsection*{TypeScript}
 TypeScript to darmowy, otwarto źródłowy stworzony oraz utrzymywane przez przedsiębiorstow Microsoft.
@@ -93,7 +105,7 @@ w innych statycznie typowanych językach, tj. adnotacje typów oraz ich sprawdza
 podczas kompilacji, interfejsy, typy wyliczeniowe czy uogólnienia.
 Dodatkowo rozszerza język o słowa kluczowe async/await ułatwiające pracę
 z asynchronicznymi funkcjami. Język TypeScript jest całkowicie kompatybilny ze 
-środowiskami wspierającymi JavaScript - jest to język transpilowany do JS, a
+środowiskami wspierającymi JavaScript - jest to język kompilowany do języka JavaScript, a
 dodatkowe funkcjonalności dostępne są jedynie podczas tworzenia oprogramowania.
 
 Jego wykorzystanie w aplikacji zostało ograniczone jedynie do wykonania funkcjonalności,
@@ -196,11 +208,15 @@ oprogramowania w różnych środowiskach niezależnie od systemu operacyjnego ho
 Oprogramowaniem, które wchodzi w skład tego kompleksu i zostało ekstensywnie wykorzystane 
 w realizacji projektu jest docker-compose. Te narzędzie wykorzystuje pliki konfiguracyjne
 w formacie YAML, aby ułatwić pracę w środowiskach wymagających użycia kliku kontenerów, np.
-w przypadku aplikacji serwerowej, która ma komunikować się z bazą danych.
+w przypadku aplikacji serwerowej, która ma komunikować się z bazą danych. Przy użyciu
+jednej komendy możliwe jest zbudowanie oraz wdrożenie całej infrastruktury systemu.
+Możliwe jest również aktualizowanie pojedynczych aplikacji wchodzących w jego skład 
+bez stopowania reszty systemu.
 
 \section{Urządzenie pomiarowe}
 Urządzenie pomiarowe wykonane zostało na płytce Raspberry Pi Pico W, do którego z wykorzystaniem
-portów ogólnego przeznaczenia GPIO podłączono sensory badające parametry środowiska.
+portów ogólnego przeznaczenia GPIO podłączono sensory badające parametry środowiska, 
+które następnie są przetwarzane oraz przesyłane na serwer.
 
 \subsection*{Raspberry Pi Pico W}
 Raspberry Pi Pico W to komputer jedno-płytkowy zbudowany na podstawie mikrokontrolera RP2040. 
@@ -219,6 +235,13 @@ Płytka umożliwia łączność z siecią Wi-Fi przy użyciu wbudowanego chipu C
 obsługujący standard 802.11n, który w odpowiednich warunkach pozwala na łączność
 z prędkością do 600Mb/s. Wraz z nowszymi wersjami SDK umożliwia również wykorzystanie
 całego potencjału tego urządzenia i umożliwia na połączenia protokołem Bluetooth.
+Dzięki zastosowanym komponentom to urządzenie jest zdolne do relatywnie szybkiego 
+przetwarzania danych, przy niskim zużyciu energii. Dodatkowo wiele portów I/O umożliwia
+na podłączenie wielu różnych sensorów, jednak w wypadku wykorzystania wielu z nich
+należy zwracać uwagę na szybkość wykonywania operacji, gdyż przy większej ilości akcji
+system może je przetwarzać w czasie większym niż spodziewany. Jednak atrakcyjna cena urządzenia,
+ustanowiona przez producenta jako 4 USD umożliwia na wykorzystanie kilku z nich w jednej instalacji
+bez większych kosztów.
 
 Aktualnie dostępne oprogramowanie pozwala tworzyć systemy w językach programowania takich jak
 Assembly, C, C++, Python oraz Rust. Istnieje również nieoficjalne wsparcie dla środowiska
@@ -240,3 +263,7 @@ W porównaniu do C zawiera również rozbudowaną standardową bibliotekę klas 
 Dodaje ona dodatkową funkcjonalność taką jak zaawansowane typy pozwalające na
 przechowywanie zmiennej liczby danych, algorytmy takie jak sortowanie czy 
 generowanie liczb losowych, obsługa plików, czasu oraz wielowątkowości.
+Inną dużą zaletą tego języka jest możliwość wykorzystania wszystkich bibliotek napisanych
+w języku C co nie koniecznie musi być prawdziwe w drugą stronę - programista musi
+udostępnić specjalny interfejs, aby wykorzystać kod stworzony w języku C++
+w programach stworzonych w C.

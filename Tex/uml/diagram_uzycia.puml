@@ -1,0 +1,38 @@
+@startuml use_case_diagram
+left to right direction
+
+actor Administrator
+actor Urządzenie
+actor Użytkownik
+actor Serwer
+
+Użytkownik -- (Zalogowanie)
+Użytkownik -- (Odczyt danych historycznych)
+Użytkownik -- (Odczyt statusu urządzeń)
+Użytkownik -- (Odczyt powiadomienia)
+
+Urządzenie -- (Stworzenie konta)
+Urządzenie -- (Zalogowanie)
+Urządzenie -- (Odczyt danych środowiska)
+Urządzenie -- (Wysłanie danych odczytu)
+(Odczyt danych środowiska) ..> (Wysłanie danych odczytu) : <<include>>
+Urządzenie -- (Zastosowanie konfiguracji)
+Urządzenie -- (Wysyłanie informacji o statusie)
+
+Administrator -- (Zalogowanie)
+Administrator -- (Aktywacja urządzenia)
+(Aktywacja urządzenia) ..> (Stworzenie konta) : <<extends>>
+Administrator -- (Odczyt danych historycznych)
+Administrator -- (Modyfikacja konfiguracji)
+Administrator -- (Zarządzanie kontami użytkowników)
+(Modyfikacja konfiguracji) ..> (Zastosowanie konfiguracji) : <<include>>
+Administrator -- (Odczyt statusu urządzeń)
+Administrator -- (Odczyt powiadomienia)
+
+Serwer -- (Przetwarzanie odczytu)
+Serwer -- (Wysłanie powiadomienia)
+Serwer -- (Modyfikacja konfiguracji)
+(Wysłanie powiadomienia) ..> (Przetwarzanie odczytu) : <<extends>>
+(Wysłanie danych odczytu) ..> (Przetwarzanie odczytu) : <<include>>
+
+@enduml

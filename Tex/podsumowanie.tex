@@ -3,7 +3,8 @@ Wytworzona aplikacja spełnia pierwotne założenia pracy. Umożliwia ona na
 wykorzystanie funkcjonalności tj. zbieranie oraz odczyt parametrów środowiska,
 przeglądanie danych historycznych oraz powiadamianie użytkownika o niespodziewanych
 sytuacjach. Dodatkowo system posiada możliwość uwierzytelniania oraz autoryzacji 
-użytkowników oraz urządzeń w celu zapewnienia bezpieczeństwa przechowywanych danych.
+użytkowników oraz urządzeń w celu zapewnienia bezpieczeństwa przechowywanych danych
+i uniemożliwia szkodliwym aktorom na zmianę konfiguracji systemu.
 Dzięki zastosowanym wzorcom projektowym oraz modularnej architekturze aplikacja
 jest podatna na rozwój w przyszłości o nowe funkcjonalności oraz rozszerzenie
 aktualnie istniejących rozwiązań. Możliwym wektorem dalszego rozwoju jest
@@ -15,3 +16,13 @@ urządzeń pomiarowych.
 Ze względu na obszerność problemu trudnym jest wytworzenie systemu odpowiadającego
 każdej sytuacji, jednak powtarzająca się funkcjonalność umożliwiła wytworzenie
 solidnej bazy oprogramowania, które może zostać rozwinięte do szczególnych zastosowań.
+Zastosowana technologia baz danych pozwala na dowolny rozwój przechowywanych
+szczegółów odczytów, a reprezentacja ich typów oraz jednostek w postaci ciągów
+znaków umożliwia na wirtualnie nieskończoną wariancje przechowywanych
+typów parametrów środowiska. Podobnie dzięki wykorzystaniu odpowiednich wzorców
+architektonicznych tworzenie nowych sposobów wysyłania powiadomień jest trywialnie 
+prosta przez osoby z minimalną ilością doświadczenia w programowaniu.
+Dodatkowym usprawnieniem architektury może być podział na mikroserwisy odpowiadające
+za poszczególne składniki systemu takie jak zarządzanie użytkownikami oraz konfiguracją, 
+funkcjonalność udostępniona urządzeniom i oddzielnie aplikacji klienckiej. Umożliwiłoby
+to niezależny rozwój każdej z nich bez dodatkowych zależności.

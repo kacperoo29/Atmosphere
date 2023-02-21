@@ -147,7 +147,7 @@ Ja, \@autor, \ifthenelse{\equal{nie}{#1}}{nie wyrażam zgody}{wyrażam zgodę} n
       \multicolumn{3}{|l|}{\parbox[c][3em][c]{.8\textwidth}{\textbf{TEMAT PRACY DYPLOMOWEJ: \@temat}}}\\[2mm]
       \multicolumn{3}{|l|}{Zakres pracy:}\\[1mm]
       \multicolumn{3}{|l|}{\hspace{1em}\parbox{.8\textwidth}{\@zakres}}\\[5em]
-      \multicolumn{3}{|l}{\textbf{Słowa kluczowe (max 5):} aplikacja www, monitoring parametrów środowiska, Raspberry Pi}\\[5em]
+      \multicolumn{3}{|l|}{\textbf{Słowa kluczowe (max 5):} aplikacja www, monitoring parametrów środowiska, Raspberry Pi}\\[5em]
       \multicolumn{3}{|r|}{\scriptsize\parbox{.6\textwidth}{\centering .................................................................................\\\footnotesize \scriptsize{imiona i nazwisko, stopień opiekuna pracy dyplomowej i podpis}}}\\[1.5em]
     \hline
     \end{tabular}

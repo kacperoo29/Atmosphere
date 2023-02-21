@@ -9,7 +9,7 @@
 \usepackage[breaklinks]{hyperref}
 \usepackage{listings}
 \usepackage{graphicx}
-\graphicspath{ {./img} }
+\graphicspath{ {./img} {./uml} }
 \usepackage{xcolor}
 \hypersetup{
     colorlinks,
@@ -29,11 +29,11 @@
 \profil{stacjonarne I stopnia}
 \kierunekstudiow{informatyka}
 \specjalnosc{}
-\zakres{1. Analiza wymagań I \newline 2. Przegląd i wybranie technologii \newline 3. Projekt i implementacja aplikacji}
+\zakres{1. Analiza wymagań \newline 2. Przegląd i wybranie technologii \newline 3. Projekt i implementacja aplikacji}
 
 \hypersetup{ %wpisy w pdf info
-pdfauthor={mgr inż. Maciej Brzozowski},
-pdftitle={Opis użycia klasy wipb},
+pdfauthor={Kacper Bajeński},
+pdftitle={System monitorowania parametrów środowiska w pomieszczeniach z użyciem Raspberry Pi},
 pdfsubject={},
 pdfkeywords={Praca dyplomowa},
 pdfpagemode=UseNone,
@@ -46,11 +46,13 @@ citecolor=black
 \maketitle
 \tableofcontents
 \thispagestyle{empty}
+\input{streszczenie}
+\thispagestyle{empty}
+\input{streszczenie_ang}
+\thispagestyle{empty}
 \setcounter{page}{0}
 \pagestyle{plain}
 
-\input{streszczenie}
-\input{streszczenie_ang}
 \input{wstep}
 \input{analiza_wymagan}
 \input{podobne_rozwiazania}
