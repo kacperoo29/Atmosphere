@@ -21,9 +21,9 @@ public abstract class BaseUser : BaseModel
         };
     }
 
-    public void Activate()
+    public void ToggleActivate()
     {
-        IsActive = true;
+        IsActive = !IsActive;
         Update();
     }
 }

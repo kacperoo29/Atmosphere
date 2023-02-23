@@ -13,6 +13,7 @@ public class MappingProfile : Profile
         CreateMap<Core.Models.BaseUser, BaseUserDto>();
         CreateMap<Core.Models.User, BaseUserDto>();
         CreateMap<Core.Models.Device, BaseUserDto>();
+        CreateMap<Core.Models.User, UserDto>();
         CreateMap<ConfigurationEntry, Dictionary<string, object?>>()
             .ConvertUsing(src => new Dictionary<string, object?> { { src.Key, src.Value } });
 

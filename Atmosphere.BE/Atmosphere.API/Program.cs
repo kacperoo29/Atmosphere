@@ -263,7 +263,6 @@ if (app.Environment.IsDevelopment())
     {
         var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
         var admin = User.Create("admin", "secretPassword");
-        admin.Activate();
         admin.MakeAdmin();
         userService.CreateUserAsync(admin).GetAwaiter().GetResult();
     }

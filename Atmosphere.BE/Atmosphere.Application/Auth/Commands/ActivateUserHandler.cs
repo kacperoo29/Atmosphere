@@ -21,7 +21,7 @@ public class ActivateUserHandler : IRequestHandler<ActivateUser>
             throw new Exception("User not found");
         }
 
-        user.Activate();
+        user.ToggleActivate();
 
         await _userRepository.UpdateAsync(user);
 

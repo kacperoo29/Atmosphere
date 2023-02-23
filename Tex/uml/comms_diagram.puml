@@ -1,0 +1,16 @@
+@startuml
+
+node Serwer as sw
+node "Baza danych" as bd
+node "Strona WWW" as www
+node "Urządzenie pomiarowe" as pom
+
+sw --> bd : <<MongoDB>>
+
+pom --> sw : <<HTTP>>
+pom <--> sw : <<WebSocket>>
+
+www --> sw : <<HTTP>>
+www <--> sw : <<WebSocket>>
+
+@enduml

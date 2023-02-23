@@ -19,15 +19,12 @@ Urządzenie -- (Wysłanie danych odczytu)
 Urządzenie -- (Zastosowanie konfiguracji)
 Urządzenie -- (Wysyłanie informacji o statusie)
 
-Administrator -- (Zalogowanie)
+Użytkownik <|- Administrator
 Administrator -- (Aktywacja urządzenia)
 (Aktywacja urządzenia) ..> (Stworzenie konta) : <<extends>>
-Administrator -- (Odczyt danych historycznych)
 Administrator -- (Modyfikacja konfiguracji)
 Administrator -- (Zarządzanie kontami użytkowników)
 (Modyfikacja konfiguracji) ..> (Zastosowanie konfiguracji) : <<include>>
-Administrator -- (Odczyt statusu urządzeń)
-Administrator -- (Odczyt powiadomienia)
 
 Serwer -- (Przetwarzanie odczytu)
 Serwer -- (Wysłanie powiadomienia)

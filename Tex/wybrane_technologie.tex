@@ -10,7 +10,7 @@ utworzenia.
 Aplikacja kliencka została wykonana w formie strony internetowej.
 
 \subsection*{WebAssembly}
-WebAssembly to technologia opisująca standardowy kod binarny oraz jego reprezentację tekstową,
+WebAssembly\cite{webassembly} to technologia opisująca standardowy kod binarny oraz jego reprezentację tekstową,
 niezależne od platformy jego wykonania \cite{mdn:wasm, wasm:standard}. Umożliwia to
 tworzenie przenośnego oprogramowania, które może zostać wykorzystane w wielu różnych systemach.
 Głównymi celem WebAssembly jest umożliwienie tworzenia szybkiego oraz bezpiecznego pod względem
@@ -18,7 +18,7 @@ obsługi pamięci oprogramowania, które może być stworzone w dowolnym języku
 niezależnie od platformy oraz sprzętu, na którym ma być wykonywane \cite{wasm:standard}.
 
 \subsection*{Rust}
-Rust to wielo-paradygmatowy kompilowany język programowania. Oznacza to, że łączy ze sobą cechy różnych
+Rust\cite{rust} to wielo-paradygmatowy kompilowany język programowania. Oznacza to, że łączy ze sobą cechy różnych
 konwencje wielu sposobów tworzenia oprogramowanie m.in. programowanie obiektowe, funkcjonalne
 czy strukturalne i umożliwia osobie je tworzącej na korzystanie z dowolnych zasobów oraz
 schematów danego paradygmatu. 
@@ -62,7 +62,7 @@ które mogą pomóc w rozwiązaniu zadanego problemu.
 \FloatBarrier
 
 \subsection*{Yew}
-Yew to framework umożliwiający tworzenie witryn WWW w języku Rust.
+Yew\cite{yew} to framework umożliwiający tworzenie witryn WWW w języku Rust.
 Z użyciem tej biblioteki możliwe jest konstruowanie niezawodnych
 oraz wydajnych stron internetowych. Yew wykorzystuje WebAssembly wraz
 z renderowaniem po stronie serwera, aby znacznie przyśpieszyć działanie
@@ -90,7 +90,7 @@ funkcjonalności tego języka jak również generowaniu dwustronnych połączeń
 w języku Rust i na odwrót.
 
 \subsection*{Bootstrap}
-Bootstrap to darmowe i otwarto-źródłowe środowisko programistyczne składające się
+Bootstrap\cite{bootstrap} to darmowe i otwarto-źródłowe środowisko programistyczne składające się
 ze zbioru szablonów stworzonych w językach HTML, CSS i JavaScript, które mogą
 być dowolnie wykorzystane z kompatybilnymi technologiami.
 Ten framework zawiera podstawowe style potrzebne, aby stworzyć responsywną 
@@ -99,7 +99,7 @@ Dzięki zastosowaniu systemu flex bardzo usprawnia rozmieszczanie elementów na 
 oraz dostosowanie ich rozmiaru czy zachowania.
 
 \subsection*{TypeScript}
-TypeScript to darmowy, otwarto źródłowy stworzony oraz utrzymywane przez przedsiębiorstow Microsoft.
+TypeScript\cite{typescript} to darmowy, otwarto źródłowy stworzony oraz utrzymywane przez przedsiębiorstow Microsoft.
 Jest rozszerzeniem popularnego języka JavaScript dodającym szeroko zastosowane funkcjonalności
 w innych statycznie typowanych językach, tj. adnotacje typów oraz ich sprawdzanie
 podczas kompilacji, interfejsy, typy wyliczeniowe czy uogólnienia.
@@ -116,7 +116,7 @@ stworzonych w technologii Yew.
 \section{Aplikacja serwerowa}
 
 \subsection*{.NET Core}
-.NET Core to następca popularnej platformy programistycznej .NET Framework stworzonej przez
+.NET Core\cite{netcore} to następca popularnej platformy programistycznej .NET Framework stworzonej przez
 firmę Microsoft. W przeciwieństwie do poprzednika, którego oficjalne wsparcie ograniczone było
 do systemu Windows, a same oprogramowanie było własnościowe, jest to technologia otwarto-źródłowa
 wspierająca wiele systemów operacyjnych \cite{price2021c}. Możliwe jest to poprzez zastosowanie
@@ -127,7 +127,7 @@ możliwe jest wytworzenie przenośnego oprogramowania, które może być wykorzy
 systemach.
 
 \subsection*{C\#}
-C\# to silnie typowany język obiektowy wysokiego poziomu stworzony przez firmę Microsoft.
+C\#\cite{csharp} to silnie typowany język obiektowy wysokiego poziomu stworzony przez firmę Microsoft.
 Do kompilacji wykorzystywane jest środowisko .NET, dzięki czemu zachowane są
 jego cechy takie jak przenośność oprogramowania oraz możliwość wykorzystania
 innych języków programowania bazujących na tej technologii.
@@ -151,7 +151,7 @@ mogą zostać dynamicznie skompilowane w celu, np. wykorzystania zaawansowanej l
 biznesowej, która może być zmienna.
 
 \subsection*{ASP.NET}
-ASP.NET to modularna platforma programistyczna oparta na technologii .NET. 
+ASP.NET\cite{aspnet} to modularna platforma programistyczna oparta na technologii .NET. 
 Jej bogata funkcjonalność pozwala na tworzenie stron internetowych, API HTTP oraz 
 wiele innych aplikacji webowych poprzez zastosowanie wielu z jej rozszerzeń.
 Jednym z nich jest wstrzykiwanie zależności (ang. \textit{dependency injection})
@@ -179,7 +179,7 @@ pośrednikami programista sam może definiować swoją własną logikę oraz umi
 ją w odpowiednim momencie łańcucha wykonania.
 
 \subsection*{MongoDB}
-MongoDB to wieloplatformowy system bazodanowy. Dane przechowywane są w postaci dokumentów,
+MongoDB\cite{MongoDB} to wieloplatformowy system bazodanowy. Dane przechowywane są w postaci dokumentów,
 w formacie podobnym do JSON (ang. \textit{JavaScript Object Notation}), określaną nazwą
 BSON (ang. \textit{Binary JSON}). Główną różnicą między tymi formatami jest sposób kodowania
 danych - w przypadku formatu JSON jest to postać znaków UTF-8, a BSON jest to zapis binarny.
@@ -195,7 +195,7 @@ walidatorów kolekcji, co przydaje się w momentach kiedy chcemy uzyskać więks
 nad strukturą danych.
 
 \subsection*{Docker}
-Docker to zbiór oprogramowania umożliwiający dystrybucję oprogramowania jako tzw. kontener.
+Docker\cite{docker} to zbiór oprogramowania umożliwiający dystrybucję oprogramowania jako tzw. kontener.
 Są to wyspecjalizowane maszyny wirtualne, zawierające jedynie oprogramowanie potrzebne
 do uruchomienia danego rozwiązania. Podobnie jak zwykłe rozwiązania wirtualizacyjne
 są one od siebie odizolowane, ale w przeciwieństwie do innych, klasycznych rozwiązań
@@ -219,7 +219,7 @@ portów ogólnego przeznaczenia GPIO podłączono sensory badające parametry ś
 które następnie są przetwarzane oraz przesyłane na serwer.
 
 \subsection*{Raspberry Pi Pico W}
-Raspberry Pi Pico W to komputer jedno-płytkowy zbudowany na podstawie mikrokontrolera RP2040. 
+Raspberry Pi Pico W\cite{picow} to komputer jedno-płytkowy zbudowany na podstawie mikrokontrolera RP2040. 
 Do głównych jego cech, które zostały wykorzystane do stworzenia systemu należą \cite{rp2040:datasheet}:
 \begin{itemize}
   \item procesor dwurdzeniowy ARM Cortex-M0+,
@@ -251,7 +251,7 @@ tej platformy (język programowania C), najczęściej wykorzystywane są języki
 ze względu na wysoki stopień kompatybilności.
 
 \subsection*{C++}
-C++ to obiektowy język programowania wysokiego poziomu, będący często określany jako
+C++\cite{isocpp} to obiektowy język programowania wysokiego poziomu, będący często określany jako
 rozszerzenie języka C często używanego do tworzenia oprogramowania na systemy wbudowane.
 Obsługuje on wysokopoziomowe abstrakcje takie jak obiekty, programowanie generyczne czy
 abstrakcje pozwalając w tym samym czasie na używanie niskopoziomowej funkcjonalności 

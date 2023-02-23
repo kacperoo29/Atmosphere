@@ -9,7 +9,7 @@ public class User : BaseUser
     {
         Username = string.Empty;
         Password = new byte[0];
-        IsActive = false;
+        IsActive = true;
         Role = UserRole.User;
     }
 
@@ -21,7 +21,7 @@ public class User : BaseUser
         {
             Username = username,
             Password = saltedPassword,
-            IsActive = false,
+            IsActive = true,
             Role = UserRole.User
         };
     }

@@ -1,10 +1,10 @@
-\chapter{Implementacja}
+\chapter{Projekt i implementacja}
 W tym rozdziale przedstawiono szczegóły implementacji systemu. 
 Poszczególne zagadnienia oraz aplikacje wchodzące w jego skład
 zostały opisane w oddzielnych sekcjach tego rozdziału.
 
-\section{Komunikacja między warstwami}
-Komunikacja między warstwami aplikacji odbywa się z wykorzystaniem protokołu 
+\section{Komponenty systemu i komunikacja}
+Komunikacja między komponentami aplikacji odbywa się z wykorzystaniem protokołu 
 HTTP (ang. \textit{Hypertext Transfer Protocol}).
 Jest to jedna z technologii wykorzystywana w modelu TCP/IP 
 nazywanego również protokołem Internetowym (ang. \textit{Internet Protocol}).
@@ -24,6 +24,14 @@ nagłówek nazywany HTTP Upgrade, na który serwer odpowiada z informacją o zmi
 Następnie połączenie zmienia protokół z HTTP do binarnej transmisji bezpośrednio wykorzystującej TCP.
 W tym momencie obie strony z jego wykorzystaniem mogą odczytywać oraz wysyłać wiadomości
 pomiędzy sobą.
+
+Protokoły wykorzystane w celu komunikacji przedstawione zostały na Rys. \ref{diagram:comms}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{comms_diagram}
+  \caption{Protokoły wykorzystane w komunikacji między komponentami}
+  \label{diagram:comms}
+\end{figure}
 
 \section{Aplikacja serwerowa}
 Aplikacja serwerowa została zaimplementowana jako centralny komponent systemu.

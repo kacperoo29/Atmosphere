@@ -36,7 +36,12 @@ public class CreateReadingHandler : IRequestHandler<CreateReading, ReadingDto>
         var device = await _userService.GetCurrentAsync() as Device;
         if (device == null)
         {
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException("Current user is not a device or is not logged in.");
+        }
+
+        if (device.IsActive == false)
+        {
+            throw new UnauthorizedAccessException("Current device is not active.");
         }
 
         var reading = Reading.Create(
