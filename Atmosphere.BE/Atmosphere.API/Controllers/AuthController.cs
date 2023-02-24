@@ -89,4 +89,54 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost]
+    [Authorize(nameof(UserRole.Admin))]
+    [ProducesResponseType(typeof(UserDto), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> CreateUser([FromBody, BindRequired] CreateUser request)
+    {
+        try
+        {
+            return this.Ok(await _mediator.Send(request));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpGet]
+    [Authorize(nameof(UserRole.Admin))]
+    [ProducesResponseType(typeof(IEnumerable<UserDto>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> GetUsers()
+    {
+        try
+        {
+            return this.Ok(await _mediator.Send(new GetUsers()));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(nameof(UserRole.Admin))]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> RemoveUser([BindRequired] Guid id)
+    {
+        try
+        {
+            return this.Ok(await _mediator.Send(new RemoveUser { Id = id }));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

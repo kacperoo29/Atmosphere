@@ -27,8 +27,11 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AuthApi* | [**api_auth_activate_user_id_put**](docs/AuthApi.md#api_auth_activate_user_id_put) | **PUT** /api/Auth/ActivateUser/{id} | 
 *AuthApi* | [**api_auth_authenticate_post**](docs/AuthApi.md#api_auth_authenticate_post) | **POST** /api/Auth/Authenticate | 
+*AuthApi* | [**api_auth_create_user_post**](docs/AuthApi.md#api_auth_create_user_post) | **POST** /api/Auth/CreateUser | 
 *AuthApi* | [**api_auth_get_current_user_get**](docs/AuthApi.md#api_auth_get_current_user_get) | **GET** /api/Auth/GetCurrentUser | 
+*AuthApi* | [**api_auth_get_users_get**](docs/AuthApi.md#api_auth_get_users_get) | **GET** /api/Auth/GetUsers | 
 *AuthApi* | [**api_auth_register_device_post**](docs/AuthApi.md#api_auth_register_device_post) | **POST** /api/Auth/RegisterDevice | 
+*AuthApi* | [**api_auth_remove_user_id_delete**](docs/AuthApi.md#api_auth_remove_user_id_delete) | **DELETE** /api/Auth/RemoveUser/{id} | 
 *ConfigurationApi* | [**api_configuration_get_all_configurations_get**](docs/ConfigurationApi.md#api_configuration_get_all_configurations_get) | **GET** /api/Configuration/GetAllConfigurations | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entries_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entries_get) | **GET** /api/Configuration/GetConfigurationEntries | 
 *ConfigurationApi* | [**api_configuration_get_configuration_entry_get**](docs/ConfigurationApi.md#api_configuration_get_configuration_entry_get) | **GET** /api/Configuration/GetConfigurationEntry | 
@@ -55,6 +58,7 @@ Class | Method | HTTP request | Description
  - [Authenticate](docs/Authenticate.md)
  - [BaseUserDto](docs/BaseUserDto.md)
  - [CreateReading](docs/CreateReading.md)
+ - [CreateUser](docs/CreateUser.md)
  - [DeviceDto](docs/DeviceDto.md)
  - [EmailConfiguration](docs/EmailConfiguration.md)
  - [NotificationType](docs/NotificationType.md)
@@ -66,6 +70,7 @@ Class | Method | HTTP request | Description
  - [ToggleNotificationType](docs/ToggleNotificationType.md)
  - [UpdateConfiguration](docs/UpdateConfiguration.md)
  - [UpdateValidationRules](docs/UpdateValidationRules.md)
+ - [UserDto](docs/UserDto.md)
  - [UserRole](docs/UserRole.md)
  - [ValidationRuleDto](docs/ValidationRuleDto.md)
 

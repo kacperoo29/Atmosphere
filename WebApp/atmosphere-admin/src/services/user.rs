@@ -2,10 +2,12 @@ use std::sync::RwLock;
 
 use atmosphere_api::{
     apis::{
-        auth_api::{api_auth_authenticate_post, api_auth_get_current_user_get},
+        auth_api::{
+            api_auth_authenticate_post, api_auth_create_user_post, api_auth_get_current_user_get, api_auth_remove_user_id_delete, api_auth_get_users_get,
+        },
         configuration::ApiKey,
     },
-    models::Authenticate,
+    models::{Authenticate, CreateUser, UserDto},
 };
 use gloo_storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
@@ -56,6 +58,7 @@ pub async fn current() -> Result<UserInfo, Error> {
         Ok(response) => Ok(UserInfo {
             username: response.username,
             token: token,
+            role: response.role,
         }),
         Err(err) => Err(err.into()),
     }
@@ -79,10 +82,56 @@ pub async fn authenticate(login_info: LoginInfo) -> Result<UserInfo, Error> {
 
             Ok(response.token)
         }
-        Err(err) => {
-            Err(err.into())
-        }
+        Err(err) => Err(err.into()),
     }?;
 
     current().await
+}
+
+pub async fn create_user_async(email: String, password: String) -> Result<UserInfo, Error> {
+    let config = get_config().clone();
+    let Some(token) = get_token() else {
+        return Err(Error::Unauthorized("User not logged in.".to_string()));
+    };
+
+    match api_auth_create_user_post(
+        &config,
+        CreateUser {
+            email: email,
+            password: password,
+        },
+    )
+    .await
+    {
+        Ok(response) => Ok(UserInfo {
+            username: response.email,
+            token: token,
+            role: response.role,
+        }),
+        Err(err) => Err(err.into()),
+    }
+}
+
+pub async fn remove_user_async(id: String) -> Result<(), Error> {
+    let config = get_config().clone();
+    let Some(_) = get_token() else {
+        return Err(Error::Unauthorized("User not logged in.".to_string()));
+    };
+
+    match api_auth_remove_user_id_delete(&config, &id).await {
+        Ok(_) => Ok(()),
+        Err(err) => Err(err.into()),
+    }
+}
+
+pub async fn get_users_async() -> Result<Vec<UserDto>, Error> {
+    let config = get_config().clone();
+    let Some(_) = get_token() else {
+        return Err(Error::Unauthorized("User not logged in.".to_string()));
+    };
+
+    match api_auth_get_users_get(&config).await {
+        Ok(response) => Ok(response),
+        Err(err) => Err(err.into()),
+    }
 }

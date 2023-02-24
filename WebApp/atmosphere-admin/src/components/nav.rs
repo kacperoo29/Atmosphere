@@ -1,13 +1,19 @@
 use std::rc::Rc;
 
+use atmosphere_api::models::UserRole;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::MessageEvent;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{hooks::use_user_context::use_user_context, routes::AppRoute, services::websocket::open_notification_socket, bindings::{self, show_error, set_send_ping_interval, set_on_close}, models::notification_payload::NotificationPayload};
+use crate::{
+    bindings::{self, set_on_close, set_send_ping_interval, show_error},
+    hooks::use_user_context::use_user_context,
+    models::notification_payload::NotificationPayload,
+    routes::AppRoute,
+    services::websocket::open_notification_socket,
+};
 
-/// Nav component
 #[function_component(Nav)]
 pub fn nav() -> Html {
     let user = use_user_context();
@@ -54,6 +60,61 @@ pub fn nav() -> Html {
         (*user).clone(),
     );
 
+    let nav_items = match user.info() {
+        Some(user) => match user.role {
+            UserRole::Admin => {
+                html! {
+                <>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
+                            <i class="fs-4 bi bi-house"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Home"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Settings} classes="nav-link">
+                            <i class="fs-4 bi bi-gear"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Settings"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Devices} classes="nav-link">
+                            <i class="fs-4 bi bi-laptop"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Devices"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Users} classes="nav-link">
+                            <i class="fs-4 bi bi-people"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Users"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                </>
+                }
+            }
+            _ => {
+                html! {
+                <li class="nav-item">
+                    <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
+                        <i class="fs-4 bi bi-house"></i>
+                        <span class="ms-1 d-none d-sm-inline">{"Home"}</span>
+                    </Link<AppRoute>>
+                </li>
+                }
+            }
+        },
+        None => {
+            html! {
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::SignIn} classes="nav-link">
+                    <i class="fs-4 bi bi-box-arrow-in-right"></i>
+                    <span class="ms-1 d-none d-sm-inline">{"Sign In"}</span>
+                </Link<AppRoute>>
+            </li>
+            }
+        }
+    };
+
     html! {
         <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark vh-100 sticky-top p-3">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -61,24 +122,7 @@ pub fn nav() -> Html {
             </a>
             <hr />
             <ul class="nav nav-pills flex-column mb-auto" id="menu">
-                <li class="nav-item">
-                    <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
-                        <i class="fs-4 bi bi-house"></i>
-                        <span class="ms-1 d-none d-sm-inline">{"Home"}</span>
-                    </Link<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <Link<AppRoute> to={AppRoute::Settings} classes="nav-link">
-                        <i class="fs-4 bi bi-gear"></i>
-                        <span class="ms-1 d-none d-sm-inline">{"Settings"}</span>
-                    </Link<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <Link<AppRoute> to={AppRoute::Devices} classes="nav-link">
-                        <i class="fs-4 bi bi-laptop"></i>
-                        <span class="ms-1 d-none d-sm-inline">{"Devices"}</span>
-                    </Link<AppRoute>>
-                </li>
+                {nav_items}
             </ul>
             <hr />
             if user.is_logged_in() {

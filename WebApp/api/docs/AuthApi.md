@@ -6,8 +6,11 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**api_auth_activate_user_id_put**](AuthApi.md#api_auth_activate_user_id_put) | **PUT** /api/Auth/ActivateUser/{id} | 
 [**api_auth_authenticate_post**](AuthApi.md#api_auth_authenticate_post) | **POST** /api/Auth/Authenticate | 
+[**api_auth_create_user_post**](AuthApi.md#api_auth_create_user_post) | **POST** /api/Auth/CreateUser | 
 [**api_auth_get_current_user_get**](AuthApi.md#api_auth_get_current_user_get) | **GET** /api/Auth/GetCurrentUser | 
+[**api_auth_get_users_get**](AuthApi.md#api_auth_get_users_get) | **GET** /api/Auth/GetUsers | 
 [**api_auth_register_device_post**](AuthApi.md#api_auth_register_device_post) | **POST** /api/Auth/RegisterDevice | 
+[**api_auth_remove_user_id_delete**](AuthApi.md#api_auth_remove_user_id_delete) | **DELETE** /api/Auth/RemoveUser/{id} | 
 
 
 
@@ -67,6 +70,34 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## api_auth_create_user_post
+
+> crate::models::UserDto api_auth_create_user_post(create_user)
+
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**create_user** | [**CreateUser**](CreateUser.md) |  | [required] |
+
+### Return type
+
+[**crate::models::UserDto**](UserDto.md)
+
+### Authorization
+
+[Bearer](../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: application/json, text/json, application/*+json
+- **Accept**: text/plain, application/json, text/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## api_auth_get_current_user_get
 
 > crate::models::BaseUserDto api_auth_get_current_user_get()
@@ -79,6 +110,31 @@ This endpoint does not need any parameter.
 ### Return type
 
 [**crate::models::BaseUserDto**](BaseUserDto.md)
+
+### Authorization
+
+[Bearer](../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: text/plain, application/json, text/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## api_auth_get_users_get
+
+> Vec<crate::models::UserDto> api_auth_get_users_get()
+
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**Vec<crate::models::UserDto>**](UserDto.md)
 
 ### Authorization
 
@@ -115,6 +171,34 @@ Name | Type | Description  | Required | Notes
 ### HTTP request headers
 
 - **Content-Type**: application/json, text/json, application/*+json
+- **Accept**: text/plain, application/json, text/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## api_auth_remove_user_id_delete
+
+> api_auth_remove_user_id_delete(id)
+
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **uuid::Uuid** |  | [required] |
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+[Bearer](../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
 - **Accept**: text/plain, application/json, text/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

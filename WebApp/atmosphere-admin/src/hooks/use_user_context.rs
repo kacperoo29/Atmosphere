@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Formatter};
 use std::ops::Deref;
 
+use atmosphere_api::models::UserRole;
 use yew::{use_context, UseStateHandle};
 use yew_router::prelude::{use_history, AnyHistory, History};
 
@@ -30,6 +31,14 @@ impl UseUserContextHandle {
     pub fn is_logged_in(&self) -> bool {
         // TODO: Wait for user to be feteched
         (*self.inner).is_some()
+    }
+
+    pub fn info(&self) -> Option<UserInfo> {
+        (*self.inner).clone()
+    }
+
+    pub fn role(&self) -> Option<UserRole> {
+        (*self.inner).as_ref().map(|user| user.role.clone())
     }
 }
 
