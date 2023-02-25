@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Atmosphere.Application.Config;
+using Atmosphere.Services.Config;
 using Atmosphere.Application.Configuration;
 using Atmosphere.Application.Notfications;
 using Atmosphere.Application.Readings.Commands;

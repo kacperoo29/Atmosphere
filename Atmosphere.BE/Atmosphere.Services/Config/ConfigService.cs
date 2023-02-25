@@ -11,12 +11,12 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Configuration;
 
-namespace Atmosphere.Application.Config;
+namespace Atmosphere.Services.Config;
 
 public class ConfigService : IConfigService
 {
-    private const string NOTIFICATION_TYPES_KEY = "Atmosphere.Notification.Types";
-    private const string NOTIFICATIONS_SETTINGS_KEY = "Atmosphere.Notification.Settings";
+    public const string NOTIFICATION_TYPES_KEY = "Atmosphere.Notification.Types";
+    public const string NOTIFICATIONS_SETTINGS_KEY = "Atmosphere.Notification.Settings";
     public const string EMAIL_CONFIG_KEY = "Atmosphere.Notification.EmailConfig";
 
     private readonly IConfigurationRepository _configRepo;

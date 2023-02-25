@@ -45,14 +45,6 @@ public class UserService : IUserService
         throw new UnauthorizedAccessException("Invalid credentials");
     }
 
-    public async Task<BaseUser> GetByTokenAsync(string token)
-    {
-        var claims = await _tokenService.GetClaims(token);
-        var userId = claims.First(c => c.Type == AtmosphereClaimTypes.UserId).Value;
-
-        return await _userRepo.GetUserAsync(Guid.Parse(userId));
-    }
-
     public async Task<BaseUser?> GetCurrentAsync()
     {
         var userId = _httpContextAccessor.HttpContext?.User.Claims

@@ -16,6 +16,43 @@ public class ReadingValidator : IReadingValidator
         _configurationRepository = configurationRepository;
     }
 
+    public Dictionary<ReadingType, List<ValidationRule>> GetDefaultRules()
+    {
+        var rules = new Dictionary<ReadingType, List<ValidationRule>>();
+        rules.Add(
+            ReadingType.Temperature,
+            new List<ValidationRule>
+            {
+                new ValidationRule
+                {
+                    Message = "Temperature is below {severity} threshold of {value}",
+                    Severity = Severity.Warning,
+                    Condition = v => v.Value < 0
+                },
+                new ValidationRule
+                {
+                    Message = "Temperature is above {severity} threshold of {value}",
+                    Severity = Severity.Warning,
+                    Condition = v => v.Value > 100
+                },
+                new ValidationRule
+                {
+                    Message = "Temperature is below {severity} threshold of {value}",
+                    Severity = Severity.Error,
+                    Condition = v => v.Value < -10
+                },
+                new ValidationRule
+                {
+                    Message = "Temperature is above {severity} threshold of {value}",
+                    Severity = Severity.Error,
+                    Condition = v => v.Value > 110
+                }
+            }
+        );
+
+        return rules;
+    }
+
     public async Task<IEnumerable<Notification>> Validate(Reading reading)
     {
         var rules = await _configurationRepository.GetAsync<
@@ -25,39 +62,7 @@ public class ReadingValidator : IReadingValidator
         var validationResults = new List<Notification>();
         if (rules == null)
         {
-            // create defaults
-            rules = new Dictionary<ReadingType, List<ValidationRule>>();
-            rules.Add(
-                ReadingType.Temperature,
-                new List<ValidationRule>
-                {
-                    new ValidationRule
-                    {
-                        Message = "Temperature is below {severity} threshold of {value}",
-                        Severity = Severity.Warning,
-                        Condition = v => v.Value < 0
-                    },
-                    new ValidationRule
-                    {
-                        Message = "Temperature is above {severity} threshold of {value}",
-                        Severity = Severity.Warning,
-                        Condition = v => v.Value > 100
-                    },
-                    new ValidationRule
-                    {
-                        Message = "Temperature is below {severity} threshold of {value}",
-                        Severity = Severity.Error,
-                        Condition = v => v.Value < -10
-                    },
-                    new ValidationRule
-                    {
-                        Message = "Temperature is above {severity} threshold of {value}",
-                        Severity = Severity.Error,
-                        Condition = v => v.Value > 110
-                    }
-                }
-            );
-
+            rules = GetDefaultRules();
             await _configurationRepository.SetAsync(ValidationRulesKey, rules);
         }
 
@@ -70,14 +75,31 @@ public class ReadingValidator : IReadingValidator
         {
             if (rule.Condition.Compile()(reading))
             {
-                var message = rule.Message.Replace("{value}", reading.Value.ToString(), StringComparison.OrdinalIgnoreCase);
-                message = message.Replace("{severity}", rule.Severity.ToString(), StringComparison.OrdinalIgnoreCase);
+                var message = rule.Message.Replace(
+                    "{value}",
+                    reading.Value.ToString(),
+                    StringComparison.OrdinalIgnoreCase
+                );
+                message = message.Replace(
+                    "{severity}",
+                    rule.Severity.ToString(),
+                    StringComparison.OrdinalIgnoreCase
+                );
 
                 validationResults.Add(
                     new Notification { Severity = rule.Severity, Message = message }
                 );
             }
         }
+
+        // Keep only the highest severity
+        if (validationResults.Count == 0)
+        {
+            return validationResults;
+        }
+
+        var highestSeverity = validationResults.Max(v => v.Severity);
+        validationResults.RemoveAll(v => v.Severity < highestSeverity);
 
         return validationResults;
     }

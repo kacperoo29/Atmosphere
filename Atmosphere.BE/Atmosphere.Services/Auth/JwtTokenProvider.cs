@@ -27,7 +27,11 @@ public class JwtTokenProvider : ITokenService
         var claims = user.GetClaims();
         var config = _configuration.GetSection("JWT");
         var expirationFormats = config.GetSection("ExpirationFormats").Get<string[]>();
-        var expiration = TimeSpan.ParseExact(config["Expiration"], expirationFormats, CultureInfo.InvariantCulture);
+        var expiration = TimeSpan.ParseExact(
+            config["Expiration"],
+            expirationFormats,
+            CultureInfo.InvariantCulture
+        );
 
         var token = new JwtSecurityToken(
             config["Issuer"],
@@ -36,7 +40,9 @@ public class JwtTokenProvider : ITokenService
             expires: DateTime.Now.Add(expiration),
             signingCredentials: new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["SecretKey"])),
-                SecurityAlgorithms.HmacSha256));
+                SecurityAlgorithms.HmacSha256
+            )
+        );
 
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
@@ -44,7 +50,8 @@ public class JwtTokenProvider : ITokenService
     public async Task<List<Claim>> GetClaims(string token)
     {
         var (valid, jwt) = await ValidateToken(token);
-        if (!valid) return new List<Claim>();
+        if (!valid)
+            return new List<Claim>();
 
         return (jwt as JwtSecurityToken)?.Claims.ToList() ?? new List<Claim>();
     }
@@ -53,16 +60,29 @@ public class JwtTokenProvider : ITokenService
     {
         var config = _configuration.GetSection("JWT");
         var tokenHandler = new JwtSecurityTokenHandler();
-        var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["SecretKey"]))
-        });
+        var result = await tokenHandler.ValidateTokenAsync(
+            token,
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = config.GetValue<string>("Issuer"),
+                ValidateAudience = true,
+                ValidAudience = config.GetValue<string>("Audience"),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromSeconds(0),
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(config.GetValue<string>("SecretKey"))
+                )
+            }
+        );
 
-        if (!result.IsValid) return (false, null);
+        if (!result.IsValid)
+            return (false, null);
 
         var jwtToken = result.SecurityToken as JwtSecurityToken;
-        if (jwtToken == null) return (false, null);
+        if (jwtToken == null)
+            return (false, null);
 
         var userId = jwtToken.Claims.First(c => c.Type == AtmosphereClaimTypes.UserId).Value;
         var user = await _userRepository.GetUserAsync(Guid.Parse(userId));

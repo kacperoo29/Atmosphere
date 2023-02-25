@@ -16,3 +16,6 @@
 \contentsline {figure}{\numberline {5.7}{\ignorespaces Przykładowa konfiguracja powiadomień email\relax }}{31}{figure.caption.24}%
 \contentsline {figure}{\numberline {5.8}{\ignorespaces Widok odczytów parametrów środowiska\relax }}{31}{figure.caption.25}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Procent linii pokrytych testami jednostkowymi w projekcie zawierającym logikę aplikacji\relax }}{34}{figure.caption.26}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Procent linii pokrytych testami jednostkowymi w klasach \textbf {JwtTokenProvider} i \textbf {ConfigService}\relax }}{35}{figure.caption.27}%
+\addvspace {10\p@ }
