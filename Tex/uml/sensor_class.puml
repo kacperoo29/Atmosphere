@@ -1,0 +1,32 @@
+@startuml
+
+class Reading {
+    + double value
+    + std::string unit
+    + std::string type
+    + std::string timestamp
+    + std::string deviceAddress
+}
+
+abstract class Sensor {
+    + void setup()
+    + std::vector<Reading> read()
+}
+
+class DHTSensor {
+    + void setup()
+    + std::vector<Reading> read()
+    - dht dht
+}
+
+class OneWireSensor {
+    + void setup()
+    + std::vector<Reading> read()
+    - OneWire oneWire
+    - DallasTemperature sensors
+}
+
+Sensor <|-- DHTSensor
+Sensor <|-- OneWireSensor
+
+@enduml

@@ -2,23 +2,29 @@
 \babel@toc {polish}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagram przypadków użycia\relax }}{4}{figure.caption.4}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagram przypadków użycia\relax }}{5}{figure.caption.4}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Wykres przedstawiający współczynnik uwielbiania/nienawiści danej technologii\relax }}{14}{figure.caption.7}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Wykres przedstawiający współczynnik uwielbiania/nienawiści danej technologii\relax }}{15}{figure.caption.7}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Protokoły wykorzystane w komunikacji między komponentami\relax }}{23}{figure.caption.18}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Diagram klas modeli danych\relax }}{25}{figure.caption.19}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Diagram klas wzorca dekorator\relax }}{26}{figure.caption.20}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Diagram klas kontrolerów\relax }}{27}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Protokoły wykorzystane w komunikacji między komponentami\relax }}{24}{figure.caption.18}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Diagram klas modeli danych\relax }}{26}{figure.caption.19}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Diagram klas wzorca dekorator\relax }}{27}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Diagram klas kontrolerów\relax }}{28}{figure.caption.21}%
 \contentsline {figure}{\numberline {5.5}{\ignorespaces Intefejs swagger-ui\relax }}{33}{figure.caption.22}%
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Widok logowania\relax }}{34}{figure.caption.23}%
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Informacja o niepoprawnych danych logowania\relax }}{34}{figure.caption.24}%
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Przykładowa konfiguracja zasad walidacji\relax }}{35}{figure.caption.25}%
-\contentsline {figure}{\numberline {5.9}{\ignorespaces Przykładowa konfiguracja zasad walidacji ze specyfikacja jednostki\relax }}{35}{figure.caption.26}%
-\contentsline {figure}{\numberline {5.10}{\ignorespaces Przykładowa konfiguracja powiadomień email\relax }}{36}{figure.caption.27}%
-\contentsline {figure}{\numberline {5.11}{\ignorespaces Widok odczytów parametrów środowiska\relax }}{36}{figure.caption.28}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Diagram klas sensorów oraz odczytów\relax }}{40}{figure.caption.23}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Procent linii pokrytych testami jednostkowymi w projekcie zawierającym logikę aplikacji\relax }}{43}{figure.caption.29}%
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Procent linii pokrytych testami jednostkowymi w klasach \textbf {JwtTokenProvider} i \textbf {ConfigService}\relax }}{44}{figure.caption.30}%
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Procent linii pokrytych testami jednostkowymi w projekcie zawierającym logikę aplikacji\relax }}{44}{figure.caption.24}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Procent linii pokrytych testami jednostkowymi w klasach \textbf {JwtTokenProvider} i \textbf {ConfigService}\relax }}{45}{figure.caption.25}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Testowa konfiguracja\relax }}{45}{figure.caption.26}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Nowe urządzenie na liście urządzeń\relax }}{46}{figure.caption.27}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Odczyty oraz notyfikacje po aktywacji urządzenia\relax }}{47}{figure.caption.28}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Widok logowania\relax }}{48}{figure.caption.29}%
+\contentsline {figure}{\numberline {7.2}{\ignorespaces Informacja o niepoprawnych danych logowania\relax }}{49}{figure.caption.30}%
+\contentsline {figure}{\numberline {7.3}{\ignorespaces Przykładowa konfiguracja zasad walidacji\relax }}{49}{figure.caption.31}%
+\contentsline {figure}{\numberline {7.4}{\ignorespaces Przykładowa konfiguracja zasad walidacji ze specyfikacja jednostki\relax }}{50}{figure.caption.32}%
+\contentsline {figure}{\numberline {7.5}{\ignorespaces Przykładowa konfiguracja powiadomień email\relax }}{50}{figure.caption.33}%
+\contentsline {figure}{\numberline {7.6}{\ignorespaces Widok odczytów parametrów środowiska\relax }}{51}{figure.caption.34}%
+\contentsline {figure}{\numberline {7.7}{\ignorespaces Aktywne urządzenie na liście urządzeń\relax }}{51}{figure.caption.35}%
 \addvspace {10\p@ }

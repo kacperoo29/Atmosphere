@@ -19,7 +19,7 @@ public class WebSocketNotificationServiceDecorator : NotificationService
         _webSocketHub = webSocketHub;
     }
 
-    public async Task Notify(Reading reading, IEnumerable<Notification> validationResults)
+    public override async Task Notify(Reading reading, IEnumerable<Notification> validationResults)
     {
         await _wrapee.Notify(reading, validationResults);
 
@@ -34,7 +34,7 @@ public class WebSocketNotificationServiceDecorator : NotificationService
             var type = WebSocketPayloadType.Notification;
             // build json response
             message.Append("{");
-            message.Append($"\"type\": \"{type}\",");
+            message.Append($"\"type\": \"{type.ToString()}\",");
             message.Append("\"data\": [");
             foreach (var notification in validationResults)
             {

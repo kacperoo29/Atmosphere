@@ -13,7 +13,7 @@ public class NotificationService : INotificationService
         _wrapee = wrapee;
     }
 
-    public Task Notify(Reading reading, IEnumerable<Notification> validationResults)
+    public virtual Task Notify(Reading reading, IEnumerable<Notification> validationResults)
     {
         return Task.CompletedTask;
     }

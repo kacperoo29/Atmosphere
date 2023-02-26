@@ -1,0 +1,20 @@
+Zależności potrzebne do uruchomienia aplikacji:
+  - Docker
+  - Docker Compose
+  - PlatformIO
+  - npm
+
+Instrukcja uruchomienia poszczególnych aplikacji:
+  - aplikacja serwerowa:
+    - dir: ./Atmosphere.BE
+    - uruchomienie i kompilacja: docker-compose up --build
+    - adres: http://localhost:5000
+  - aplikacja klienta:
+    - dir: ./WebApp/atmosphere-admin
+    - uruchomienie: npm start
+    - kompilacja: npm run build
+    - adres: http://localhost:8000
+  - aplikacja mikrokontrolera:
+    - dir: ./Atmosphere.RPI
+    - uruchomienie: platformio run -t upload
+    - kompilacja: platformio run

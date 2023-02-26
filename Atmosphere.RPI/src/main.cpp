@@ -12,10 +12,11 @@
 
 #include <bourne/json.hpp>
 
-#include "CreateReading.h"
 #include "AuthApi.h"
-#include "ReadingApi.h"
+#include "CreateReading.h"
+#include "DHTSensor.h"
 #include "OneWireSensor.h"
+#include "ReadingApi.h"
 
 std::list<Tiny::CreateReading> convert(const std::vector<Reading> &reading) {
   std::list<Tiny::CreateReading> readings;
@@ -43,20 +44,29 @@ std::vector<Sensor *> sensors;
 
 void onEvent(WStype_t type, uint8_t *payload, size_t length) {
   switch (type) {
-  case WStype_TEXT:
-    try {
-      auto json = bourne::json::parse(std::string((char *)payload, length));
-      if (json.has_key("type")) {
-        auto type = json["type"].to_string();
-        if (type == "pollingRate") {
-          auto rate = json["payload"].to_int();
-          send_interval = rate;
-        }
-      }
-    } catch (const std::exception &e) {
-      Serial.printf("Error parsing json: %s\r\n", e.what());
+  case WStype_TEXT: {
+    auto content = std::string((char *)payload, length);
+    if (content == "ping") {
+      webSocket.sendTXT("pong");
+      break;
     }
+
+    if (content == "pong") {
+      break;
+    }
+
+    std::error_code error;
+    auto json = bourne::json::parse(content, error);
+    if (json.has_key("type")) {
+      auto type = json["type"].to_string();
+      if (type == "pollingRate") {
+        auto rate = json["payload"].to_int();
+        send_interval = rate;
+      }
+    }
+
     break;
+  }
   }
 }
 
@@ -93,6 +103,7 @@ void init_server_connection() {
   authPayload.setUsername(mac);
   authPayload.setPassword(PASSWD);
   auto response = authApi.apiAuthAuthenticatePost(authPayload);
+  Serial.println(response.code);
   if (response.code != 200) {
     Serial.println("Device not registered. Registering...");
     Tiny::RegisterDevice registerDevicePayload;
@@ -132,6 +143,7 @@ void setup() {
 
   Serial.println("Setup sensors");
   sensors.push_back(new OneWireSensor(28));
+  // sensors.push_back(new DHTSensor(26, DHT11));
   for (auto sensor : sensors) {
     sensor->setup();
   }
@@ -147,7 +159,7 @@ void loop() {
 
   auto begin = millis();
   webSocket.loop();
-
+  
   if (last_ping > ping_interval) {
     if (webSocket.isConnected())
       webSocket.sendTXT("ping");
@@ -155,6 +167,7 @@ void loop() {
   }
 
   if (diff >= send_interval) {
+    Serial.println("Sending data");
     diff = 0;
     std::vector<Reading> readings;
     for (auto sensor : sensors) {

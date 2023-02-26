@@ -54,7 +54,7 @@ Pierwsza z nich wykorzystywana jest do zmieniania istniejących
 już zasobów lub tworzenia ich na nowo. DELETE natomiast służy
 do usuwania zasobów.
 
-\subsection{Architektura}
+\subsection{Architektura aplikacji}
 Jako szkielet logiki aplikacji został wykorzystany wzorzec CQRS 
 (ang. \textit{Command Query Responsibility Separation}).
 W tym modelu akcje dzielą się na dwa typy komendy oraz zapytania \cite{fowler:cqrs}.
@@ -339,8 +339,6 @@ modelami jak również trzon aplikacji serwerowej oraz dokumentację. Pozwala r�
 na modyfikowanie wzorów generowanego kodu poprzez pliku mustache, za pomocą których
 definiowana jest struktura wygenerowanych plików.
 
-
-
 \section{Aplikacja kliencka}
 Aplikacja kliencka powstała w celu ułatwienia dostępu do zasobów systemu.
 Umożliwia ona na przedstawienie danych związanych z odczytami jak i konfigurację
@@ -348,83 +346,207 @@ aplikacji wykorzystując przyjazny użytkownikowi interfejs. W tym celu komuniku
 się ona z serwerem i na podstawie otrzymanych danych przedstawia je w formacie
 czytelnym dla człowieka. 
 
-Pierwszym krokiem, który wykonuje użytkownik po uruchomieniu aplikacji jest 
-proces logowania. Aby zwiększyć bezpieczeństwo danych wszystkie funkcjonalności
-dostępne są jedynie aktywnym kontom użytkowników.
-Interfejs logowania przedstawiono na Rys. \ref{atmosphere:signin}.
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{signin}
-  \caption{Widok logowania}
-  \label{atmosphere:signin}
-\end{figure}
-W przypadku podania błędnych danych serwer zwraca informację o błędzie, która następnie
-wyświetlana jest w formie powiadomienia użytkownikowi. Przykładową zawartość przedstawiono
-na Rys. \ref{atmosphere:failedsignin}.
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{failedsignin}
-  \caption{Informacja o niepoprawnych danych logowania}
-  \label{atmosphere:failedsignin}
-\end{figure}
-Po udanym zalogowaniu w zależności od poziomu uprawnień użytkownik ma dostęp
-do pozostałych zasobów aplikacji.
-W tym samym momencie aplikacja łączy się z kanałem WebSocket odpowiedzialnym za
-wysyłanie powiadomień o niespodziewanych wydarzeniach, tj. przekroczenie
-wartości parametrów. Aby je utrzymać aplikacja wysyła wykorzystując te samo
-połączenie wiadomość o treści "ping" co 30 sekund. W przypadku, gdy
-wystąpi niespodziewane zdarzenie oraz kanał jest aktywny aplikacja otrzymuje
-o tym wiadomość z serwera, a następnie wyświetlana jest w formacie powiadomienia
-podobnym do wcześniej przedstawionego powiadomienia o nieudanym logowaniu.
-Zawartość powiadomienia może zostać dynamicznie zmieniona przez użytkownika
-jak i bardziej zaawansowana logika weryfikacji odczytów. Przykładowa konfiguracja
-została przedstawiona na Rys. \ref{atmosphere:validation_rule}.
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{validation_rule}
-  \caption{Przykładowa konfiguracja zasad walidacji}
-  \label{atmosphere:validation_rule}
-\end{figure}
-Te reguły pozwalają na ustalenie dowolnej wiadomości opcjonalnie zawierającej referencje
-do wartości odczytu (\textit{value}) oraz jego poziomu (\textit{severity}). Poziom może zostać
-dostosowany przez użytkownika w zależności od priorytetu danej wiadomości.
-Są one podzielone na trzy kategorie: informacje, ostrzeżenia oraz błędy.
-Same reguły tworzone są za pomocą składni LINQ używanej w językach programowania
-bazujących na środowisku .NET. Umożliwia to na konstrukcję bardziej zaawansowanych reguł
-pozwalających na porównywanie wielu wartości, np. aplikacja może wysyłać powiadomienie, gdy
-wartość odczytu przekroczy dany próg wyrażony w stopniach Celsjusza lub zupełnie inny
-w stopnia Fahrenheita poprzez podanie dodatkowego porównania z polem jednostki (\textit{Unit}).
-Przykład takiego wyrażenia przedstawiony został na Rys. \ref{atmosphere:custom_validation}.
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{custom_validation}
-  \caption{Przykładowa konfiguracja zasad walidacji ze specyfikacja jednostki}
-  \label{atmosphere:custom_validation}
-\end{figure}
-Aplikacja umożliwia również konfigurację metody wysyłania powiadomień na adres email.
-Administrator może skonfigurować takie parametry jak serwer SMTP oraz port wykorzystywany
-do wysyłania wiadomości jak i nazwę użytkownika oraz hasło użyte do autoryzacji na nim.
-Dodatkowo może on podać adres email, z którego dana wiadomość jest wysyłana jak i również
-docelowy adres email. Przykładowa konfiguracja została zaprezentowana na Rys. \ref{atmosphere:email_configuration}.
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{email_configuration}
-  \caption{Przykładowa konfiguracja powiadomień email}
-  \label{atmosphere:email_configuration}
-\end{figure}
+\subsection{Architektura aplikacji}
+Aplikacja kliencka dzieli się na komponenty oraz widoki z nich korzystające.
+Do widoków należą podstrony tj.:
+\begin{itemize}
+  \item strona główna - zawiera listę odczytów w przypadku zalogowanego użytkownika
+    lub przekierowanie do logowania w przeciwnym przypadku,
+  \item strona z logowaniem - zawiera prosty formularz logowania,
+  \item strona z ustawieniami - zawiera konfigurację aplikacji,
+  \item strona z urządzeniami - zawiera listę urządzeń wraz z ich stanem połączenia,
+  \item strona z użytkownikami - zawiera listę użytkowników oraz umożliwia na ich usunięcie.
+\end{itemize}
+Komponentami, które wykorzystywane są na każdej ze stron jest \textbf{UserContextProvider}
+oraz \textbf{Nav}.
+Zadaniem pierwszego z nich jest dostarczenie kontekstu użytkownika pozostałym komponentom i 
+widokom. Drugi natomiast to pasek nawigacji zawierający odnośniki do pozostałych stron.
+Zależnie od roli zalogowanego użytkownika wyświetla różne odnośniki.
+Strona główna zawiera odniesienia do komponentu \textbf{ReadingList} odpowiedzialnego
+za wyświetlanie listy odczytów oraz ich filtrowanie według daty.
+Strona z ustawieniami natomiast używa komponentów \textbf{EmailConfig} zawierającego
+ustawienia notyfikacji poprzez pocztę email oraz \textbf{ValidationRule} 
+zawierającą ustawienia walidacji odczytów. Komponenty oraz strony, które
+wymagają połączenia z aplikacją serwerową lub wykonują sprawdzanie danych
+dodatkowo używają komponent toastów służący do wyświetlania informacji w okienku modalnym.
 
-Kolejnym widokiem jest lista odczytów parametrów środowiska. Użytkownik może 
-filtrować ją z użyciem daty startowej i/lub daty końcowej po czym uzyskuje
-wyniki znajdujące się w tym przedziale. Przykład przefiltrowanych danych
-został przedstawiony na rysunku \ref{atmosphere:readings}.
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{readings}
-  \caption{Widok odczytów parametrów środowiska}
-  \label{atmosphere:readings}
-\end{figure}
-Widok przedstawia w formie tabeli datę oraz czas wykonania odczytu, jego typ,
-jednostkę pomiaru oraz adres fizyczny urządzenia pomiarowego.
+\subsection{Implementacja wybranych funkcjonalności}
+Aby użytkownik nie musiał za każdym wejściem na stronę ponownie logować się
+zastosowano przechowywanie tokena w pamięci lokalnej przeglądarki.
+Gdy użytkownik ponownie odwiedza witrynę jeżeli był on wcześniej zalogowany
+pobierany jest token z pamięci lokalnej, a następnie za jego pomocą pobierane
+są jego dane. Na listingu \ref{lazy_token} przedstawiono ładowanie tokenu z pamięci
+lokalnej, a \ref{load_user} przedstawia implementację wczytywania szczegółów użytkownika
+z serwera wraz z komponentem \textbf{UserContextProvider}.
+\begin{lstlisting}[caption={Wczytywanie tokenu z pamięci lokalnej},label={lazy_token},captionpos=b]
+lazy_static! {
+    pub static ref TOKEN: RwLock<Option<String>> = {
+        if let Ok(token) = LocalStorage::get(TOKEN_KEY) {
+            RwLock::new(Some(token))
+        } else {
+            RwLock::new(None)
+        }
+    };
+}
+\end{lstlisting}
+Po zamontowaniu komponent \textbf{UserContextProvider} sprawdza czy istnieje w pamięci token,
+a następnie w przypadku jego istnienia pobiera szczegóły użytkownika z serwera.
+Jeżeli zapytanie powiodło się są one umieszczane w pamięci w przeciwnym przypadku
+token jest z niej usuwany.
+\begin{lstlisting}[caption={Implementacja komponentu UserContextProvider},label={load_user},captionpos=b]
+#[function_component(UserContextProvider)]
+pub fn user_context_provider(props: &Props) -> Html {
+    let user_ctx = use_state(|| None);
+    let current_user = use_async(async move { user::current().await });
+
+    {
+        let current_user = current_user.clone();
+        use_mount(move || {
+            if get_token().is_some() {
+                current_user.run();
+            }
+        });
+    }
+
+    {
+        let user_ctx = user_ctx.clone();
+        use_effect_with_deps(
+            move |current_user| {
+                if let Some(user) = &current_user.data {
+                    user_ctx.set(Some(user.clone()))
+                }
+
+                if let Some(err) = &current_user.error {
+                    match err {
+                        crate::error::Error::Unauthorized(_) => {
+                            user_ctx.set(None);
+                            set_token(None);
+                        }
+                        _ => {}
+                    }
+                }
+
+                || ()
+            },
+            current_user.clone(),
+        )
+    }
+
+    html! {
+        <ContextProvider<UseStateHandle<Option<UserInfo>>> context={user_ctx} children={props.children.clone()} />
+    }
+}
+\end{lstlisting}
+
+Ze względu na limitację frameworku Yew implementacja okienek modalnych było 
+znacznie łatwiejsze z wykorzystaniem języka TypeScript. Poprzez wykorzystanie
+technologii wasm-bindgen zostały wygenerowane połączenia między językami co pozwoliło
+na wykorzystanie kodu TypeScript w komponentach. Kod odpowiedzialny za
+definicję interfejsu został przedstawiony na listingu \ref{js:bindings}, a
+ich implementacja na listingu \ref{js:impl}.
+\begin{lstlisting}[caption={Interfejs dla funkcjonalnosci notyfikacji oraz WebSocket},label={js:bindings},captionpos=b]
+#[wasm_bindgen(module = "/src/js/notifications.ts")]
+extern "C" {
+    #[wasm_bindgen]
+    pub fn notify(title: &str, body: &str);
+    #[wasm_bindgen]
+    pub fn show_error(text: &str);
+    #[wasm_bindgen]
+    pub fn set_send_ping_interval(ws: &web_sys::WebSocket, interval: u32);
+    #[wasm_bindgen]
+    pub fn set_on_close(ws: &web_sys::WebSocket);
+}
+\end{lstlisting}
+Funkcje zaimplementowane w języku TypeScript tworzą okienka modalne z podanym tytułem oraz
+wiadomością wykorzystując do tego funkcjonalność biblioteki Bootstrap. Tworzony jest
+kontener na wiadomości mający indeks 9999 co oznacza, że będzie wyświetlany wyżej
+od reszty komponentów i nie będzie przez nie zasłonięty oraz nie będzie ingerował w ich
+wygląd. Dodatkowo w języku TypeScript zostały zaimplementowane niektóre funkcjonalności
+związane z wykorzystaniem technologii WebSocket, takie jak wysyłanie wiadomości z ustalonym
+interwałem oraz rozłączanie połączenia przy wyłączeniu okienka zawierającego stronę.
+\begin{lstlisting}[caption={Implementacja funkcjonalnosci notyfikacji oraz WebSocket},label={js:impl},captionpos=b]
+export function notify(title: string, msg: string) {
+    var toast = build_toast(title, msg);
+    var toast_container = document.getElementById('toast-container');
+    if (toast_container === null) {
+        toast_container = document.createElement('div');
+        toast_container.id = 'toast-container';
+        toast_container.classList.add('position-fixed', 'bottom-0', 'end-0', 'p-3');
+        toast_container.style.zIndex = '9999';
+        document.body.appendChild(toast_container);
+    }
+
+    toast_container.appendChild(toast);
+    var toast_obj = new bootstrap.Toast(toast);
+    toast_obj.show();
+}
+
+export function show_error(text: string) {
+    notify('Error', text);
+}
+
+export function set_send_ping_interval(ws: WebSocket, interval: number) {
+    setInterval(() => {
+        ws.send('ping');
+    }, interval);
+}
+
+export function set_on_close(ws: WebSocket) {
+    window.onclose = () => {
+        ws.close();
+    };
+}
+
+function build_toast(title: string, msg: string) {
+    var toast = document.createElement('div');
+    toast.classList.add('toast');
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.innerHTML = `
+        <div class="toast-header">
+            <strong class="me-auto">${title}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            ${msg}
+        </div>
+    `;
+
+    return toast;
+}
+\end{lstlisting}
+
+Zależnie od tego czy użytkownik jest zalogowany może on otrzymywać notyfikacje o przekroczeniu
+wartości danych parametrów odczytów. Zostało to wykonane poprzez wykorzystanie połączenia 
+WebSocket z serwerem, który w takich przypadkach wysyła wiadomość w formie JSON z polem
+\textbf{type} o wartości \textit{notification}. Jeżeli użytkownik jest zalogowany i aplikacja
+otrzyma taką wiadomość wykorzystywana jest wcześniej zaprezentowana funkcjonalność okienek modalnych,
+aby wyświetlić informację zawartą w polu \textbf{data} wiadomości otrzymanej z serwera.
+Kod odpowiedzialny za tą funkcjonalność został przedstawiony na lisitingu \ref{show_notif}.
+\begin{lstlisting}[caption={Implementacja wyświetlania powiadomień},label={show_notif},captionpos=b]
+use_effect_with_deps(
+    move |_user| {
+        if let Some(notification_ws) = &*notification_ws.clone() {
+            let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
+                let data = e.data().as_string().unwrap();
+                if let Ok(notification) = serde_json::from_str::<NotificationPayload>(&data) {
+                    if notification.r#type.to_lowercase() == "notification" {
+                        bindings::notify("New notification", &notification.data.join(" "));
+                    }
+                }
+            });
+            notification_ws.set_onmessage(Some(on_message.as_ref().unchecked_ref()));
+            on_message.forget();
+            set_send_ping_interval(notification_ws, 20000);
+            set_on_close(notification_ws);
+        }
+        || ()
+    },
+    (*user).clone(),
+);
+\end{lstlisting}
+
 
 \section{Urządzenie pomiarowe}
 Do wykonywania pomiarów wykorzystany został mikrokontroler Raspberry Pi Pico W.
@@ -459,7 +581,20 @@ długości odpowiedzi, jeżeli wynosi -1 odpowiedź jest o nieznanej długości 
 do bufora z wykorzystaniem potoku, w przypadku 0 odpowiedź jest pusta, a przy wartościach większych od
 0 tworzony jest bufor o tej długości.
 
-\subsection{Architektura}
+\subsection{Architektura aplikacji}
+Aplikacja udostępnia abstrakcyjną klasę \textbf{Sensor} zawierającą metody wymagane do 
+podstawowej obsługi sensorów. W projekcie umieszczone zostały implementacje tej klasy
+dla dwóch typów sensorów \textbf{OneWire} oraz \textbf{DHT}. Pierwszy z nich wykorzystuje
+sensory Dallas Temperature, aby uzyskiwać wyniki temperatur. DHT natomiast jest w stanie
+obsłużyć dwa sensory DHT11 oraz DHT22 obydwa posiadające możliwość pomiarów temperatury oraz
+wilgotności powietrza. Implementacja została przedstawiona na diagramie klas \ref{diagram:sensors}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{sensor_class}
+  \caption{Diagram klas sensorów oraz odczytów}
+  \label{diagram:sensors}
+\end{figure}
+
 
 \subsection{Implementacja wybranych funkcjonalności}
 Podczas startu urządzenie łączy się z siecią Wi-Fi wcześniej zdefiniowaną przez użytkownika.

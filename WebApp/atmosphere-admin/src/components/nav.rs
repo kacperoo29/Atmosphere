@@ -40,7 +40,6 @@ pub fn nav() -> Html {
                 let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                     let data = e.data().as_string().unwrap();
 
-                    // deserialize data
                     if let Ok(notification) = serde_json::from_str::<NotificationPayload>(&data) {
                         if notification.r#type.to_lowercase() == "notification" {
                             bindings::notify("New notification", &notification.data.join(" "));

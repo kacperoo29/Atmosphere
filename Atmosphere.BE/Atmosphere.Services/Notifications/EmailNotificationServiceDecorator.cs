@@ -18,7 +18,7 @@ public class EmailNotificationServiceDecorator : NotificationService
         _configService = configService;
     }
 
-    public async Task Notify(Reading reading, IEnumerable<Notification> validationResults)
+    public override async Task Notify(Reading reading, IEnumerable<Notification> validationResults)
     {
         await _wrapee.Notify(reading, validationResults);
 

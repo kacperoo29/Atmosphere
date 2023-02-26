@@ -66,6 +66,10 @@ Response<AuthResponseDto> AuthApi::apiAuthAuthenticatePost(
   // Handle Request
   String output = getResponseBody();
   std::string output_string = output.c_str();
+  if (httpCode != 200) {
+    Response<AuthResponseDto> response(AuthResponseDto(), httpCode);
+    return response;
+  }
 
   AuthResponseDto obj(output_string);
 
