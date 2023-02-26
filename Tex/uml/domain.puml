@@ -1,0 +1,56 @@
+@startuml
+
+abstract class BaseModel {
+    + Guid Id
+    + DateTime CreatedAt
+    + DateTime UpdatedAt
+
+    + bool Equals(object?)
+    + int GetHashCode()
+    # BaseModel()
+    # void Update()
+}
+
+abstract class BaseUser {
+    + string Username
+    + byte[] Password
+    + bool IsActive
+    + UserRole Role
+
+    + List<Claim> GetClaims()
+    + void ToggleActivate()
+}
+
+class Device {
+    + string Identifier
+    + {static} Device Create(string, string, string)
+    + List<Claim> GetClaims()
+}
+
+class User {
+    + string email
+    + {static} User Create(string, string)
+    + void MakeAdmin()
+}
+
+class Reading {
+    + Guid DeviceId
+    + decimal Value
+    + string Unit
+    + DateTime Timestamp
+    + ReadingType Type
+    + {static} Reading Create(Guid, decimal, string, DateTime, ReadingType)
+}
+
+class ConfigurationEntry {
+    + string Key
+    + object? Value
+    + {static} ConfigurationEntry Create(string, object?)
+}
+
+BaseModel <|-- BaseUser
+BaseUser <|-- Device
+BaseUser <|-- User
+BaseModel <|-- Reading
+
+@enduml

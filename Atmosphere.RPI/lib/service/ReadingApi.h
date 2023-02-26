@@ -65,6 +65,11 @@ public:
       std::string deviceId
 
   );
+
+  Response<String>
+  apiReadingCreateReadingsPost(std::list<CreateReading> createReading
+
+  );
 };
 
 } // namespace Tiny

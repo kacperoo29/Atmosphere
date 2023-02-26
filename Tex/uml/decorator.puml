@@ -1,0 +1,30 @@
+@startuml
+
+interface INotificationService {
+    + Notify(Reading, IEnumerable<Notification>)
+}
+
+class NotificationService {
+    # INotificationService wrapee
+    + NotificationService(INotificationService)
+    + Notify(Reading, IEnumerable<Notification>)
+}
+
+class WebSocketNotificationServiceDecorator {
+    - WebSocketHub<Notification> webSocketHub
+    + WebSocketNotificationServiceDecorator(INotificationService, WebSocketHub<Notification>)
+    + Notify(Reading, IEnumerable<Notification>)
+}
+
+class EmailNotificationServiceDecorator {
+    - IConfigService configService
+    + EmailNotificationServiceDecorator(INotificationService, IConfigService)
+    + Notify(Reading, IEnumerable<Notification>)
+}
+
+INotificationService <|-- NotificationService
+NotificationService o-- INotificationService
+NotificationService <|-- WebSocketNotificationServiceDecorator
+NotificationService <|-- EmailNotificationServiceDecorator
+
+@enduml

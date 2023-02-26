@@ -6,18 +6,16 @@ using MimeKit;
 
 namespace Atmosphere.Services.Notifications;
 
-public class EmailNotificationServiceDecorator : INotificationService
+public class EmailNotificationServiceDecorator : NotificationService
 {
     private readonly IConfigService _configService;
-    private readonly INotificationService _wrapee;
 
     public EmailNotificationServiceDecorator(
         INotificationService wrapee,
         IConfigService configService
-    )
+    ) : base(wrapee)
     {
         _configService = configService;
-        _wrapee = wrapee;
     }
 
     public async Task Notify(Reading reading, IEnumerable<Notification> validationResults)

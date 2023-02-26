@@ -4,7 +4,7 @@ use atmosphere_api::{
     apis::configuration_api::{
         api_configuration_get_configuration_entries_get, api_configuration_get_email_config_get,
         api_configuration_get_validation_rules_get, api_configuration_update_configuration_put,
-        api_configuration_update_email_config_patch, api_configuration_update_validation_rules_put,
+        api_configuration_update_email_config_patch, api_configuration_update_validation_rules_put, api_configuration_set_polling_rate_post,
     },
     models::{
         EmailConfiguration, ReadingType, UpdateConfiguration, UpdateValidationRules,
@@ -77,6 +77,14 @@ pub async fn update_email_config(update_config: EmailConfiguration) -> Result<()
     let config = get_config().clone();
 
     api_configuration_update_email_config_patch(&config, update_config)
+        .await
+        .map_err(|err| err.into())
+}
+
+pub async fn change_polling_rate(rate: i32) -> Result<(), Error> {
+    let config = get_config().clone();
+
+    api_configuration_set_polling_rate_post(&config, Some(rate))
         .await
         .map_err(|err| err.into())
 }

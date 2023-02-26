@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**api_configuration_get_enabled_notification_types_get**](ConfigurationApi.md#api_configuration_get_enabled_notification_types_get) | **GET** /api/Configuration/GetEnabledNotificationTypes | 
 [**api_configuration_get_notification_types_get**](ConfigurationApi.md#api_configuration_get_notification_types_get) | **GET** /api/Configuration/GetNotificationTypes | 
 [**api_configuration_get_validation_rules_get**](ConfigurationApi.md#api_configuration_get_validation_rules_get) | **GET** /api/Configuration/GetValidationRules | 
+[**api_configuration_set_polling_rate_post**](ConfigurationApi.md#api_configuration_set_polling_rate_post) | **POST** /api/Configuration/SetPollingRate | 
 [**api_configuration_toggle_notification_type_put**](ConfigurationApi.md#api_configuration_toggle_notification_type_put) | **PUT** /api/Configuration/ToggleNotificationType | 
 [**api_configuration_update_configuration_put**](ConfigurationApi.md#api_configuration_update_configuration_put) | **PUT** /api/Configuration/UpdateConfiguration | 
 [**api_configuration_update_email_config_patch**](ConfigurationApi.md#api_configuration_update_email_config_patch) | **PATCH** /api/Configuration/UpdateEmailConfig | 
@@ -189,6 +190,34 @@ Name | Type | Description  | Required | Notes
 ### Return type
 
 [**Vec<crate::models::ValidationRuleDto>**](ValidationRuleDto.md)
+
+### Authorization
+
+[Bearer](../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: text/plain, application/json, text/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## api_configuration_set_polling_rate_post
+
+> api_configuration_set_polling_rate_post(polling_rate)
+
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**polling_rate** | Option<**i32**> |  |  |
+
+### Return type
+
+ (empty response body)
 
 ### Authorization
 

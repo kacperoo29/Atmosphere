@@ -144,3 +144,39 @@ Response<std::list<ReadingDto>> ReadingApi::apiReadingGetReadingsByDeviceGet(
   Response<std::list<ReadingDto>> response(obj, httpCode);
   return response;
 }
+
+Response<String>
+ReadingApi::apiReadingCreateReadingsPost(std::list<CreateReading> createReading
+
+) {
+  std::string url = basepath + "/api/Reading/CreateReadings"; //
+
+  // Headers  |
+
+  // Query    |
+
+  // Form     |
+  addHeader("Content-Type", "application/json");
+
+  std::string payload = "";
+  // Send Request
+  // METHOD | POST
+  // Body     | createReading
+
+  bourne::json tmp_arr = bourne::json::array();
+  for (auto &var : createReading) {
+    auto tmp = var.toJson();
+    tmp_arr.append(tmp);
+  }
+  payload = tmp_arr.dump();
+
+  int httpCode = sendRequest(
+      url, "POST", reinterpret_cast<uint8_t *>(&payload[0]), payload.length());
+
+  // Handle Request
+  String output = getResponseBody();
+  std::string output_string = output.c_str();
+
+  Response<String> response(output, httpCode);
+  return response;
+}

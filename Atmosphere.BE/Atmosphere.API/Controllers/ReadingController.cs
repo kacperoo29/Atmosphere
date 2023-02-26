@@ -100,4 +100,24 @@ public class ReadingController : ControllerBase
             return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
+
+    [HttpPost]
+    [Authorize(Roles = nameof(UserRole.Admin) + "," + nameof(UserRole.Device))]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> CreateReadings([FromBody, BindRequired] List<CreateReading> requests)
+    {
+        try
+        {
+            foreach (var request in requests)
+            {
+                await _mediator.Send(request);
+            }
+
+            return this.Ok();
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

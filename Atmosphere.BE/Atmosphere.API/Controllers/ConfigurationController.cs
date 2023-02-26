@@ -235,4 +235,22 @@ public class ConfigurationController : ControllerBase
             return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
         }
     }
+
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<IActionResult> SetPollingRate(int pollingRate)
+    {
+        try
+        {
+            await _mediator.Send(new SetPollingRate { PollingRate = pollingRate });
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

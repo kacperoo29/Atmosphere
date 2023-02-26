@@ -1,0 +1,49 @@
+@startuml
+
+class AuthController {
+    - IMediator mediator
+    + IActionResult Authenticate(Authenticate)
+    + IActionResult RegisterDevice(RegisterDevice)
+    + IActionResult ActivateUser(Guid)
+    + IActionResult GetCurrentUser()
+    + IActionResult CreateUser(CreateUser)
+    + IActionResult GetUsers()
+    + IActionResult RemoveUser(Guid)
+}
+
+class ConfigurationController {
+    - IMediator mediator
+    + IActionResult GetConfigurationEntry(string)
+    + IActionResult UpdateConfiguration(UpdateConfiguration)
+    + IActionResult GetConfigurationEntries(string[])
+    + IActionResult GetAllConfigurations()
+    + IActionResult ToggleNotificationType(NotificationType)
+    + IActionResult GetNotificationTypes()
+    + IActionResult GetEnabledNotificationTypes()
+    + IActionResult GetValidationRules(ReadingType)
+    + IActionResult UpdateValidationRules(UpdateValidationRules)
+    + IActionResult GetEmailConfig()
+    + IActionResult UpdateEmailConfig(EmailConfiguration)
+    + IActionResult SetPollingRate(int)
+}
+
+class DeviceController {
+    - IMediator mediator
+    + IActionResult GetDevices()
+}
+
+class ReadingController {
+    - IMediator mediator
+    + IActionResult GetAllReadings()
+    + IActionResult GetReadingsByDate(DateTime, DateTime)
+    + IActionResult GetReadingsByDevice(Guid)
+    + IActionResult CreateReading(CreateReading)
+}
+
+class WebSocketController {
+    - IMediator mediator
+    + IActionResult Notifications()
+    + IActionResult Devices()
+}
+
+@enduml

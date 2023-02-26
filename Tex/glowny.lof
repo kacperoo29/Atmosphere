@@ -8,14 +8,17 @@
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Wykres przedstawiający współczynnik uwielbiania/nienawiści danej technologii\relax }}{14}{figure.caption.7}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Protokoły wykorzystane w komunikacji między komponentami\relax }}{23}{figure.caption.18}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Intefejs swagger-ui\relax }}{27}{figure.caption.19}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Widok logowania\relax }}{29}{figure.caption.20}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Informacja o niepoprawnych danych logowania\relax }}{29}{figure.caption.21}%
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Przykładowa konfiguracja zasad walidacji\relax }}{30}{figure.caption.22}%
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Przykładowa konfiguracja zasad walidacji ze specyfikacja jednostki\relax }}{30}{figure.caption.23}%
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Przykładowa konfiguracja powiadomień email\relax }}{31}{figure.caption.24}%
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Widok odczytów parametrów środowiska\relax }}{31}{figure.caption.25}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Diagram klas modeli danych\relax }}{25}{figure.caption.19}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Diagram klas wzorca dekorator\relax }}{26}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Diagram klas kontrolerów\relax }}{27}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Intefejs swagger-ui\relax }}{33}{figure.caption.22}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Widok logowania\relax }}{34}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Informacja o niepoprawnych danych logowania\relax }}{34}{figure.caption.24}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Przykładowa konfiguracja zasad walidacji\relax }}{35}{figure.caption.25}%
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Przykładowa konfiguracja zasad walidacji ze specyfikacja jednostki\relax }}{35}{figure.caption.26}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Przykładowa konfiguracja powiadomień email\relax }}{36}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Widok odczytów parametrów środowiska\relax }}{36}{figure.caption.28}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Procent linii pokrytych testami jednostkowymi w projekcie zawierającym logikę aplikacji\relax }}{34}{figure.caption.26}%
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Procent linii pokrytych testami jednostkowymi w klasach \textbf {JwtTokenProvider} i \textbf {ConfigService}\relax }}{35}{figure.caption.27}%
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Procent linii pokrytych testami jednostkowymi w projekcie zawierającym logikę aplikacji\relax }}{43}{figure.caption.29}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Procent linii pokrytych testami jednostkowymi w klasach \textbf {JwtTokenProvider} i \textbf {ConfigService}\relax }}{44}{figure.caption.30}%
 \addvspace {10\p@ }

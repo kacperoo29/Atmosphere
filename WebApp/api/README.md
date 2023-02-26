@@ -39,6 +39,7 @@ Class | Method | HTTP request | Description
 *ConfigurationApi* | [**api_configuration_get_enabled_notification_types_get**](docs/ConfigurationApi.md#api_configuration_get_enabled_notification_types_get) | **GET** /api/Configuration/GetEnabledNotificationTypes | 
 *ConfigurationApi* | [**api_configuration_get_notification_types_get**](docs/ConfigurationApi.md#api_configuration_get_notification_types_get) | **GET** /api/Configuration/GetNotificationTypes | 
 *ConfigurationApi* | [**api_configuration_get_validation_rules_get**](docs/ConfigurationApi.md#api_configuration_get_validation_rules_get) | **GET** /api/Configuration/GetValidationRules | 
+*ConfigurationApi* | [**api_configuration_set_polling_rate_post**](docs/ConfigurationApi.md#api_configuration_set_polling_rate_post) | **POST** /api/Configuration/SetPollingRate | 
 *ConfigurationApi* | [**api_configuration_toggle_notification_type_put**](docs/ConfigurationApi.md#api_configuration_toggle_notification_type_put) | **PUT** /api/Configuration/ToggleNotificationType | 
 *ConfigurationApi* | [**api_configuration_update_configuration_put**](docs/ConfigurationApi.md#api_configuration_update_configuration_put) | **PUT** /api/Configuration/UpdateConfiguration | 
 *ConfigurationApi* | [**api_configuration_update_email_config_patch**](docs/ConfigurationApi.md#api_configuration_update_email_config_patch) | **PATCH** /api/Configuration/UpdateEmailConfig | 

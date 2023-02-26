@@ -186,7 +186,7 @@ builder.Services.AddScoped(opt =>
     var types = config.GetNotificationTypesAsync().GetAwaiter().GetResult();
     var notificationHub = scope.ServiceProvider.GetRequiredService<WebSocketHub<Notification>>();
 
-    INotificationService notificationService = new NotificationService();
+    INotificationService notificationService = new NotificationService(null);
     foreach (var type in types)
         switch (type)
         {

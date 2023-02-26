@@ -54,81 +54,7 @@ Pierwsza z nich wykorzystywana jest do zmieniania istniejących
 już zasobów lub tworzenia ich na nowo. DELETE natomiast służy
 do usuwania zasobów.
 
-Kolejnym zadaniem tej aplikacji jest również przechowywanie oraz synchronizacja konfiguracji
-między pozostałymi urządzeniami w systemie. Użytkownik może ustawić podstawowe
-parametry aplikacji takie jak graniczne wartości odczytów lub
-częstotliwość pobierania odczytów z sensorów po czym te ustawienia
-synchronizowane są z pozostałymi urządzeniami systemu.
-
-Całość została wykonana z użyciem technologii ASP.NET Core.
-Ułatwiło to znacznie implementację ze względu na bogate zasoby
-tego środowiska ułatwiające pracę z protokołem HTTP oraz mnogość
-bibliotek oraz wcześniej wykonanych projektów i przykładów z użyciem
-tej technologii. 
-Pierwszym z takich dodatkowych rozwiązań jest oficjalny sterownik
-baz danych MongoDB dla środowiska .NET. Jego wykorzystanie 
-umożliwiło na prostą interakcję między aplikacją oraz bazą
-danych. Zamiast ręcznie dokonywać połączenia oraz przesyłać
-komendy możliwa jest interakcja poprzez udostępniony interfejs.
-Umożliwia on na wykorzystanie zaawansowanych technik takich jak
-LINQ co znacznie ułatwiło tworzenie zapytań. Technologia ta
-pomaga również w mapowaniu obiektów baz danych na klasy języka C\#.
-W większości przypadków takie zależności tworzone są automatycznie,
-jedynie w przypadku nadmiarowych lub braku wymaganych danych potrzebna
-jest interakcja programisty. Przykładem z implementacji jest wymaganie
-mapowania klas dziedziczących.
-\begin{lstlisting}[language={[Sharp]C}]
-BsonClassMap.RegisterClassMap<BaseUser>(cm =>
-{
-    cm.AutoMap();
-    cm.AddKnownType(typeof(Device));
-    cm.AddKnownType(typeof(User));
-});
-\end{lstlisting}
-W tym odcinku kodu tworzona jest mapa automatyczna dla klasy BaseUser - podstawowej
-użytkownika, a następnie wiązane są z nią dwa typy pochodne - Device, czyli urządzenie
-oraz User, czyli użytkownik. Pozwala to na dostęp do obu typów użytkownika
-z jednego kontekstu bazy danych.
-
-Wykorzystanie ASP.NET ułatwiło również wykonanie systemu autoryzacji. 
-Pakiet Microsoft.AspNetCore.Authentication zawiera często wykorzystywane metody
-uwierzytelniania użytkowników. W implementacji aplikacji użyto metody tokenów JWT
-(ang. \textit{JSON Web Token}). Jest to krótka, zakodowana w systemie Base64, 
-reprezentacja uprawnień użytkownika używana w środowiskach z ograniczoną przestrzenią 
-takich jak HTTP\cite{jwt:rfc7519}. Oprócz tego zawiera informacje o
-czasie jego przedawnienia, audiencji oraz emitenta. Dzięki temu
-może zostać wykorzystany w systemach pojedynczego logowania
-SSO (ang. \textit{Single sign-on}) i wykorzystywany poprzez wiele aplikacji.
-W implementacji został wykorzystany algorytm HmacSha256 do cyfrowego
-podpisywania ważności tokenu. Sterowanie innymi parametrami takimi jak czas
-przedawnienia, audiencja orz emitent odbywa się za pomocą edytowalnych
-plików konfiguracyjnych.
-\begin{lstlisting}[language={[Sharp]C}]
-var token = new JwtSecurityToken(
-  config["Issuer"],
-  config["Audience"],
-  claims,
-  expires: DateTime.Now.Add(expiration),
-  signingCredentials: new SigningCredentials(
-    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["SecretKey"])),
-  SecurityAlgorithms.HmacSha256));
-\end{lstlisting} 
-Hasła użytkowników przechowywane są po wcześniejszym zakodowaniu algorytmem SHA256
-z dodatkowymi informacjami nazywanymi solą. Są to losowe dane, które pozwalają na
-dodatkowe zabezpieczenie kluczy przed wykryciem duplikatów lub ataków słownikowych
-\cite{anderson2020security}.
-Aby odpowiednio przejść proces uwieżytleniania użytkownik musi przesłać
-swoją nazwę użytkownika oraz hasło zapytaniem z metodą POST pod odpowiedni adres
-URI. Następnie jeżeli dane są prawidłowe w odpowiedzi otrzyma on wartość
-token, która następnie może wykorzystać do dostępu do zablokowanych anonimowym
-użytkownikom zasobów, takich jak tworzenie nowych odczytów. Wartość
-ta musi zostać przesłana w nagłówku Authorization.
-Użytkownicy dzielą się na różne role: administrator, użytkownik oraz urządzenie.
-Administrator ma dostęp do wszystkich opcji aplikacji - konfiguracji, zarządzania odczytami
-oraz użytkownikami, przeglądanie zasobów. Urządzenie może zarządzać jedynie swoimi
-danymi, a zwykły użytkownik nie ma dostępu do edycji zasobów i może jedynie przeglądać
-wartości.
-
+\subsection{Architektura}
 Jako szkielet logiki aplikacji został wykorzystany wzorzec CQRS 
 (ang. \textit{Command Query Responsibility Separation}).
 W tym modelu akcje dzielą się na dwa typy komendy oraz zapytania \cite{fowler:cqrs}.
@@ -152,6 +78,29 @@ została wykorzystana dynamiczna implementacja centralnego
 mediatora z biblioteki MediatR. Oddziela to dane od implementacji
 zachowań i pozwala na ich niezależną modyfikacje.
 
+Klasy danych wywodzą się z głównej klasy abstrakcyjnej \textbf{BaseModel}.
+Zawiera ona podstawowe dane o obiekcie tj. id, data stworzenia oraz data modyfikacji.
+Poza tym implementuje podstawowe funkcje do porównywania z innymi obiektami oraz
+tworzeniu kodu hash. Bezpośrednio z niej dziedziczy klasa \textbf{Reading} odpowiadająca
+za przechowywanie szczegółów o odczytach. Zawiera informacje o typie odczytu, jego wartości,
+dacie i czasie kiedy dany odczyt został pobrany oraz jego jednosce.
+Dodatkową klasą abstrakcyjną, która sama dziedziczy po klasie \textbf{BaseModel} i
+jest wykorzystywana przez inne klasy domeny jest \textbf{BaseUser}. Jest to bazowa klasa
+użytkownika i zawiera informacje takie jak nazwa użytkownika, zakodowane hasło, stan aktywności
+oraz rola. Z tej klasy dziedziczą klasy \textbf{Device} oraz \textbf{User}. Pierwsza z nich 
+zawiera dodatkowe informacje o urządzeniach pomiarowych, a druga o użytkownikach lub administratorach 
+w zależności od ich roli.
+Oddzielnym modelem jest klasa służąca do przechowywania konfiguracji. Składa się ona z dwóch pól -
+klucza oraz wartości. Wartość nie ma z góry określonego typu i może być dowolnym obiektem, który
+jest możliwy do zapisu w postaci JSON.
+Zależności między klasami zostały przedstawione na Rys. \ref{diagram:domain}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{domain}
+  \caption{Diagram klas modeli danych}
+  \label{diagram:domain}
+\end{figure}
+
 Serwis notyfikacji został zaimplementowany z użyciem wzorca dekorator.
 Jest to wzorzec projektowy pozwalający na dynamiczne dodawanie nowego
 zachowania obiektowi bez modyfikacji innych obiektów tej samej klasy
@@ -164,16 +113,207 @@ na modyfikacje \cite{meyer1988object}. Jest to możliwe, gdyż dekorator pozwala
 na dodanie nowych funkcjonalności obiektowi bez jego ponownego tworzenia.
 Z jego wykorzystaniem użytkownik jest w stanie skonfigurować system notyfikacji,
 aby ten wysyłał powiadomienia do różnych celów takich jak poczta elektroniczna
-czy powiadomienia SMS.
+czy powiadomienia z wykorzystaniem połączeń WebSocket. Wzorzec dekorator został
+przedstawiony za pomocą diagramu klas na Rys. \ref{pattern:decorator}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{decorator}
+  \caption{Diagram klas wzorca dekorator}
+  \label{pattern:decorator}
+\end{figure}
+
+Pozostałe aplikacje w systemie mogą komunikować się z serwerem poprzez wykorzystanie
+zapytań do odpowiednich kontrolerów. Zależnie od punktu końcowego muszą one
+przesłać odpowiednie informacje w postaci ciała, ciągu lub argumentu pozycyjnego
+zapytania. Aplikacja zawiera kontrolery zajmujące się odpowiednim im zadaniom:
+\begin{itemize}
+  \item zapis oraz odczyt parametrów środowiska,
+  \item autoryzacja oraz tworzenie kont,
+  \item konfiguracja oraz pobieranie konfiguracji systemu,
+  \item pobieranie szczegółowych danych o urządzeniach oraz ich statusie,
+  \item rozpoczynanie połączenia z WebSocket'ami.
+\end{itemize}
+W celu ułatwienia obsługi każdy z kontrolerów znajduje się na ścieżce URI odpowiadającej
+jego nazwie, np. kontroler odczytów znajduje się pod ścieżką /api/Reading.
+Dodatkowo serwer udostępnia dwa połączenia WebSocket - notyfikacyjne oraz
+dla urządzeń. Pierwsze z gniazd wykorzystywane jest do przesyłania
+powiadomień do pozostałych aplikacji. Autoryzowani użytkownicy mogą
+się z nim połączyć, aby uzyskać dostęp do wiadomości o niespodziewanych
+wartościach odczytów parametrów środowiska. Gniazdo przeznaczone dla
+urządzeń służy natomiast do synchronizacji konfiguracji oraz
+udostępnienia statusu. Wszystkie połączenia powinny co 30 sekund
+wysyłać wiadomość z zawartością "ping", aby zapewnić stałość połączenia.
+W przeciwnym wypadku serwer uznaje połączenie za przerwane i zamyka je.
+Wykorzystywane są one również do udostępniania notyfikacji oraz
+synchronizacji konfiguracji z pozostałymi urządzeniami.
+Diagram klas zawierający informacje o kontrolerach został przedstawiony na
+Rys. \ref{diagram:controller_class}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{controller_class}
+  \caption{Diagram klas kontrolerów}
+  \label{diagram:controller_class}
+\end{figure}
+
+Dostęp do danych odbywa się poprzez wykorzystanie oficjalnego sterownik
+baz danych MongoDB dla środowiska .NET. Jego wykorzystanie 
+umożliwiło na prostą interakcję między aplikacją oraz bazą
+danych. Zamiast ręcznie dokonywać połączenia oraz przesyłać
+komendy możliwa jest interakcja poprzez udostępniony interfejs.
+Umożliwia on na wykorzystanie zaawansowanych technik takich jak
+LINQ co znacznie ułatwiło tworzenie zapytań. Technologia ta
+pomaga również w mapowaniu obiektów baz danych na klasy języka C\#.
+W większości przypadków takie zależności tworzone są automatycznie,
+jedynie w przypadku nadmiarowych lub braku wymaganych danych potrzebna
+jest interakcja programisty. Przykładem z implementacji jest wymaganie
+mapowania klas dziedziczących.
+\begin{lstlisting}[language={[Sharp]C},caption={Tworzenie mapy klas dla typów użytkownika},label={mongodb:user},captionpos=b]
+BsonClassMap.RegisterClassMap<BaseUser>(cm =>
+{
+    cm.AutoMap();
+    cm.AddKnownType(typeof(Device));
+    cm.AddKnownType(typeof(User));
+});
+\end{lstlisting}
+W listingu \ref{mongodb:user} tworzona jest mapa automatyczna dla klasy BaseUser - podstawowej
+użytkownika, a następnie wiązane są z nią dwa typy pochodne - Device, czyli urządzenie
+oraz User, czyli użytkownik. Pozwala to na dostęp do obu typów użytkownika
+z jednego kontekstu bazy danych.
+
+
+\subsection{Implementacja wybranych funkcjonalności}
+
+Wykorzystanie technologii ASP.NET ułatwiło znacznie wykonanie systemu autoryzacji. 
+Pakiet Microsoft.AspNetCore.Authentication zawiera często wykorzystywane metody
+uwierzytelniania użytkowników. W implementacji aplikacji użyto metody tokenów JWT
+(ang. \textit{JSON Web Token}). Jest to krótka, zakodowana w systemie Base64, 
+reprezentacja uprawnień użytkownika używana w środowiskach z ograniczoną przestrzenią 
+takich jak HTTP\cite{jwt:rfc7519}. Oprócz tego zawiera informacje o
+czasie jego przedawnienia, audiencji oraz emitenta. Dzięki temu
+może zostać wykorzystany w systemach pojedynczego logowania
+SSO (ang. \textit{Single sign-on}) i wykorzystywany poprzez wiele aplikacji.
+W implementacji został wykorzystany algorytm HmacSha256 do cyfrowego
+podpisywania ważności tokenu. Sterowanie innymi parametrami takimi jak czas
+przedawnienia, audiencja orz emitent odbywa się za pomocą edytowalnych
+plików konfiguracyjnych.
+\begin{lstlisting}[language={[Sharp]C},caption={Tworzenie tokenu JWT},label={jwt:create},captionpos=b]
+var token = new JwtSecurityToken(
+  config["Issuer"],
+  config["Audience"],
+  claims,
+  expires: DateTime.Now.Add(expiration),
+  signingCredentials: new SigningCredentials(
+    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["SecretKey"])),
+  SecurityAlgorithms.HmacSha256));
+\end{lstlisting} 
+Następnie w konfiguracji aplikacji umieszczono odpowiednie opcje walidacji tokenów.
+Ich konfiguracja została zaprezentowana na listingu \ref{jwt:opts}.
+\begin{lstlisting}[language={[Sharp]C},caption={Opcje walidacji JWT},label={jwt:opts},captionpos=b]
+opt.TokenValidationParameters = new TokenValidationParameters
+{
+  ValidateIssuer = true,
+  ValidIssuer = config.GetValue<string>("Issuer"),
+  ValidateAudience = true,
+  ValidAudience = config.GetValue<string>("Audience"),
+  ValidateLifetime = true,
+  ClockSkew = TimeSpan.FromSeconds(0),
+  ValidateIssuerSigningKey = true,
+  IssuerSigningKey = new SymmetricSecurityKey(
+    Encoding.UTF8.GetBytes(config.GetValue<string>("SecretKey"))
+  )
+};
+\end{lstlisting} 
+Ustawione zostały opcje takie jak walidacja emitenta, audiencji, czasu życia oraz
+klucza, którym został podpisany token.
+Hasła użytkowników przechowywane są po wcześniejszym zakodowaniu algorytmem SHA256
+z dodatkowymi informacjami nazywanymi solą. Są to losowe dane, które pozwalają na
+dodatkowe zabezpieczenie kluczy przed wykryciem duplikatów lub ataków słownikowych
+\cite{anderson2020security}.
+Aby odpowiednio przejść proces uwierzytelniania użytkownik musi przesłać
+swoją nazwę użytkownika oraz hasło zapytaniem z metodą POST pod odpowiedni adres
+URI. Następnie jeżeli dane są prawidłowe w odpowiedzi otrzyma on wartość
+token, która następnie może wykorzystać do dostępu do zablokowanych anonimowym
+użytkownikom zasobów, takich jak tworzenie nowych odczytów. Wartość
+ta musi zostać przesłana w nagłówku Authorization.
+Użytkownicy dzielą się na różne role: administrator, użytkownik oraz urządzenie.
+Administrator ma dostęp do wszystkich opcji aplikacji - konfiguracji, zarządzania odczytami
+oraz użytkownikami, przeglądanie zasobów. Urządzenie może zarządzać jedynie swoimi
+danymi, a zwykły użytkownik nie ma dostępu do edycji zasobów i może jedynie przeglądać
+wartości.
 
 Reguły sterujące logiką wysyłania powiadomień zbudowane zostały przy użyciu systemu
 ekspresji środowiska .NET. Dzięki temu użytkownik może w rozbudowany sposób
 tworzyć logikę określającą przy jakich warunkach powinna być wysłana dana wiadomość.
 Dzięki temu, że są one kompilowane podczas wykonywania programu mogą przyjąć dowolną
 formę, więc nie ograniczają użytkownika w ich tworzeniu oraz modyfikacji.
+\begin{lstlisting}[language={[Sharp]C},caption={Kompilacja formy tekstowej ekspresji},label={valid:comp},captionpos=b]
+try
+{
+    var options = ScriptOptions.Default.AddReferences(typeof(Reading).Assembly);
+    var expression = await CSharpScript.EvaluateAsync<Expression<Func<Reading, bool>>>(
+        rule.Condition,
+        options
+    );
+    newRules.Add(
+        new ValidationRule
+        {
+            Condition = expression,
+            Message = rule.Message,
+            Severity = rule.Severity
+        }
+    );
+}
+catch (CompilationErrorException e)
+{
+    throw new InvalidRuleException(e.Message.Split(": ").Last());
+}
+\end{lstlisting}
+Na listingu \ref{valid:comp} przedstawiono kod odpowiedzialny za kompilację ekspresji podczas działania
+aplikacji. Wykorzystana została do tego biblioteka Microsoft.CodeAnalysis. Ekspresja kompilowana jest
+jako funkcja przyjmująca na wejściu odczyt oraz zwracająca wartość bool. W przypadku nieodpowiedniej składni
+łapany jest błąd kompilacji a następnie zwracana jest on nim informacja użytkownikowi.
 Serializacja oraz de-serializacja ekspresji została wykonana przy użyciu biblioteki
-Serialize.Linq pozwalająca na ich zapis oraz odczyt do różnych formatów takich jak
-JSON czy XML, które następnie przechowywane są w bazie danych.
+Remote.Linq pozwalająca na ich zapis oraz odczyt do różnych formatów takich jak
+JSON czy XML, które następnie przechowywane są w bazie danych. Aby wykorzystać ją
+z bazą danych MongoDB należało zaimplementować dodatkowy serializator, którego implementacja
+została przedstawiona na listingu \ref{expr:serialization}.
+\begin{lstlisting}[language={[Sharp]C},caption={Serializacja ekspresji},label={expr:serialization},captionpos=b]
+public Expression<TDelegate> Deserialize(
+    BsonDeserializationContext context,
+    BsonDeserializationArgs args
+)
+{
+    var bsonReader = context.Reader;
+    if (bsonReader.CurrentBsonType == BsonType.Null)
+    {
+        bsonReader.ReadNull();
+        return null;
+    }
+    var binaryData = bsonReader.ReadBinaryData();
+    var remote = JsonSerializer.Deserialize<Remote.Linq.Expressions.LambdaExpression>(
+        binaryData.Bytes,
+        jsonSerializerOptions
+    );
+    return (Expression<TDelegate>)remote.ToLinqExpression();
+}
+public void Serialize(
+    BsonSerializationContext context,
+    BsonSerializationArgs args,
+    Expression<TDelegate> value
+)
+{
+    var bsonWriter = context.Writer;
+    if (value is null)
+    {
+        bsonWriter.WriteNull();
+        return;
+    }
+    var remote = value.ToRemoteLinqExpression();
+    bsonWriter.WriteBinaryData(
+        JsonSerializer.SerializeToUtf8Bytes(remote, jsonSerializerOptions)
+    );
+}
+\end{lstlisting}
 
 Aby ułatwić implementację pozostałych aplikacji oraz w celu zapewnienia dokumentacji
 wykorzystano bibliotekę Swashbuckle. Dostarcza ona składniki takie jak 
@@ -199,29 +339,7 @@ modelami jak również trzon aplikacji serwerowej oraz dokumentację. Pozwala r�
 na modyfikowanie wzorów generowanego kodu poprzez pliku mustache, za pomocą których
 definiowana jest struktura wygenerowanych plików.
 
-Pozostałe aplikacje w systemie mogą komunikować się z serwerem poprzez wykorzystanie
-zapytań do odpowiednich kontrolerów. Zależnie od punktu końcowego muszą one
-przesłać odpowiednie informacje w postaci ciała, ciągu lub argumentu pozycyjnego
-zapytania. Aplikacja zawiera 3 główne kontrolery zajmujące się odpowiednim im zadaniom:
-\begin{itemize}
-  \item zapis oraz odczyt parametrów środowiska,
-  \item autoryzacja oraz tworzenie kont,
-  \item konfiguracja oraz pobieranie konfiguracji systemu,
-  \item pobieranie szczegółowych danych o urządzeniach oraz ich statusie.
-\end{itemize}
-W celu ułatwienia obsługi każdy z kontrolerów znajduje się na ścieżce URI odpowiadającej
-jego nazwie, np. kontroler odczytów znajduje się pod ścieżką /api/Reading.
-Dodatkowo serwer udostępnia dwa połączenia WebSocket - notyfikacyjne oraz
-dla urządzeń. Pierwsze z gniazd wykorzystywane jest do przesyłania
-powiadomień do pozostałych aplikacji. Autoryzowani użytkownicy mogą
-się z nim połączyć, aby uzyskać dostęp do wiadomości o niespodziewanych
-wartościach odczytów parametrów środowiska. Gniazdo przeznaczone dla
-urządzeń służy natomiast do synchronizacji konfiguracji oraz
-udostępnienia statusu. Wszystkie połączenia powinny co 30 sekund
-wysyłać wiadomość z zawartością "ping", aby zapewnić stałość połączenia.
-W przeciwnym wypadku serwer uznaje połączenie za przerwane i zamyka je.
-Wykorzystywane są one również do udostępniania notyfikacji oraz
-synchronizacji konfiguracji z pozostałymi urządzeniami.
+
 
 \section{Aplikacja kliencka}
 Aplikacja kliencka powstała w celu ułatwienia dostępu do zasobów systemu.
@@ -341,6 +459,9 @@ długości odpowiedzi, jeżeli wynosi -1 odpowiedź jest o nieznanej długości 
 do bufora z wykorzystaniem potoku, w przypadku 0 odpowiedź jest pusta, a przy wartościach większych od
 0 tworzony jest bufor o tej długości.
 
+\subsection{Architektura}
+
+\subsection{Implementacja wybranych funkcjonalności}
 Podczas startu urządzenie łączy się z siecią Wi-Fi wcześniej zdefiniowaną przez użytkownika.
 Jeżeli połączenie powiodło się następuje synchronizacja czasu z zewnętrznym serwerem NTP.
 Zapewnia to spójność znaków czasu między urządzeniami w systemie, co wykorzystywane jest
@@ -350,9 +471,48 @@ hasłem, jeżeli jest to pierwszy raz kiedy dane urządzenie łączy się z syst
 jemu nieaktywne konto, które następnie musi zostać zaakceptowane przez administratora.
 Jeżeli wcześniejszy proces przebiegł z powodzeniem urządzenie kontynuuje do połączenia
 z odpowiednim kanałem WebSocket po czym przechodzi do stanu normalnej operacji.
-
 Aby zapewnić synchronizację z serwerem oraz dostęp do statusu połączenia wykorzystano
-technologię WebSocket. Urządzenie łączy się z odpowiednim gniazdem, a następnie co 30
+technologię WebSocket. Kod inicjalizacji połączenia został zaprezentowany na lisitingu
+\ref{sconn:init}.
+\begin{lstlisting}[language={C++},caption={Utworzenie konta i połączenie z serwerem},label={sconn:init},captionpos=b]
+void init_server_connection() {
+  Serial.println("Setup api");
+  const char *mac = WiFi.macAddress().c_str();
+  Tiny::Authenticate authPayload;
+  authPayload.setUsername(mac);
+  authPayload.setPassword(PASSWD);
+  auto response = authApi.apiAuthAuthenticatePost(authPayload);
+  if (response.code != 200) {
+    Serial.println("Device not registered. Registering...");
+    Tiny::RegisterDevice registerDevicePayload;
+    registerDevicePayload.setIdentifier(authPayload.getUsername());
+    registerDevicePayload.setUsername(authPayload.getUsername());
+    registerDevicePayload.setPassword(PASSWD);
+    auto response = authApi.apiAuthRegisterDevicePost(registerDevicePayload);
+    if (response.code != 200) {
+      Serial.printf("Error: %d\r\n", response.code);
+      return;
+    }
+
+    auto response2 = authApi.apiAuthAuthenticatePost(authPayload);
+    if (response2.code != 200) {
+      Serial.printf("Error: %d\r\n", response2.code);
+      return;
+    }
+
+    token = response2.obj.getToken();
+  } else {
+    token = response.obj.getToken();
+  }
+
+  Serial.println("Setup websocket");
+  std::string wsPath = BASE_WS_PATH + token;
+  webSocket.begin(API_HOST, HOST_PORT, wsPath.c_str(), "");
+  webSocket.onEvent(onEvent);
+  webSocket.setReconnectInterval(5000);
+}
+\end{lstlisting}
+Urządzenie łączy się z odpowiednim gniazdem, a następnie co 30
 sekund wysyła wiadomość z zawartością "ping" i oczekuje na odpowiedź "pong" od serwera.
 Jeżeli nie otrzyma takiej wiadomości uznaje, że połączenie zostało zerwane, więc zamyka je
 i po upływie 5 sekund próbuje utworzyć ponowną komunikację. Dzieje się to aż do momentu przywrócenia
@@ -367,3 +527,77 @@ wykorzystywany jest wcześniej wygenerowany token JWT. Następnie urządzenie od
 skonfigurowaną ilość czasu przed następnym pomiarem. Jest ona obliczana jako różnica czasu, który
 został spędzony na aktualnym przejściu, a ustalonym przez użytkownika okresem. Jeżeli jest ona
 większa od zera urządzenie wyczekuje wyliczony przedział czasu, a następnie kontynuuje pracę.
+Implementacja tego procesu została zaprezentowana na listingu \ref{sensor:loop}.
+\begin{lstlisting}[language={C++},caption={Główna pętla urządzenia pomiarowego},label={sensor:loop},captionpos=b]
+static auto end = 0;
+static auto diff = 0;
+void loop() {
+  while (!webSocket.isConnected()) {
+    webSocket.loop();
+  }
+
+  auto begin = millis();
+  webSocket.loop();
+
+  if (last_ping > ping_interval) {
+    if (webSocket.isConnected())
+      webSocket.sendTXT("ping");
+    last_ping = 0;
+  }
+
+  if (diff >= send_interval) {
+    diff = 0;
+    std::vector<Reading> readings;
+    for (auto sensor : sensors) {
+      auto sensorReadings = sensor->read();
+      readings.insert(readings.end(), sensorReadings.begin(),
+                      sensorReadings.end());
+    }
+
+    auto body = convert(readings);
+    auto auth = "Bearer " + token;
+    readingApi.addHeader("Authorization", auth);
+    auto response = readingApi.apiReadingCreateReadingsPost(body);
+  }
+
+  end = millis();
+  last_ping += end - begin;
+  diff += end - begin;
+}
+\end{lstlisting}
+
+Do wykonywania pomiarów temperatur wykorzystano sensor DS1820B20. To urządzenie
+wykorzystuje pojedyncze połączenie z kontrolerem umożliwiające na łączność
+z wieloma sensorami na jednej linii danych. Ta funkcjonalność została wykorzystana
+w implementacji i wartości pobierane są ze wszystkich sensorów podłączonych do tej
+linii. Implementacja pobierania danych z sensorów została zaprezentowana na listingu 
+\ref{onewire:impl}.
+\begin{lstlisting}[language={C++},caption={Implementacja systemu OneWire},label={onewire:impl},captionpos=b]
+std::vector<Reading> OneWireSensor::read() {
+  std::vector<Reading> readings;
+  sensors.requestTemperatures();
+  uint8_t deviceCount = sensors.getDeviceCount();
+  float value = 0;
+  for (uint8_t i = 0; i < deviceCount; i++) {
+    DeviceAddress deviceAddress;
+    if (sensors.getAddress(deviceAddress, i)) {
+      std::stringstream stream;
+      for (int i = 0; i < 8; ++i) {
+        stream << std::setfill('0') << std::setw(2) << std::hex
+               << (uint)deviceAddress[i];
+      }
+      float temp = sensors.getTempC(deviceAddress);
+      value += temp;
+
+      auto now = time(nullptr);
+      struct tm timeinfo;
+      gmtime_r(&now, &timeinfo);
+      char buf[sizeof("2011-10-08T07:07:09Z")];
+      strftime(buf, sizeof(buf), "%FT%TZ", &timeinfo);
+      readings.push_back(Reading{temp, "C", "temperature", stream.str(), buf});
+    }
+  }
+
+  return readings;
+}
+\end{lstlisting}

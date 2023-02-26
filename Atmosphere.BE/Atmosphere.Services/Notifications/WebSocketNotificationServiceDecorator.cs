@@ -7,17 +7,15 @@ using Atmosphere.Core.Models;
 
 namespace Atmosphere.Services.Notifications;
 
-public class WebSocketNotificationServiceDecorator : INotificationService
+public class WebSocketNotificationServiceDecorator : NotificationService
 {
-    private readonly INotificationService _wrapee;
     private readonly WebSocketHub<Notification> _webSocketHub;
 
     public WebSocketNotificationServiceDecorator(
         INotificationService notificationService,
         WebSocketHub<Notification> webSocketHub
-    )
+    ) : base(notificationService)
     {
-        _wrapee = notificationService;
         _webSocketHub = webSocketHub;
     }
 
