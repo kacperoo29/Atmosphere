@@ -1,7 +1,18 @@
 \chapter{Prezentacja systemu}
 
 \section{Urządzenie pomiarowe}
-
+Na Rys. \ref{prototyp} przedstawiono prototyp urządzenia pomiarowego z sensorem
+temperatury DS18B20. Jest to prosty sensor temperatury wykorzystujący jeden
+pin jako linię danych. Każda sztuka posiada unikalny 64 bitowy adres, który
+umożliwia wykorzystanie wielu takich sensorów na jednej linii danych poprzez
+dostęp adresowy. Sensor charakteryzuje się pracą w zakresie od -55 do 125 stopni 
+Celsjusza z typowym błędem +-0.5 stopnia w zakresie od -10 do 85 stopni Celsjusza.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{prototyp}
+  \caption{Prototyp urządzenia pomiarowego}
+  \label{prototyp}
+\end{figure}
 
 \section{Aplikacja kliencka}
 Pierwszym krokiem, który wykonuje użytkownik po uruchomieniu aplikacji jest 
@@ -91,4 +102,20 @@ Ten widok został przedstawiony na Rys. \ref{device_list}.
   \includegraphics[width=\textwidth]{connect_dev}
   \caption{Aktualnie połączone urządzenie na liście urządzeń}
   \label{device_list}
+\end{figure}
+
+Ostatnim widokiem jest widok listy użytkowników. Pozwala ona administratorowi na tworzenie
+nowych kont użytkowników oraz ich usuwanie. Lista użytkowników została przedstawiona
+na Rys. \ref{users}, a formularz służący do ich tworzenia na Rys. \ref{create_user}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{users}
+  \caption{Lista użytkowników}
+  \label{users}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{create_user}
+  \caption{Formularz tworzenia użytkowników}
+  \label{create_user}
 \end{figure}
