@@ -23,7 +23,7 @@ public class WebSocketNotificationServiceDecorator : NotificationService
     {
         await _wrapee.Notify(reading, validationResults);
 
-        if (_webSocketHub.Sockets.Count == 0)
+        if (WebSocketHub<Notification>.Sockets.Count == 0)
         {
             return;
         }

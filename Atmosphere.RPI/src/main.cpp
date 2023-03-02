@@ -40,6 +40,8 @@ unsigned int send_interval = 1000;
 constexpr unsigned int ping_interval = 20000;
 unsigned int last_ping = 0;
 
+volatile bool isSetup = false;
+
 std::vector<Sensor *> sensors;
 
 void onEvent(WStype_t type, uint8_t *payload, size_t length) {
@@ -143,11 +145,13 @@ void setup() {
 
   Serial.println("Setup sensors");
   sensors.push_back(new OneWireSensor(28));
-  // sensors.push_back(new DHTSensor(26, DHT11));
-  for (auto sensor : sensors) {
+  sensors.push_back(new DHTSensor(27, DHT11));
+  for (auto &sensor : sensors) {
     sensor->setup();
   }
   Serial.println("End setup");
+
+  isSetup = true;
 }
 
 static auto end = 0;
@@ -166,23 +170,33 @@ void loop() {
     last_ping = 0;
   }
 
-  if (diff >= send_interval) {
-    Serial.println("Sending data");
-    diff = 0;
-    std::vector<Reading> readings;
-    for (auto sensor : sensors) {
-      auto sensorReadings = sensor->read();
-      readings.insert(readings.end(), sensorReadings.begin(),
-                      sensorReadings.end());
-    }
+  end = millis();
+  last_ping += end - begin;
+}
 
-    auto body = convert(readings);
-    auto auth = "Bearer " + token;
-    readingApi.addHeader("Authorization", auth);
-    auto response = readingApi.apiReadingCreateReadingsPost(body);
+void setup1() {
+  while (!isSetup)
+    ;
+}
+
+void loop1() {
+  auto begin = millis();
+  if (diff >= send_interval) {
+    diff = 0;
+    for (auto &sensor : sensors) {
+      for (auto &r : sensor->read()) {
+        auto json = bourne::json::object();
+        auto payload = bourne::json::object();
+        json["type"] = "reading";
+        json["payload"] = r.toJson();
+
+        if (webSocket.isConnected()) {
+          webSocket.sendTXT(json.dump().c_str());
+        }
+      }
+    }
   }
 
   end = millis();
-  last_ping += end - begin;
   diff += end - begin;
 }

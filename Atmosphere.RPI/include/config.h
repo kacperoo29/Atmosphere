@@ -14,6 +14,4 @@ constexpr const char *WIFI_PASSWD = "HK8FJC59KKV73";
 constexpr const char *NTP_SERVER0 = "0.pl.pool.ntp.org";
 constexpr const char *NTP_SERVER1 = "1.pl.pool.ntp.org";
 
-#define WEBSOCKETS_TCP_TIMEOUT (20000)
-
 #endif

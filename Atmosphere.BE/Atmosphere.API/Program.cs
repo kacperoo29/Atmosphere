@@ -215,8 +215,8 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddMediatR(typeof(CreateReadingHandler).Assembly);
 builder.Services.AddAutoMapper(typeof(CreateReadingHandler).Assembly);
 
-builder.Services.AddSingleton<WebSocketHub<Notification>, NotificationsHub>();
-builder.Services.AddSingleton<WebSocketHub<Device>, DeviceHub>();
+builder.Services.AddScoped<WebSocketHub<Notification>, NotificationsHub>();
+builder.Services.AddScoped<WebSocketHub<Device>, DeviceHub>();
 
 BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {

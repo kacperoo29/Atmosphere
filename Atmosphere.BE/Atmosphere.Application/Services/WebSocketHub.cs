@@ -7,7 +7,7 @@ namespace Atmosphere.Application.Services;
 public abstract class WebSocketHub<T>
 {
     private const int TIMEOUT = 1000 * 30;
-    public List<WebSocketWrapper> Sockets { get; protected set; }
+    public static List<WebSocketWrapper> Sockets { get; protected set; }
 
     protected WebSocketHub()
     {
@@ -22,31 +22,30 @@ public abstract class WebSocketHub<T>
         await OnConnectedAsync(socket, userId);
         var wrapper = new WebSocketWrapper(socket, userId);
         Sockets.Add(wrapper);
-        while (socket.State == WebSocketState.Open)
+        try
         {
-            var start = DateTime.Now;
-            var buffer = new ArraySegment<byte>(new byte[4096]);
-            var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
-            if (result.MessageType == WebSocketMessageType.Close)
+            while (socket.State == WebSocketState.Open)
             {
-                await socket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure,
-                    string.Empty,
-                    CancellationToken.None
-                );
-
-                Sockets.Remove(wrapper);
-            }
-            else
-            {
-                // check if ping-pong
-                if (result.MessageType == WebSocketMessageType.Text)
+                var start = DateTime.Now;
+                var buffer = new ArraySegment<byte>(new byte[4096]);
+                var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+                if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
-                    if (message == "ping")
+                    await socket.CloseAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        string.Empty,
+                        CancellationToken.None
+                    );
+
+                    Sockets.Remove(wrapper);
+                }
+                else
+                {
+                    // check if ping-pong
+                    if (result.MessageType == WebSocketMessageType.Text)
                     {
-                        Console.WriteLine("ping");
-                        try
+                        var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
+                        if (message == "ping")
                         {
                             await socket.SendAsync(
                                 new ArraySegment<byte>(Encoding.UTF8.GetBytes("pong")),
@@ -56,29 +55,29 @@ public abstract class WebSocketHub<T>
                             );
 
                             wrapper.Age = 0;
+                            continue;
                         }
-                        catch (WebSocketException)
-                        {
-                            Sockets.Remove(wrapper);
-                            try
-                            {
-                                await socket.CloseAsync(
-                                    WebSocketCloseStatus.NormalClosure,
-                                    string.Empty,
-                                    CancellationToken.None
-                                );
-                            }
-                            catch { }
-                        }
-                        continue;
                     }
+
+                    await OnMessageReceivedAsync(socket, result, buffer);
                 }
 
-                await OnMessageReceivedAsync(socket, result, buffer);
-            }
+                wrapper.Age += (int)(DateTime.Now - start).TotalMilliseconds;
+                if (wrapper.Age > TIMEOUT)
+                {
+                    await socket.CloseAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        string.Empty,
+                        CancellationToken.None
+                    );
 
-            wrapper.Age += (int)(DateTime.Now - start).TotalMilliseconds;
-            if (wrapper.Age > TIMEOUT)
+                    Sockets.Remove(wrapper);
+                }
+            }
+        }
+        finally
+        {
+            try
             {
                 await socket.CloseAsync(
                     WebSocketCloseStatus.NormalClosure,
@@ -86,8 +85,9 @@ public abstract class WebSocketHub<T>
                     CancellationToken.None
                 );
 
-                Sockets.RemoveAll(s => s.UserId == userId);
+                Sockets.Remove(wrapper);
             }
+            catch { }
         }
     }
 
@@ -106,6 +106,15 @@ public abstract class WebSocketHub<T>
             }
 
             await socket.SendAsync(message);
+        }
+    }
+
+    protected void ResetAge(WebSocket socket)
+    {
+        var wrapper = Sockets.Find(s => s.Socket == socket);
+        if (wrapper != null)
+        {
+            wrapper.Age = 0;
         }
     }
 
