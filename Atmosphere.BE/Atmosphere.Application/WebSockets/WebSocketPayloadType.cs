@@ -18,4 +18,7 @@ public enum WebSocketPayloadType
     // App message type
     [EnumMember(Value = "notification")]
     Notification = 3,
+
+    [EnumMember(Value = "reading")]
+    Reading = 4,
 }

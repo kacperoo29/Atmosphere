@@ -37,7 +37,7 @@ public class DeviceHub : WebSocketHub<Device>
     )
     {
         var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
-        var msg = JsonSerializer.Deserialize<Msg>(
+        var msg = JsonSerializer.Deserialize<WebSocketPayload<ReadingInternal>>(
             message,
             new JsonSerializerOptions
             {
@@ -45,7 +45,7 @@ public class DeviceHub : WebSocketHub<Device>
                 Converters = { new JsonStringEnumConverter() }
             }
         );
-        if (msg?.Type == "reading")
+        if (msg?.Type == WebSocketPayloadType.Reading)
         {
             ResetAge(socket);
             var reading = msg.Payload;
@@ -56,12 +56,6 @@ public class DeviceHub : WebSocketHub<Device>
 
             await _mediator.Send(reading.ToCreateReading());
         }
-    }
-
-    private class Msg
-    {
-        public string Type { get; set; }
-        public ReadingInternal Payload { get; set; }
     }
 
     private class ReadingInternal

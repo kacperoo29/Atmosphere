@@ -1,6 +1,7 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Atmosphere.Application.Services;
 using Atmosphere.Application.WebSockets;
 using Atmosphere.Core.Models;
@@ -30,21 +31,20 @@ public class WebSocketNotificationServiceDecorator : NotificationService
 
         if (validationResults.Any())
         {
-            var message = new StringBuilder();
-            var type = WebSocketPayloadType.Notification;
-            // build json response
-            message.Append("{");
-            message.Append($"\"type\": \"{type.ToString()}\",");
-            message.Append("\"data\": [");
-            foreach (var notification in validationResults)
+            var message = new WebSocketPayload<IEnumerable<Notification>>()
             {
-                message.Append($"\"{notification.Message}\",");
-            }
+                Type = WebSocketPayloadType.Notification,
+                Payload = validationResults
+            };
 
-            message.Remove(message.Length - 1, 1);
-            message.Append("]}");
+            var json = JsonSerializer.Serialize(message, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() }
+            });
 
-            await _webSocketHub.SendToAllAsync(message.ToString());
+            await _webSocketHub.SendToAllAsync(json);
         }
     }
 }

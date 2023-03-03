@@ -42,7 +42,7 @@ pub fn nav() -> Html {
 
                     if let Ok(notification) = serde_json::from_str::<NotificationPayload>(&data) {
                         if notification.r#type.to_lowercase() == "notification" {
-                            bindings::notify("New notification", &notification.data.join(" "));
+                            bindings::notify("New notification", &notification.payload.join(" "));
                         }
                     }
                 });
