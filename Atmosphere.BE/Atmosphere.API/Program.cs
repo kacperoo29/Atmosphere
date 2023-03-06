@@ -218,6 +218,8 @@ builder.Services.AddAutoMapper(typeof(CreateReadingHandler).Assembly);
 builder.Services.AddScoped<WebSocketHub<Notification>, NotificationsHub>();
 builder.Services.AddScoped<WebSocketHub<Device>, DeviceHub>();
 
+builder.Services.AddScoped<IDeviceStateService, DeviceStateService>();
+
 BsonClassMap.RegisterClassMap<ConfigurationEntry>(cm =>
 {
     cm.AutoMap();

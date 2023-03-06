@@ -28,6 +28,10 @@ impl UseUserContextHandle {
         self.history.push(AppRoute::SignIn);
     }
 
+    pub fn token(&self) -> Option<String> {
+        (*self.inner).as_ref().map(|user| user.token.clone())
+    }
+
     pub fn is_logged_in(&self) -> bool {
         (*self.inner).is_some()
     }

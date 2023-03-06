@@ -21,23 +21,24 @@ public abstract class WebSocketHub<T>
     {
         await OnConnectedAsync(socket, userId);
         var wrapper = new WebSocketWrapper(socket, userId);
+        if (Sockets.Find(s => s.UserId == userId) != null)
+        {
+            Sockets.Remove(Sockets.Find(s => s.UserId == userId));
+        }
+        
         Sockets.Add(wrapper);
         try
         {
-            while (socket.State == WebSocketState.Open)
+            while (true)
             {
                 var start = DateTime.Now;
                 var buffer = new ArraySegment<byte>(new byte[4096]);
                 var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    await socket.CloseAsync(
-                        WebSocketCloseStatus.NormalClosure,
-                        string.Empty,
-                        CancellationToken.None
-                    );
-
+                    await CloseSocket(socket);
                     Sockets.Remove(wrapper);
+                    break;
                 }
                 else
                 {
@@ -65,13 +66,9 @@ public abstract class WebSocketHub<T>
                 wrapper.Age += (int)(DateTime.Now - start).TotalMilliseconds;
                 if (wrapper.Age > TIMEOUT)
                 {
-                    await socket.CloseAsync(
-                        WebSocketCloseStatus.NormalClosure,
-                        string.Empty,
-                        CancellationToken.None
-                    );
-
+                    await CloseSocket(socket);
                     Sockets.Remove(wrapper);
+                    break;
                 }
             }
         }
@@ -79,12 +76,7 @@ public abstract class WebSocketHub<T>
         {
             try
             {
-                await socket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure,
-                    string.Empty,
-                    CancellationToken.None
-                );
-
+                await CloseSocket(socket);
                 Sockets.Remove(wrapper);
             }
             catch { }
@@ -93,20 +85,29 @@ public abstract class WebSocketHub<T>
 
     public async Task SendToAllAsync(string message)
     {
-        if (Sockets.Count == 0)
-        {
-            return;
-        }
-
         foreach (var socket in Sockets)
         {
-            if (socket.Socket.State != WebSocketState.Open)
+            try
             {
-                continue;
+                await socket.SendAsync(message);
             }
-
-            await socket.SendAsync(message);
+            catch { }
         }
+    }
+
+    private async Task CloseSocket(WebSocket socket)
+    {
+        try
+        {
+            Console.WriteLine("Closing socket");
+            await OnDisconnectedAsync(socket);
+            await socket.CloseAsync(
+                WebSocketCloseStatus.NormalClosure,
+                string.Empty,
+                CancellationToken.None
+            );
+        }
+        catch { }
     }
 
     protected void ResetAge(WebSocket socket)
@@ -124,4 +125,5 @@ public abstract class WebSocketHub<T>
         ArraySegment<byte> buffer
     );
     protected abstract Task OnConnectedAsync(WebSocket socket, Guid? userId = null);
+    protected abstract Task OnDisconnectedAsync(WebSocket socket);
 }

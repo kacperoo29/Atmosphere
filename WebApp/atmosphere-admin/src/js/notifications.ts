@@ -28,6 +28,7 @@ export function set_send_ping_interval(ws: WebSocket, interval: number) {
 
 export function set_on_close(ws: WebSocket) {
     window.onclose = () => {
+        console.log('Closing websocket connection');
         ws.close();
     };
 }

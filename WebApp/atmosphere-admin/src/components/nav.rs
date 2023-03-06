@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use atmosphere_api::models::UserRole;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::MessageEvent;
@@ -17,7 +15,7 @@ use crate::{
 #[function_component(Nav)]
 pub fn nav() -> Html {
     let user = use_user_context();
-    let notification_ws = Rc::new(open_notification_socket());
+    let notification_ws = use_state(|| None::<web_sys::WebSocket>);
 
     let signout_callback = {
         let user = user.clone();
@@ -34,15 +32,39 @@ pub fn nav() -> Html {
         })
     };
 
+    {
+        let notification_ws = notification_ws.clone();
+        use_effect_with_deps(
+            move |token| {
+                if let Some(token) = token {
+                    let ws = open_notification_socket(token.clone());
+                    log::info!("ws = {:?}", ws);
+                    notification_ws.set(ws);
+                }
+
+                || ()
+            },
+            user.token(),
+        );
+    }
+
     use_effect_with_deps(
-        move |_user| {
+        move |notification_ws| {
             if let Some(notification_ws) = &*notification_ws.clone() {
+                log::info!("Setting onmessage");
                 let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                     let data = e.data().as_string().unwrap();
 
                     if let Ok(notification) = serde_json::from_str::<NotificationPayload>(&data) {
                         if notification.r#type.to_lowercase() == "notification" {
-                            bindings::notify("New notification", &notification.payload.join(" "));
+                            bindings::notify(
+                                "New notification",
+                                &notification
+                                    .payload
+                                    .iter()
+                                    .map(|n| n.message.clone())
+                                    .collect::<String>(),
+                            );
                         }
                     }
                 });
@@ -56,7 +78,7 @@ pub fn nav() -> Html {
 
             || ()
         },
-        (*user).clone(),
+        notification_ws.clone(),
     );
 
     let nav_items = match user.info() {

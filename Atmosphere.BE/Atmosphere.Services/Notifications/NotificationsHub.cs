@@ -12,6 +12,8 @@ public class NotificationsHub : WebSocketHub<Notification>
 
     protected override async Task OnConnectedAsync(WebSocket socket, Guid? userId) { }
 
+    protected override async Task OnDisconnectedAsync(WebSocket socket) { }
+
     protected override async Task OnMessageReceivedAsync(
         WebSocket socket,
         WebSocketReceiveResult result,

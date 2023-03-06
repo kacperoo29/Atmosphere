@@ -18,6 +18,7 @@ public class WebSocketWrapper
 
     public async Task SendAsync(string message)
     {
+        Console.WriteLine($"Sending message to {UserId}: {message}");
         var encoded = Encoding.UTF8.GetBytes(message);
         var buffer = new ArraySegment<byte>(encoded, 0, encoded.Length);
 

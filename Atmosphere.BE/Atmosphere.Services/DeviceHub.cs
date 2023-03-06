@@ -16,10 +16,14 @@ namespace Atmosphere.Services;
 public class DeviceHub : WebSocketHub<Device>
 {
     private readonly IMediator _mediator;
+    private readonly IDeviceStateService _deviceStateService;
+    private readonly IUserService _userService;
 
-    public DeviceHub(IMediator mediator) : base()
+    public DeviceHub(IMediator mediator, IDeviceStateService deviceStateService, IUserService userService) : base()
     {
         _mediator = mediator;
+        _deviceStateService = deviceStateService;
+        _userService = userService;
     }
 
     protected override async Task OnConnectedAsync(WebSocket socket, Guid? userId)
@@ -28,6 +32,14 @@ public class DeviceHub : WebSocketHub<Device>
         {
             throw new UnauthorizedAccessException();
         }
+
+        await _deviceStateService.SetDeviceOnline(userId.Value);
+    }
+
+    protected override async Task OnDisconnectedAsync(WebSocket socket)
+    {
+        var deviceId = (await _userService.GetCurrentAsync()).Id;
+        await _deviceStateService.SetDeviceOffline(deviceId);
     }
 
     protected override async Task OnMessageReceivedAsync(
@@ -36,6 +48,9 @@ public class DeviceHub : WebSocketHub<Device>
         ArraySegment<byte> buffer
     )
     {
+        var deviceId = (await _userService.GetCurrentAsync()).Id;
+        await _deviceStateService.SetLastSeen(deviceId, DateTime.UtcNow);
+
         var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
         var msg = JsonSerializer.Deserialize<WebSocketPayload<ReadingInternal>>(
             message,
