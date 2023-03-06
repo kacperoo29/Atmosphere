@@ -2,11 +2,15 @@
 
 \section{Urządzenie pomiarowe}
 Na Rys. \ref{prototyp} przedstawiono prototyp urządzenia pomiarowego z sensorem
-temperatury DS18B20. Jest to prosty sensor temperatury wykorzystujący jeden
+temperatury DS18B20 oraz sensorem DHT11 służącym do wykonywania pomiarów wilgotności oraz temperatury powietrza. 
+DS18B20 to prosty sensor temperatury wykorzystujący jeden
 pin jako linię danych. Każda sztuka posiada unikalny 64 bitowy adres, który
 umożliwia wykorzystanie wielu takich sensorów na jednej linii danych poprzez
 dostęp adresowy. Sensor charakteryzuje się pracą w zakresie od -55 do 125 stopni 
 Celsjusza z typowym błędem +-0.5 stopnia w zakresie od -10 do 85 stopni Celsjusza.
+DHT11 charakteryzuje się pracą w zakresie od 20\% do 90\% wilgotności powietrza z
+typowym błędem +- 4\%. Umożliwia również na pomiar temperatur w zakresie od 0 do 50
+stopni Celsjusza z typowym błędem wynoszącym 2 stopnie Celsjusza.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{prototyp}
