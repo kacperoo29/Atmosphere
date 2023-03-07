@@ -61,6 +61,8 @@ public abstract class WebSocketHub<T>
                         var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
                         if (message == "ping")
                         {
+                            Console.WriteLine("Recieved ping from {0}", userId ?? Guid.Empty);
+                            wrapper.Age = 0;
                             await socket.SendAsync(
                                 new ArraySegment<byte>(Encoding.UTF8.GetBytes("pong")),
                                 WebSocketMessageType.Text,
@@ -68,7 +70,6 @@ public abstract class WebSocketHub<T>
                                 CancellationToken.None
                             );
 
-                            wrapper.Age = 0;
                             continue;
                         }
                     }

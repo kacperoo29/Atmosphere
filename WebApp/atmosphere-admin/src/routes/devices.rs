@@ -1,5 +1,8 @@
 use yew::prelude::*;
 use yew_hooks::prelude::*;
+use yew_router::prelude::*;
+
+use crate::routes::AppRoute;
 
 use crate::{
     bindings::show_error,
@@ -100,7 +103,9 @@ pub fn devices() -> Html {
                                 onchange={let device = device.clone(); activate_device_cb.reform(move |_| device.clone().id.to_string())} /></td>
                             <td><input type="checkbox" checked={device.is_connected} disabled=true /></td>
                             <td>
-                                <a class="button is-small is-primary" href={format!("/devices/{}", device.id)}>{"View"}</a>
+                                <Link<AppRoute> to={AppRoute::DeviceReadings { id: device.id.to_string().clone() }}>
+                                    {"View readings"}
+                                </Link<AppRoute>>
                             </td>
                         </tr>
                     }})}

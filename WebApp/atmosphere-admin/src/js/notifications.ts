@@ -21,7 +21,9 @@ export function show_error(text: string) {
 }
 
 export function set_send_ping_interval(ws: WebSocket, interval: number) {
+    console.log('Setting ping interval to ' + interval + 'ms');
     setInterval(() => {
+        console.log('Sending ping');
         ws.send('ping');
     }, interval);
 }

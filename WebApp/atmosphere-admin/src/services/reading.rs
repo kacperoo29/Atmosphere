@@ -1,8 +1,11 @@
+use std::collections::HashMap;
+
 use atmosphere_api::{
     apis::reading_api::{
-        api_reading_get_paged_readings_by_date_get, api_reading_get_paged_readings_by_device_get,
+        api_reading_get_chart_data_post, api_reading_get_paged_readings_by_date_get,
+        api_reading_get_paged_readings_by_device_get,
     },
-    models::ReadingDtoPagedList,
+    models::{reading_type, GetChartData, ReadingDtoPagedList},
 };
 
 use crate::error::Error;
@@ -49,6 +52,28 @@ pub async fn get_readings_by_device(
     )
     .await
     .map_err(|e| e.into());
+
+    response
+}
+
+pub async fn get_chart_data(
+    device_id: Option<uuid::Uuid>,
+    reading_type: reading_type::ReadingType,
+    start_date: Option<String>,
+    end_date: Option<String>,
+) -> Result<HashMap<String, f64>, Error> {
+    let config = get_config();
+
+    let body = GetChartData {
+        device_id: Some(device_id),
+        reading_type: reading_type,
+        start_date: Some(start_date),
+        end_date: Some(end_date),
+    };
+
+    let response = api_reading_get_chart_data_post(&config, body)
+        .await
+        .map_err(|e| e.into());
 
     response
 }

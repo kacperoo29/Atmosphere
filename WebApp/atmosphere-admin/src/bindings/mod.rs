@@ -11,3 +11,9 @@ extern "C" {
     #[wasm_bindgen]
     pub fn set_on_close(ws: &web_sys::WebSocket);
 }
+
+#[wasm_bindgen(module = "/src/js/chart.ts")]
+extern "C" {
+    #[wasm_bindgen]
+    pub fn draw_chart(element_id: &str, data: &JsValue, r#type: &str);
+}

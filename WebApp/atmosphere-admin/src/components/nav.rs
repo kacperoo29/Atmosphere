@@ -50,7 +50,8 @@ pub fn nav() -> Html {
 
     use_effect_with_deps(
         move |notification_ws| {
-            if let Some(notification_ws) = &*notification_ws.clone() {
+            if let Some(ws) = &*notification_ws.clone() {
+                log::info!("notification_ws = {:?}", ws);
                 let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                     let data = e.data().as_string().unwrap();
 
@@ -68,11 +69,29 @@ pub fn nav() -> Html {
                     }
                 });
 
-                notification_ws.set_onmessage(Some(on_message.as_ref().unchecked_ref()));
+                ws.set_onmessage(Some(on_message.as_ref().unchecked_ref()));
                 on_message.forget();
 
-                set_send_ping_interval(notification_ws, 20000);
-                set_on_close(notification_ws);
+                {
+                    let window = web_sys::window().unwrap();
+                    let ws = notification_ws.clone();
+                    let closure = Closure::<dyn FnMut()>::new(move || {
+                        log::info!("Sending ping...");
+                        if let Some(ws) = &*ws.clone() {
+                            if ws.send_with_str("ping").is_err() {
+                                show_error("Failed to send ping");
+                            }
+                        }
+                    });
+
+                    window.set_interval_with_callback_and_timeout_and_arguments_0(
+                        closure.as_ref().unchecked_ref(),10000 
+                    );
+
+                    closure.forget();
+                }
+                
+                set_on_close(ws);
             }
 
             || ()
