@@ -29,9 +29,27 @@ public abstract class WebSocketHub<T>
         Sockets.Add(wrapper);
         try
         {
+            new Thread(async () =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    wrapper.Age += 1000;
+                    if (wrapper.Age > TIMEOUT)
+                    {
+                        try
+                        {
+                            await CloseSocket(socket);
+                            Sockets.Remove(wrapper);
+                        }
+                        catch { }
+                        break;
+                    }
+                }
+            });
+        
             while (true)
             {
-                var start = DateTime.Now;
                 var buffer = new ArraySegment<byte>(new byte[4096]);
                 var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
                 if (result.MessageType == WebSocketMessageType.Close)
@@ -63,7 +81,6 @@ public abstract class WebSocketHub<T>
                     await OnMessageReceivedAsync(socket, result, buffer);
                 }
 
-                wrapper.Age += (int)(DateTime.Now - start).TotalMilliseconds;
                 if (wrapper.Age > TIMEOUT)
                 {
                     await CloseSocket(socket);

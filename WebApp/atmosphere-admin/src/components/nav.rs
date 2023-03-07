@@ -51,7 +51,6 @@ pub fn nav() -> Html {
     use_effect_with_deps(
         move |notification_ws| {
             if let Some(notification_ws) = &*notification_ws.clone() {
-                log::info!("Setting onmessage");
                 let on_message = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                     let data = e.data().as_string().unwrap();
 
