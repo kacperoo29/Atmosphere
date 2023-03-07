@@ -11,10 +11,12 @@ docs/CreateUser.md
 docs/DeviceApi.md
 docs/DeviceDto.md
 docs/EmailConfiguration.md
+docs/GetChartData.md
 docs/NotificationType.md
 docs/ProblemDetails.md
 docs/ReadingApi.md
 docs/ReadingDto.md
+docs/ReadingDtoPagedList.md
 docs/ReadingType.md
 docs/RegisterDevice.md
 docs/Severity.md
@@ -41,10 +43,12 @@ src/models/create_reading.rs
 src/models/create_user.rs
 src/models/device_dto.rs
 src/models/email_configuration.rs
+src/models/get_chart_data.rs
 src/models/mod.rs
 src/models/notification_type.rs
 src/models/problem_details.rs
 src/models/reading_dto.rs
+src/models/reading_dto_paged_list.rs
 src/models/reading_type.rs
 src/models/register_device.rs
 src/models/severity.rs

@@ -1,20 +1,25 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+pub mod create_user;
 pub mod devices;
 pub mod home;
 pub mod settings;
 pub mod signin;
 pub mod users;
-pub mod create_user;
 
 use home::Home;
 use settings::Settings;
 use signin::SignIn;
+use crate::components::reading::reading_list;
 
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq)]
 pub enum AppRoute {
+    #[at("/readings")]
+    Readings,
+    #[at("/readings/:id")]
+    DeviceReadings { id: String },
     #[at("/settings")]
     Settings,
     #[at("/signin")]
@@ -41,6 +46,10 @@ pub fn switch(routes: &AppRoute) -> Html {
         AppRoute::Devices => html! { <devices::Devices /> },
         AppRoute::Users => html! { <users::Users /> },
         AppRoute::NewUser => html! { <create_user::CreateUser /> },
+        AppRoute::Readings => html! { <reading_list::ReadingList /> },
+        AppRoute::DeviceReadings { id } => {
+            html! { <reading_list::ReadingList device_id={Some(id)} /> }
+        }
         AppRoute::PageNotFound => html! { "Page not found" },
     }
 }

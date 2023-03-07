@@ -92,6 +92,12 @@ pub fn nav() -> Html {
                         </Link<AppRoute>>
                     </li>
                     <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Readings} classes="nav-link">
+                            <i class="fs-4 bi bi-journal"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Readings"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
                         <Link<AppRoute> to={AppRoute::Settings} classes="nav-link">
                             <i class="fs-4 bi bi-gear"></i>
                             <span class="ms-1 d-none d-sm-inline">{"Settings"}</span>
@@ -114,12 +120,20 @@ pub fn nav() -> Html {
             }
             _ => {
                 html! {
-                <li class="nav-item">
-                    <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
-                        <i class="fs-4 bi bi-house"></i>
-                        <span class="ms-1 d-none d-sm-inline">{"Home"}</span>
-                    </Link<AppRoute>>
-                </li>
+                <>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
+                            <i class="fs-4 bi bi-house"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Home"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <Link<AppRoute> to={AppRoute::Readings} classes="nav-link">
+                            <i class="fs-4 bi bi-journal"></i>
+                            <span class="ms-1 d-none d-sm-inline">{"Readings"}</span>
+                        </Link<AppRoute>>
+                    </li>
+                </>
                 }
             }
         },

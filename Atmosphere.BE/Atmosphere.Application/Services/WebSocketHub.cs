@@ -7,15 +7,11 @@ namespace Atmosphere.Application.Services;
 public abstract class WebSocketHub<T>
 {
     private const int TIMEOUT = 1000 * 30;
-    public static List<WebSocketWrapper> Sockets { get; protected set; }
+    public static List<WebSocketWrapper> Sockets { get; protected set; } = new();
 
     protected WebSocketHub()
     {
-        Sockets = new();
     }
-
-    public List<WebSocketWrapper> ConnectedSockets =>
-        Sockets.FindAll(s => s.Socket.State == WebSocketState.Open);
 
     public async Task ConnectAsync(WebSocket socket, Guid? userId = null)
     {
@@ -31,6 +27,7 @@ public abstract class WebSocketHub<T>
         {
             new Thread(async () =>
             {
+                Thread.CurrentThread.IsBackground = true;
                 while (true)
                 {
                     Thread.Sleep(1000);
@@ -40,13 +37,12 @@ public abstract class WebSocketHub<T>
                         try
                         {
                             await CloseSocket(socket);
-                            Sockets.Remove(wrapper);
                         }
                         catch { }
                         break;
                     }
                 }
-            });
+            }).Start();
         
             while (true)
             {
@@ -55,7 +51,6 @@ public abstract class WebSocketHub<T>
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
                     await CloseSocket(socket);
-                    Sockets.Remove(wrapper);
                     break;
                 }
                 else
@@ -84,7 +79,6 @@ public abstract class WebSocketHub<T>
                 if (wrapper.Age > TIMEOUT)
                 {
                     await CloseSocket(socket);
-                    Sockets.Remove(wrapper);
                     break;
                 }
             }
@@ -94,7 +88,6 @@ public abstract class WebSocketHub<T>
             try
             {
                 await CloseSocket(socket);
-                Sockets.Remove(wrapper);
             }
             catch { }
         }

@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using Atmosphere.Core;
 using Atmosphere.Core.Enums;
 using Atmosphere.Core.Models;
 using Atmosphere.Core.Repositories;
@@ -26,6 +28,46 @@ public class ReadingRepository : BaseRepository<Reading>, IReadingRepository
             .SortByDescending(r => r.CreatedAt)
             .Limit(count)
             .ToListAsync();
+    }
+
+    public async Task<PagedList<Reading>> GetPagedReadings(Guid deviceId, int pageNumber, int pageSize)
+    {
+        var items = await _collection.Find(r => r.DeviceId == deviceId)
+            .SortByDescending(r => r.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Limit(pageSize)
+            .ToListAsync();
+
+        var count = _collection.CountDocuments(r => r.DeviceId == deviceId);
+
+        return new PagedList<Reading> 
+        {
+            CurrentPage = pageNumber,
+            TotalPages = (int) Math.Ceiling(count / (double) pageSize),
+            PageSize = pageSize,
+            TotalCount = (int) count,
+            Items = items
+        };
+    }
+
+    public async Task<PagedList<Reading>> GetAllPagedReadings(int pageNumber, int pageSize, Expression<Func<Reading, bool>>? filter = null)
+    {
+        var items = await _collection.Find(filter ?? (r => true))
+            .SortByDescending(r => r.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Limit(pageSize)
+            .ToListAsync();
+
+        var count = _collection.CountDocuments(r => true);
+
+        return new PagedList<Reading> 
+        {
+            CurrentPage = pageNumber,
+            TotalPages = (int) Math.Ceiling(count / (double) pageSize),
+            PageSize = pageSize,
+            TotalCount = (int) count,
+            Items = items
+        };
     }
 
     public async Task<Reading> GetPrevious(Guid deviceId, ReadingType type)

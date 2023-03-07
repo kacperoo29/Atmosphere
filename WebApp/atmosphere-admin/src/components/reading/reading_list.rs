@@ -1,24 +1,53 @@
-use atmosphere_api::models::ReadingDto;
+use atmosphere_api::models::ReadingDtoPagedList;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
 use crate::bindings::show_error;
+use crate::components::pagination::Pagination;
 use crate::components::reading::reading_list_entry::ReadingListEntry;
 
-use crate::services::reading::get_readings_by_date;
+use crate::services::reading::{get_readings_by_date, get_readings_by_device};
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct ReadingListProps {
+    pub device_id: Option<String>,
+}
 
 #[function_component(ReadingList)]
-pub fn reading_list() -> Html {
-    let readings: UseStateHandle<Option<Vec<ReadingDto>>> = use_state(|| None);
+pub fn reading_list(props: &ReadingListProps) -> Html {
+    let readings: UseStateHandle<Option<ReadingDtoPagedList>> = use_state(|| None);
     let start_date = use_state(|| None);
     let end_date = use_state(|| None);
+    let current_page = use_state(|| 1);
+    let page_size = use_state(|| 50);
+
     let get_readings = {
         let start_date = start_date.clone();
         let end_date = end_date.clone();
-        use_async(
-            async move { get_readings_by_date((*start_date).clone(), (*end_date).clone()).await },
-        )
+        let current_page = current_page.clone();
+        let page_size = page_size.clone();
+        let props = props.clone();
+        use_async(async move {
+            if let Some(device_id) = &props.device_id {
+                return get_readings_by_device(
+                    *current_page,
+                    *page_size,
+                    device_id,
+                    (*start_date).clone(),
+                    (*end_date).clone(),
+                )
+                .await;
+            } else {
+                get_readings_by_date(
+                    *current_page,
+                    *page_size,
+                    (*start_date).clone(),
+                    (*end_date).clone(),
+                )
+                .await
+            }
+        })
     };
 
     {
@@ -62,6 +91,15 @@ pub fn reading_list() -> Html {
         })
     };
 
+    let change_page = {
+        let current_page = current_page.clone();
+        let get_readings = get_readings.clone();
+        Callback::from(move |page: i32| {
+            current_page.set(page);
+            get_readings.run();
+        })
+    };
+
     let get_readings = {
         let get_readings = get_readings.clone();
         Callback::from(move |_| {
@@ -77,6 +115,10 @@ pub fn reading_list() -> Html {
             end_date.set(None);
         })
     };
+
+    let has_next = readings.is_some() && readings.as_ref().unwrap().has_next;
+    let has_previous = readings.is_some() && readings.as_ref().unwrap().has_previous;
+    let total_pages = readings.as_ref().map(|r| r.total_pages).unwrap_or(0);
 
     html! {
         <div>
@@ -108,13 +150,20 @@ pub fn reading_list() -> Html {
                 <tbody>
                 if readings.is_some() {
                     {
-                        readings.unwrap().iter().map(|reading|  {
+                        readings.unwrap().items.iter().map(|reading|  {
                             html! {<ReadingListEntry reading_dto={reading.clone()} />}
                         }).collect::<Html>()
                     }
                 }
                 </tbody>
             </table>
+            <Pagination
+                current_page={*current_page}
+                page_size={*page_size}
+                total_pages={total_pages}
+                has_next_page={has_next}
+                has_previous_page={has_previous}
+                on_page_change={change_page} />
         </div>
     }
 }

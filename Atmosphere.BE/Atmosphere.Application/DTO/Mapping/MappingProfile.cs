@@ -8,6 +8,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap(typeof(Core.PagedList<>), typeof(Core.PagedList<>)).ConvertUsing(typeof(PagedListConverter<,>));
         CreateMap<Core.Models.Device, DeviceDto>().ConvertUsing<DeviceConverter>();
         CreateMap<Core.Models.Reading, ReadingDto>().ConvertUsing<ReadingConverter>();
         CreateMap<Core.Models.BaseUser, BaseUserDto>();
