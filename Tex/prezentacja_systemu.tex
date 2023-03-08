@@ -84,6 +84,16 @@ docelowy adres email. Przykładowa konfiguracja została zaprezentowana na Rys. 
   \label{atmosphere:email_configuration}
 \end{figure}
 
+Po zalogowaniu na stronie głównej wyświetlane są wykresy przedstawiające zmianę danych odczytów w czasie.
+Dane przedstawione są w postaci wykresu liniowego jako średnia odczytów w danej godzinie.
+Ten widok został przedstawiony na Rys. \ref{atmosphere:charts}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{charts}
+  \caption{Widok wykresów}
+  \label{atmosphere:charts}
+\end{figure}
+
 Kolejnym widokiem jest lista odczytów parametrów środowiska. Użytkownik może 
 filtrować ją z użyciem daty startowej i/lub daty końcowej po czym uzyskuje
 wyniki znajdujące się w tym przedziale. Przykład przefiltrowanych danych
@@ -104,8 +114,19 @@ Ten widok został przedstawiony na Rys. \ref{device_list}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{connect_dev}
-  \caption{Aktualnie połączone urządzenie na liście urządzeń}
+  \caption{Urządzenie na liście urządzeń}
   \label{device_list}
+\end{figure}
+Aplikacja pozwala na przeglądanie odczytów wykonanych przez dane urządzenie, podgląd wykresów
+stworzonych z danych urządzenia oraz ustawień specyficznych dla urządzenia tj. reguły walidacji
+oraz czas między wykonywaniem pomiarów. Dwa pierwsze nie różnią się widokiem od standardowych 
+komponentów poza przefiltrowanymi danymi, natomiast ustawienia urządzenia przedstawiono na 
+rys. \ref{atmosphere:device_settings}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{device_settings}
+  \caption{Ustawienia urządzenia}
+  \label{atmosphere:device_settings}
 \end{figure}
 
 Ostatnim widokiem jest widok listy użytkowników. Pozwala ona administratorowi na tworzenie
