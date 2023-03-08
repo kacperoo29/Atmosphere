@@ -16,11 +16,20 @@ public class SetPollingRateHandler : IRequestHandler<SetPollingRate>
 
     public async Task<Unit> Handle(SetPollingRate request, CancellationToken cancellationToken)
     {
-        await _configuration.SendToAllAsync(JsonSerializer.Serialize(new
+        var message = JsonSerializer.Serialize(new
         {
             type = "pollingRate",
             payload = request.PollingRate
-        }));
+        });
+
+        if (request.DeviceId is null)
+        {
+            await _configuration.SendToAllAsync(message);
+        }
+        else
+        {
+            await _configuration.SendToAsync(request.DeviceId.Value, message);
+        }
 
         return Unit.Value;
     }

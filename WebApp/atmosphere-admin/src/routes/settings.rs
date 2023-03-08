@@ -39,7 +39,7 @@ pub fn settings() -> Html {
     let polling_rate = use_state(|| 0);
     let change_polling_rate = {
         let polling_rate = polling_rate.clone();
-        use_async(async move { change_polling_rate(*polling_rate).await })
+        use_async(async move { change_polling_rate(*polling_rate, None).await })
     };
 
     let on_polling_rate_change = {
@@ -63,7 +63,7 @@ pub fn settings() -> Html {
         <div>
             <ValidationRule reading_type={ReadingType::Temperature} />
             <ValidationRule reading_type={ReadingType::Humidity} />
-            <ValidationRule reading_type={ReadingType::Pressure} />
+            //<ValidationRule reading_type={ReadingType::Pressure} />
             <EmailConfigForm />
             <div class="form-group">
                 <label for="polling-rate">{"Polling rate (ms)"}</label>

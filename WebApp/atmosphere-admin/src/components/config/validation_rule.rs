@@ -14,6 +14,7 @@ use crate::services::config;
 )]
 pub struct Props {
     pub reading_type: ReadingType,
+    pub device_id: Option<uuid::Uuid>,
 }
 
 #[function_component(ValidationRule)]
@@ -23,7 +24,7 @@ pub fn validation_rule(props: &Props) -> Html {
     {
         let props = props.clone();
         let get_rules =
-            use_async(async move { config::get_validation_rules(props.reading_type).await });
+            use_async(async move { config::get_validation_rules(props.reading_type, props.device_id).await });
 
         {
             let get_rules = get_rules.clone();
@@ -51,7 +52,7 @@ pub fn validation_rule(props: &Props) -> Html {
         let rules = rules.clone();
         let props = props.clone();
         use_async(async move {
-            return config::update_validation_rules(props.reading_type, (*rules).clone()).await;
+            return config::update_validation_rules(props.reading_type, (*rules).clone(), props.device_id).await;
         })
     };
 

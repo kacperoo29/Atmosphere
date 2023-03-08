@@ -109,6 +109,9 @@ pub fn devices() -> Html {
                                 <Link<AppRoute> classes="btn btn-primary mr-2" to={AppRoute::DeviceChart { id: device.id.to_string().clone() }}>
                                     {"View charts"}
                                 </Link<AppRoute>>
+                                <Link<AppRoute> classes="btn btn-primary mr-2" to={AppRoute::DeviceSettings { id: device.id.to_string().clone() }}>
+                                    {"Settings"}
+                                </Link<AppRoute>>
                             </td>
                         </tr>
                     }})}

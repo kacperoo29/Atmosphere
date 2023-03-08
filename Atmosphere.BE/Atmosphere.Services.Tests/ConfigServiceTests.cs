@@ -180,7 +180,7 @@ public class ConfigServiceTests
             .Setup(
                 x =>
                     x.GetAsync<Dictionary<ReadingType, List<ValidationRule>>>(
-                        ReadingValidator.ValidationRulesKey,
+                        ReadingValidator.GetValidationRulesKey(null),
                         default
                     )
             )

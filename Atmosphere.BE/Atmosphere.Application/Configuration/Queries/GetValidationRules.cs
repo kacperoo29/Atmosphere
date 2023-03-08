@@ -9,4 +9,6 @@ public class GetValidationRules : IRequest<List<ValidationRuleDto>>
 {
     [Required]
     public ReadingType ReadingType { get; init; }
+
+    public Guid? DeviceId { get; init; }
 }

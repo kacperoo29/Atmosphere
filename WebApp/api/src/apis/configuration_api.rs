@@ -339,7 +339,7 @@ pub async fn api_configuration_get_notification_types_get(configuration: &config
     }
 }
 
-pub async fn api_configuration_get_validation_rules_get(configuration: &configuration::Configuration, reading_type: ReadingType) -> Result<Vec<crate::models::ValidationRuleDto>, Error<ApiConfigurationGetValidationRulesGetError>> {
+pub async fn api_configuration_get_validation_rules_get(configuration: &configuration::Configuration, reading_type: ReadingType, device_id: Option<&str>) -> Result<Vec<crate::models::ValidationRuleDto>, Error<ApiConfigurationGetValidationRulesGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -348,6 +348,9 @@ pub async fn api_configuration_get_validation_rules_get(configuration: &configur
     let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
 
     local_var_req_builder = local_var_req_builder.query(&[("readingType", &reading_type.to_string())]);
+    if let Some(ref local_var_str) = device_id {
+        local_var_req_builder = local_var_req_builder.query(&[("deviceId", &local_var_str.to_string())]);
+    }
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
     }
@@ -375,7 +378,7 @@ pub async fn api_configuration_get_validation_rules_get(configuration: &configur
     }
 }
 
-pub async fn api_configuration_set_polling_rate_post(configuration: &configuration::Configuration, polling_rate: Option<i32>) -> Result<(), Error<ApiConfigurationSetPollingRatePostError>> {
+pub async fn api_configuration_set_polling_rate_post(configuration: &configuration::Configuration, polling_rate: Option<i32>, device_id: Option<&str>) -> Result<(), Error<ApiConfigurationSetPollingRatePostError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -385,6 +388,9 @@ pub async fn api_configuration_set_polling_rate_post(configuration: &configurati
 
     if let Some(ref local_var_str) = polling_rate {
         local_var_req_builder = local_var_req_builder.query(&[("pollingRate", &local_var_str.to_string())]);
+    }
+    if let Some(ref local_var_str) = device_id {
+        local_var_req_builder = local_var_req_builder.query(&[("deviceId", &local_var_str.to_string())]);
     }
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());

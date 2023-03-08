@@ -18,7 +18,7 @@ public class GetValidationRulesHandler : IRequestHandler<GetValidationRules, Lis
 
     public async Task<List<ValidationRuleDto>> Handle(GetValidationRules request, CancellationToken cancellationToken)
     {
-        var rules =  await _configService.GetValidationRules(request.ReadingType);
+        var rules =  await _configService.GetValidationRules(request.ReadingType, request.DeviceId);
 
         return _mapper.Map<List<ValidationRuleDto>>(rules);
     }

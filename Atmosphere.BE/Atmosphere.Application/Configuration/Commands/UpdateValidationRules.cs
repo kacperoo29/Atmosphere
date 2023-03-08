@@ -12,4 +12,6 @@ public class UpdateValidationRules : IRequest
 
     [Required]
     public List<ValidationRuleDto> Rules { get; init; }
+
+    public Guid? DeviceId { get; init; }
 }

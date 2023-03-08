@@ -177,7 +177,7 @@ This endpoint does not need any parameter.
 
 ## api_configuration_get_validation_rules_get
 
-> Vec<crate::models::ValidationRuleDto> api_configuration_get_validation_rules_get(reading_type)
+> Vec<crate::models::ValidationRuleDto> api_configuration_get_validation_rules_get(reading_type, device_id)
 
 
 ### Parameters
@@ -186,6 +186,7 @@ This endpoint does not need any parameter.
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **reading_type** | [**ReadingType**](.md) |  | [required] |
+**device_id** | Option<**uuid::Uuid**> |  |  |
 
 ### Return type
 
@@ -205,7 +206,7 @@ Name | Type | Description  | Required | Notes
 
 ## api_configuration_set_polling_rate_post
 
-> api_configuration_set_polling_rate_post(polling_rate)
+> api_configuration_set_polling_rate_post(polling_rate, device_id)
 
 
 ### Parameters
@@ -214,6 +215,7 @@ Name | Type | Description  | Required | Notes
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **polling_rate** | Option<**i32**> |  |  |
+**device_id** | Option<**uuid::Uuid**> |  |  |
 
 ### Return type
 

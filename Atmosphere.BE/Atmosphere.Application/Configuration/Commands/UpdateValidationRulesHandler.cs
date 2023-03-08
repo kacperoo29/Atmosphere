@@ -14,7 +14,7 @@ public class UpdateValidationRulesHandler : IRequestHandler<UpdateValidationRule
 
     public async Task<Unit> Handle(UpdateValidationRules request, CancellationToken cancellationToken)
     {
-        await _configService.UpdateValidationRules(request.ReadingType, request.Rules);
+        await _configService.UpdateValidationRules(request.ReadingType, request.Rules, request.DeviceId);
 
         return Unit.Value;
     }

@@ -6,6 +6,6 @@ namespace Atmosphere.Core.Validation;
 
 public interface IReadingValidator
 {
-    Task<IEnumerable<Notification>> Validate(Reading reading);
+    Task<IEnumerable<Notification>> Validate(Reading reading, Guid? deviceId = null);
     Dictionary<ReadingType, List<ValidationRule>> GetDefaultRules();
 }

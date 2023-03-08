@@ -7,7 +7,12 @@ namespace Atmosphere.Core.Validation;
 
 public class ReadingValidator : IReadingValidator
 {
-    public const string ValidationRulesKey = "Atmosphere.Core.ValidationRules";
+    private const string ValidationRulesKey = "Atmosphere.Core.ValidationRules";
+
+    public static string GetValidationRulesKey(Guid? deviceId = null)
+    {
+        return $"{ValidationRulesKey}{(deviceId.HasValue ? $".{deviceId.Value.ToString()}" : string.Empty)}";
+    }
 
     private readonly IConfigurationRepository _configurationRepository;
 
@@ -53,17 +58,24 @@ public class ReadingValidator : IReadingValidator
         return rules;
     }
 
-    public async Task<IEnumerable<Notification>> Validate(Reading reading)
+    public async Task<IEnumerable<Notification>> Validate(Reading reading, Guid? deviceId = null)
     {
         var rules = await _configurationRepository.GetAsync<
             Dictionary<ReadingType, List<ValidationRule>>
-        >(ValidationRulesKey);
+        >(GetValidationRulesKey(deviceId));
+
+        if (deviceId != null && rules == null)
+        {
+            rules = await _configurationRepository.GetAsync<
+                Dictionary<ReadingType, List<ValidationRule>>
+            >(GetValidationRulesKey());
+        }
 
         var validationResults = new List<Notification>();
         if (rules == null)
         {
             rules = GetDefaultRules();
-            await _configurationRepository.SetAsync(ValidationRulesKey, rules);
+            await _configurationRepository.SetAsync(GetValidationRulesKey(), rules);
         }
 
         if (!rules.ContainsKey(reading.Type))

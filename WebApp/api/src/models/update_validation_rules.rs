@@ -17,6 +17,8 @@ pub struct UpdateValidationRules {
     pub reading_type: crate::models::ReadingType,
     #[serde(rename = "rules")]
     pub rules: Vec<crate::models::ValidationRuleDto>,
+    #[serde(rename = "deviceId", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub device_id: Option<Option<uuid::Uuid>>,
 }
 
 impl UpdateValidationRules {
@@ -24,6 +26,7 @@ impl UpdateValidationRules {
         UpdateValidationRules {
             reading_type,
             rules,
+            device_id: None,
         }
     }
 }

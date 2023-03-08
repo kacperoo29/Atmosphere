@@ -161,12 +161,17 @@ public class ConfigurationController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
     public async Task<IActionResult> GetValidationRules(
-        [FromQuery, BindRequired] ReadingType readingType
+        [FromQuery, BindRequired] ReadingType readingType,
+        [FromQuery] Guid? deviceId = null
     )
     {
         try
         {
-            return Ok(await _mediator.Send(new GetValidationRules { ReadingType = readingType }));
+            return Ok(
+                await _mediator.Send(
+                    new GetValidationRules { ReadingType = readingType, DeviceId = deviceId }
+                )
+            );
         }
         catch (Exception e)
         {
@@ -240,11 +245,13 @@ public class ConfigurationController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> SetPollingRate(int pollingRate)
+    public async Task<IActionResult> SetPollingRate(int pollingRate, Guid? deviceId = null)
     {
         try
         {
-            await _mediator.Send(new SetPollingRate { PollingRate = pollingRate });
+            await _mediator.Send(
+                new SetPollingRate { PollingRate = pollingRate, DeviceId = deviceId }
+            );
 
             return Ok();
         }

@@ -106,6 +106,19 @@ public abstract class WebSocketHub<T>
         }
     }
 
+    public async Task SendToAsync(Guid id, string message)
+    {
+        var socket = Sockets.Find(s => s.UserId == id);
+        if (socket != null)
+        {
+            try
+            {
+                await socket.SendAsync(message);
+            }
+            catch { }
+        }
+    }
+
     private async Task CloseSocket(WebSocket socket)
     {
         try

@@ -3,8 +3,9 @@ use std::collections::HashMap;
 use atmosphere_api::{
     apis::configuration_api::{
         api_configuration_get_configuration_entries_get, api_configuration_get_email_config_get,
-        api_configuration_get_validation_rules_get, api_configuration_update_configuration_put,
-        api_configuration_update_email_config_patch, api_configuration_update_validation_rules_put, api_configuration_set_polling_rate_post,
+        api_configuration_get_validation_rules_get, api_configuration_set_polling_rate_post,
+        api_configuration_update_configuration_put, api_configuration_update_email_config_patch,
+        api_configuration_update_validation_rules_put,
     },
     models::{
         EmailConfiguration, ReadingType, UpdateConfiguration, UpdateValidationRules,
@@ -41,10 +42,12 @@ pub async fn get_settings(keys: Vec<String>) -> Result<HashMap<String, serde_jso
 
 pub async fn get_validation_rules(
     reading_type: ReadingType,
+    device_id: Option<uuid::Uuid>,
 ) -> Result<Vec<ValidationRuleDto>, Error> {
     let config = get_config().clone();
+    let device_id = device_id.map(|id| id.to_string());
 
-    api_configuration_get_validation_rules_get(&config, reading_type)
+    api_configuration_get_validation_rules_get(&config, reading_type, device_id.as_deref())
         .await
         .map_err(|err| err.into())
 }
@@ -52,12 +55,14 @@ pub async fn get_validation_rules(
 pub async fn update_validation_rules(
     reading_type: ReadingType,
     validation_rules: Vec<ValidationRuleDto>,
+    device_id: Option<uuid::Uuid>,
 ) -> Result<(), Error> {
     let config = get_config().clone();
 
     let model = UpdateValidationRules {
         reading_type: reading_type,
         rules: validation_rules,
+        device_id: Some(device_id),
     };
 
     api_configuration_update_validation_rules_put(&config, model)
@@ -81,10 +86,11 @@ pub async fn update_email_config(update_config: EmailConfiguration) -> Result<()
         .map_err(|err| err.into())
 }
 
-pub async fn change_polling_rate(rate: i32) -> Result<(), Error> {
+pub async fn change_polling_rate(rate: i32, device_id: Option<uuid::Uuid>) -> Result<(), Error> {
     let config = get_config().clone();
+    let device_id = device_id.map(|id| id.to_string());
 
-    api_configuration_set_polling_rate_post(&config, Some(rate))
+    api_configuration_set_polling_rate_post(&config, Some(rate), device_id.as_deref())
         .await
         .map_err(|err| err.into())
 }

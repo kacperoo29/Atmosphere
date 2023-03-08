@@ -18,6 +18,6 @@ public interface IConfigService
         CancellationToken cancellationToken = default
     );
     Task UpdateEmailConfigAsync(EmailConfiguration config, CancellationToken cancellationToken);
-    Task<List<ValidationRule>> GetValidationRules(ReadingType readingType);
-    Task UpdateValidationRules(ReadingType readingType, List<ValidationRuleDto> rules);
+    Task<List<ValidationRule>> GetValidationRules(ReadingType readingType, Guid? deviceId = null);
+    Task UpdateValidationRules(ReadingType readingType, List<ValidationRuleDto> rules, Guid? deviceId = null);
 }

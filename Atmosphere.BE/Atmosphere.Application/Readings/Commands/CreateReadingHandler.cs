@@ -52,7 +52,7 @@ public class CreateReadingHandler : IRequestHandler<CreateReading, ReadingDto>
             request.Type
         );
 
-        var validationResults = await _readingValidator.Validate(reading);
+        var validationResults = await _readingValidator.Validate(reading, device.Id);
         await _notificationService.Notify(reading, validationResults);
 
         await _readingRepository.AddAsync(reading);

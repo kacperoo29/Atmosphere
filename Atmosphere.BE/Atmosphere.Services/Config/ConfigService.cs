@@ -92,31 +92,31 @@ public class ConfigService : IConfigService
         return _configRepo.SetAsync(EMAIL_CONFIG_KEY, config, cancellationToken);
     }
 
-    public async Task<List<ValidationRule>> GetValidationRules(ReadingType readingType)
+    public async Task<List<ValidationRule>> GetValidationRules(ReadingType readingType, Guid? deviceId = null)
     {
         var rules = await _configRepo.GetAsync<Dictionary<ReadingType, List<ValidationRule>>>(
-            ReadingValidator.ValidationRulesKey
+            ReadingValidator.GetValidationRulesKey(deviceId)
         );
 
         if (rules is null)
         {
             rules = new Dictionary<ReadingType, List<ValidationRule>>();
-            await _configRepo.SetAsync(ReadingValidator.ValidationRulesKey, rules);
+            await _configRepo.SetAsync(ReadingValidator.GetValidationRulesKey(deviceId), rules);
         }
 
         if (!rules.ContainsKey(readingType))
         {
             rules.Add(readingType, new List<ValidationRule>());
-            await _configRepo.SetAsync(ReadingValidator.ValidationRulesKey, rules);
+            await _configRepo.SetAsync(ReadingValidator.GetValidationRulesKey(deviceId), rules);
         }
 
         return rules[readingType];
     }
 
-    public async Task UpdateValidationRules(ReadingType readingType, List<ValidationRuleDto> rules)
+    public async Task UpdateValidationRules(ReadingType readingType, List<ValidationRuleDto> rules, Guid? deviceId = null)
     {
         var oldRules = await _configRepo.GetAsync<Dictionary<ReadingType, List<ValidationRule>>>(
-            ReadingValidator.ValidationRulesKey
+            ReadingValidator.GetValidationRulesKey(deviceId)
         );
 
         if (oldRules is null)
@@ -157,6 +157,6 @@ public class ConfigService : IConfigService
 
         oldRules[readingType] = newRules;
 
-        await _configRepo.SetAsync(ReadingValidator.ValidationRulesKey, oldRules);
+        await _configRepo.SetAsync(ReadingValidator.GetValidationRulesKey(deviceId), oldRules);
     }
 }

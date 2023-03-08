@@ -7,6 +7,7 @@ pub mod home;
 pub mod settings;
 pub mod signin;
 pub mod users;
+pub mod device_settings;
 
 use home::Home;
 use settings::Settings;
@@ -29,6 +30,8 @@ pub enum AppRoute {
     Devices,
     #[at("/devices_chart/:id")]
     DeviceChart { id: String },
+    #[at("/devices/:id/settings")]
+    DeviceSettings { id: String },
     #[at("/users")]
     Users,
     #[at("/newuser")]
@@ -55,6 +58,9 @@ pub fn switch(routes: &AppRoute) -> Html {
         }
         AppRoute::DeviceChart { id } => {
             html! { <Chart device_id={uuid::Uuid::parse_str(&id).ok()} canvas_id={"device_chart"} /> }
+        }
+        AppRoute::DeviceSettings { id } => {
+            html! { <device_settings::DeviceSettings device_id={uuid::Uuid::parse_str(&id).ok().unwrap()} /> }
         }
         AppRoute::PageNotFound => html! { "Page not found" },
     }
