@@ -12,6 +12,7 @@ use home::Home;
 use settings::Settings;
 use signin::SignIn;
 use crate::components::reading::reading_list;
+use crate::components::chart::Chart;
 
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq)]
@@ -26,6 +27,8 @@ pub enum AppRoute {
     SignIn,
     #[at("/devices")]
     Devices,
+    #[at("/devices_chart/:id")]
+    DeviceChart { id: String },
     #[at("/users")]
     Users,
     #[at("/newuser")]
@@ -49,6 +52,9 @@ pub fn switch(routes: &AppRoute) -> Html {
         AppRoute::Readings => html! { <reading_list::ReadingList /> },
         AppRoute::DeviceReadings { id } => {
             html! { <reading_list::ReadingList device_id={Some(id)} /> }
+        }
+        AppRoute::DeviceChart { id } => {
+            html! { <Chart device_id={uuid::Uuid::parse_str(&id).ok()} canvas_id={"device_chart"} /> }
         }
         AppRoute::PageNotFound => html! { "Page not found" },
     }

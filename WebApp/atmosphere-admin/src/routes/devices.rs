@@ -103,8 +103,11 @@ pub fn devices() -> Html {
                                 onchange={let device = device.clone(); activate_device_cb.reform(move |_| device.clone().id.to_string())} /></td>
                             <td><input type="checkbox" checked={device.is_connected} disabled=true /></td>
                             <td>
-                                <Link<AppRoute> to={AppRoute::DeviceReadings { id: device.id.to_string().clone() }}>
+                                <Link<AppRoute> classes="btn btn-primary mr-2" to={AppRoute::DeviceReadings { id: device.id.to_string().clone() }}>
                                     {"View readings"}
+                                </Link<AppRoute>>
+                                <Link<AppRoute> classes="btn btn-primary mr-2" to={AppRoute::DeviceChart { id: device.id.to_string().clone() }}>
+                                    {"View charts"}
                                 </Link<AppRoute>>
                             </td>
                         </tr>

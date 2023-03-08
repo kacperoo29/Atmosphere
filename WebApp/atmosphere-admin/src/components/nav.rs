@@ -5,7 +5,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::{
-    bindings::{self, set_on_close, set_send_ping_interval, show_error},
+    bindings::{self, set_on_close, show_error},
     hooks::use_user_context::use_user_context,
     models::notification_payload::NotificationPayload,
     routes::AppRoute,
@@ -84,13 +84,16 @@ pub fn nav() -> Html {
                         }
                     });
 
-                    window.set_interval_with_callback_and_timeout_and_arguments_0(
-                        closure.as_ref().unchecked_ref(),10000 
-                    );
+                    window
+                        .set_interval_with_callback_and_timeout_and_arguments_0(
+                            closure.as_ref().unchecked_ref(),
+                            10000,
+                        )
+                        .unwrap();
 
                     closure.forget();
                 }
-                
+
                 set_on_close(ws);
             }
 
